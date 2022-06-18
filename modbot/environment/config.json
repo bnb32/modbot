@@ -1,0 +1,16 @@
+{
+    "_TOKEN" : "<token>",
+    "_CLIENT_ID" : "<client_id>",
+    "_CLIENT_SECRET" : "<client_secret>",
+    "NICKNAME" : "<nickname>",
+    "CHANNEL" : "<channel>",
+    "PLEB_PMIN" : 0.6,
+    "SUB_PMIN" : 0.6,
+    "CHECK_PMIN" : 0.35,
+    "PMSG_ON" : true,
+    "TO_SUBS" : true,
+    "LOGGER_LEVEL" : 18,
+    "WRITE_LOG" : true,
+    "NOLINKS" : false,
+    "MODEL_TYPE" : "SVM"
+}

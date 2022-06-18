@@ -1,0 +1,16 @@
+__pycache__
+*.joblib
+*.txt
+logs
+*.egg-info
+settings.py
+*.vs/*
+
+docs/_build/
+docs/source/_autosummary/
+
+data/*
+
+my_config*.json
+
+tmp*
