@@ -11,6 +11,7 @@ from emoji import demojize
 from googletrans import Translator
 import dask.dataframe as dd
 import copy
+import pprint
 
 from modbot.environment import ProcessingConfig
 from modbot.utilities import utilities
@@ -359,7 +360,7 @@ def correct_messages(infile, outfile):
 class LogCleaning:
     """Class to handle different types of log cleaning"""
     def __init__(self, config, rawfile, cleanfile, wc, filter_emotes=False):
-        self.config = config
+        self.config = ProcessingConfig(run_config=config)
         self.rawfile = rawfile
         self.cleanfile = cleanfile
         self.lines = None
@@ -367,6 +368,9 @@ class LogCleaning:
         self.wc = wc
         self.review_decisions = config.review_decisions
         self.filter_emotes = filter_emotes
+
+        logger.info('Using processing configuration:\n'
+                    f'{pprint.pformat(self.config.attrs, indent=1)}')
 
     @staticmethod
     def is_valid_line(line):
@@ -394,10 +398,9 @@ class LogCleaning:
         """
         # read raw log
         logger.info('Reading log: %s', self.rawfile)
-        f = open(self.rawfile)
-        lines = f.readlines()
-        f.close()
-        lines = [line.lstrip() for line in lines]
+        with open(self.rawfile, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+            lines = [line.lstrip() for line in tqdm(lines)]
         return lines
 
     def prep_log(self):
@@ -411,9 +414,10 @@ class LogCleaning:
         """
         # prep log
         self.lines = self.read_log()
+        logger.info('Prepping log')
         return [utilities.delete_usernames(
             re.sub('"', '\'', line)).rstrip('\n').rstrip().lstrip()
-            for line in self.lines if self.is_valid_line(line)]
+            for line in tqdm(self.lines) if self.is_valid_line(line)]
 
     def review_messages(self, tocheck, bmsgs, cmsgs, ctmp, probs):
         """Perform initial review on temporarily clean messages
@@ -440,7 +444,7 @@ class LogCleaning:
         cmsgs : list
             Messages classified as wholesome
         """
-        for n, text in tqdm(enumerate(ctmp)):
+        for n, text in enumerate(tqdm(ctmp)):
             if self.wc is not None and probs[n] > self.config.CHECK_PMIN:
                 logger.info(f'Appending tocheck: {text}')
                 tocheck.append(text)
@@ -820,8 +824,9 @@ class MsgMemory:
         """Chunk memory. Group messages by user and by chunk size so that
         more than one message can be taken into account for moderation.
         """
+        logger.info('Chunking memory')
         info = None
-        for user in self.memory:
+        for user in tqdm(self.memory):
             count = 0
             for m in self.memory[user]:
                 if count == 0:

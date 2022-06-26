@@ -26,6 +26,8 @@ def modbot_argparse():
                         help='Model type to use for modding', type=str)
     parser.add_argument('-channel', default=None,
                         type=none_or_str, help='Channel to moderate')
+    parser.add_argument('-nickname', default=None,
+                        type=none_or_str, help='Name of modbot')
     parser.add_argument('-log_dir', default=LOG_DIR,
                         type=str, help='Directory to save logs')
     parser.add_argument('-data_dir', default=DATA_DIR,

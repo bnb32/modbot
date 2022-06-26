@@ -4,7 +4,7 @@ import os
 
 from modbot.utilities.utilities import none_or_str, none_or_int
 from modbot import (DATA_DIR, LOG_DIR, VALID_MODELS, BERT_ENCODER,
-                          BERT_PREPROCESS)
+                    BERT_PREPROCESS)
 
 
 def training_argparse():
@@ -18,11 +18,6 @@ def training_argparse():
                         help='Append from input file to existing '
                              'classification dataset.')
     parser.add_argument('-train', default=False, action='store_true')
-    parser.add_argument('-rerun', default=False, action='store_true',
-                        help='Rebuild classification dataset from scratch '
-                             'using -source <source>.')
-    parser.add_argument('-update', default=False, action='store_true',
-                        help='Append from the most recent log file.')
     parser.add_argument('-running_check', default=False,
                         action='store_true',
                         help='Use model to check messages that meet the lower '
@@ -32,12 +27,6 @@ def training_argparse():
     parser.add_argument('-review_decisions', default=False,
                         action='store_true',
                         help='Reclassify all decisions made by the bot.')
-    parser.add_argument('-source', default='chatty',
-                        help='Specify log source for training input',
-                        choices=['chatty', 'logs', 'input'])
-    parser.add_argument('-from_date', default=None,
-                        help='Select log (log type from source) from specified'
-                             ' date')
     parser.add_argument('-model_type', default='SVM',
                         choices=VALID_MODELS,
                         help='Model type to train', type=str)
@@ -76,6 +65,8 @@ def training_argparse():
                              'source=chatty.')
     parser.add_argument('-channel', default=None,
                         type=none_or_str, help='Channel to moderate')
+    parser.add_argument('-nickname', default=None,
+                        type=none_or_str, help='Name of modbot')
     parser.add_argument('-config', type=str, default=None,
                         help='Configuration file')
     return parser

@@ -1,5 +1,4 @@
 """Training module"""
-from datetime import datetime, timedelta
 import numpy as np
 import os
 
@@ -19,84 +18,6 @@ params = dict({'stop_words': None,
                'min_df': 1, 'max_df': 1.0, 'analyzer': 'char_wb',
                'ngram_range': (1, 8), 'smooth_idf': 1, 'sublinear_tf': 1,
                'max_iter': 10000, 'C': 1})
-
-
-def recreate_log(config, raw_log, tmp_log, final_log, log_files):
-    """Create log file from scratch
-
-    Parameters
-    ----------
-    config : RunConfig
-        Class storing run time configuration parameters
-    raw_log : str
-        File name for raw log prior to cleaning
-    tmp_log : str
-        File name for temporary log file
-    final_log : str
-        File name for final cleaned log
-    log_files : list
-        List of raw log files
-    config : RunConfig
-        Class storing run time configuration parameters
-    """
-    if config.source == 'chatty':
-        logger.info(f'Building raw log: {raw_log}')
-        os.system(f'rm -f {raw_log}')
-        for log_file in log_files:
-            os.system(f'cat {log_file} >> {raw_log}')
-        config.clean = True
-        clean_log(config, raw_log, tmp_log)
-        os.system(f'cp {tmp_log} {final_log}')
-        logger.info(f'Created {final_log}')
-    else:
-        config.clean = True
-        clean_log(config, config.infile, tmp_log)
-        os.system(f'cp {tmp_log} {final_log}')
-        logger.info(f'Created {final_log}')
-
-
-def get_last_log(config):
-    """Get the most recent log
-
-    Parameters
-    ----------
-    config : RunConfig
-        Class storing configuration parameters
-    """
-    date = datetime.today() - timedelta(days=1)
-    file_format = '{dir}/{date}_' + f'#{config.CHANNEL}.log'
-    filename = ''
-
-    from_chatty = config.source == 'chatty'
-    from_logs = config.source == 'logs'
-    from_date = config.from_date
-
-    if from_chatty:
-        if from_date is not None:
-            filename = file_format.format(dir=config.CHATTY_DIR,
-                                          date=from_date)
-            return filename
-        else:
-            filename = file_format.format(dir=config.CHATTY_DIR,
-                                          date=date.strftime('%Y-%m-%d'))
-    elif from_logs:
-        if from_date is not None:
-            filename = file_format.format(dir=config.LOG_DIR,
-                                          date=from_date)
-            return filename
-        else:
-            filename = file_format.format(dir=config.LOG_DIR,
-                                          date=date.strftime('%Y-%m-%d'))
-
-    while not os.path.exists(filename):
-        date -= timedelta(days=1)
-        if from_chatty:
-            filename = file_format.format(dir=config.CHATTY_DIR,
-                                          date=date.strftime('%Y-%m-%d'))
-        elif from_logs:
-            filename = file_format.format(dir=config.LOG_DIR,
-                                          date=date.strftime('%Y-%m-%d'))
-    return filename
 
 
 def vectorize_and_train(config, data_file):

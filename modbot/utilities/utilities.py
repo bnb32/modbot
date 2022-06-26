@@ -192,7 +192,7 @@ def remove_special_chars(line):
     str
         Line with all special characters removed
     """
-    return re.sub('[^A-Za-z0-9_]+', '', line.rstrip('\n').rstrip().lstrip())
+    return re.sub('[^A-Za-z0-9_ ]+', '', line.rstrip('\n').rstrip().lstrip())
 
 
 def prune_chars(line):

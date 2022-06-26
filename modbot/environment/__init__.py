@@ -138,13 +138,15 @@ class BaseConfig:
             self.LOG_PATH = os.path.join(self.LOG_DIR,
                                          f'{date_string}_#{self.CHANNEL}.log')
 
-    def get_config(self, file_name=None):
+    def get_config(self, file_name=None, config=None):
         """Get configuration from file
 
         Parameters
         ----------
         file_name : str
             Path to configuration file
+        config : RunConfig
+            Optional config class with stored parameters
 
         Returns
         -------
@@ -159,6 +161,10 @@ class BaseConfig:
             for k, v in self.config_dict.items():
                 if hasattr(self, k):
                     setattr(self, k, v)
+        elif config is not None:
+            for k in vars(config):
+                if hasattr(self, k):
+                    setattr(self, k, getattr(config, k))
         self.get_log_file()
 
     @property
@@ -206,6 +212,7 @@ class BaseConfig:
                 setattr(self, key, val)
             if hasattr(self, key.upper()) and getattr(args, key) is not None:
                 setattr(self, key.upper(), val)
+        self.get_log_file()
 
     def save(self, outpath):
         """Save config to json file
@@ -295,16 +302,21 @@ class ProcessingConfig(BaseConfig):
               'HahaCat', 'HahaBaby', 'HahaNyandeer', 'Haha2020',
               'HahaBall', 'HahaDreidel', 'gutBaby']
 
-    def __init__(self, file_name=None):
+    def __init__(self, file_name=None, run_config=None):
         """
         Parameters
         ----------
         file_name : str
             JSON configuration file
+        run_config : RunConfig
+            Optional config class with stored parameters
         """
-        self.get_config(file_name)
+        if run_config is not None:
+            self.get_config(config=run_config)
+        else:
+            self.get_config(file_name=file_name)
+            run_config = RunConfig(file_name=file_name)
         self.file_name = file_name
-        run_config = RunConfig(file_name)
 
         #: ignore actions of these moderators during training
         self.ignore_actions = ['moobot', run_config.NICKNAME]
@@ -317,3 +329,10 @@ class ProcessingConfig(BaseConfig):
 
         #: ignore messages of these users during training
         self.ignore_users = []
+
+    @property
+    def attrs(self):
+        """Config attributes info"""
+        config_attrs = {k: getattr(self, k)
+                        for k in vars(self) if k == k.lower()}
+        return config_attrs

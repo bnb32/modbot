@@ -31,10 +31,11 @@ from scipy import sparse
 
 from modbot.training.vectorizers import TokVectorizer
 from modbot.training.data_handling import (TextGenerator,
-                                                 DataGenerator,
-                                                 char_split)
+                                           DataGenerator,
+                                           char_split)
 from modbot.utilities.utilities import curvature
 from modbot.utilities.logging import get_logger
+from modbot import preprocessing as pp
 from modbot import BERT_ENCODER, BERT_PREPROCESS
 
 logger = get_logger()
@@ -401,7 +402,9 @@ class ModerationModel(ABC):
                    'this bug is annoying',
                    'go fuck yourself',
                    'this song fucking rocks',
-                   'she yawned again']
+                   'she yawned again',
+                   'Hey, wanna play chess with me?I',
+                   ]
 
         predictions = [round(p, 3) for p in self.predict_one(phrases)]
 
@@ -1681,6 +1684,7 @@ class SVM(ModerationModel):
         """
         self.get_class_info()
         logger.info('Training LinearSVM classifier')
+        train_gen.X = train_gen.X.apply(pp.correct_msg)
         self.model.fit(train_gen.X, train_gen.Y)
 
     def predict_proba(self, X, verbose=False):
