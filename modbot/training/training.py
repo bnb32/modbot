@@ -35,7 +35,8 @@ def vectorize_and_train(config, data_file):
     MODEL_CLASS = get_model_class(config.MODEL_TYPE)
     if config.continue_training or config.just_evaluate:
         model = MODEL_CLASS.continue_training(
-            config.MODEL_PATH, data_file,
+            model_path=config.MODEL_PATH,
+            data_file=data_file,
             offensive_weight=offensive_weight,
             epochs=config.epochs,
             just_evaluate=config.just_evaluate,
@@ -45,7 +46,8 @@ def vectorize_and_train(config, data_file):
             val_split=config.val_split)
     else:
         model = MODEL_CLASS.run(
-            data_file, offensive_weight=offensive_weight,
+            data_file=data_file,
+            offensive_weight=offensive_weight,
             epochs=config.epochs,
             batch_size=config.batch_size,
             n_batches=config.n_batches,

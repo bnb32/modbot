@@ -1,6 +1,7 @@
 """Module for model training"""
 import os
 import pprint
+import shutil
 
 from modbot.utilities.logging import get_logger
 from modbot.training.training import (clean_log,
@@ -32,7 +33,8 @@ if __name__ == '__main__':
     TMP_DIR = os.path.join(config.DATA_DIR, 'tmp')
     os.makedirs(TMP_DIR, exist_ok=True)
     TMP = os.path.join(TMP_DIR, 'clean_tmp.txt')
-    TMP_IN = config.infile
+    shutil.copy(config.infile, TMP)
+    logger.info(f'Copying {args.infile} to {TMP}')
 
     if config.append:
         TMP_OUT = os.path.join(config.DATA_DIR, f'{config.CHANNEL}_data.csv')
@@ -42,11 +44,10 @@ if __name__ == '__main__':
                                f'{config.CHANNEL}_decisions.csv')
 
     if (not config.append and not config.clean):
-        TMP_OUT = TMP_IN
+        TMP_OUT = TMP
 
     if config.train or config.continue_training or config.just_evaluate:
-        clean_log(config, TMP_IN, TMP)
-        logger.info(f'Created {TMP}')
+        clean_log(config, TMP, TMP)
         if config.append:
             append_file(TMP, TMP_OUT)
             logger.info(f'Appended {TMP} to {TMP_OUT}')

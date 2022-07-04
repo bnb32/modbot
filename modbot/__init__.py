@@ -9,7 +9,7 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(BOT_DIR), 'tests', 'data')
 DATA_DIR = os.path.join(os.path.dirname(BOT_DIR), 'data')
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 VALID_MODELS = ('BERT', 'BERT_CNN', 'BERT_CNN_LSTM', 'BERT_LSTM_CNN',
-                'BERT_LSTM', 'CNN', 'SVM', 'LSTM')
+                'BERT_LSTM', 'CNN', 'SVM', 'LSTM', 'BERT_CNN_TORCH')
 BERT_PREPROCESS = os.path.join(DATA_DIR, 'bert_preprocess')
 BERT_ENCODER = os.path.join(DATA_DIR, 'bert_encoder')
 

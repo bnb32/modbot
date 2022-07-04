@@ -15,6 +15,16 @@ import json
 import tensorflow_hub as tf_hub
 import tensorflow_text as tf_text  # pylint: disable=unused-import # noqa: F401
 
+from torch import nn
+import torch.nn.functional as F
+import torch
+from torch.utils.data import (TensorDataset, DataLoader, RandomSampler,
+                              SequentialSampler)
+from torch.optim import AdamW
+
+from transformers import (BertModel, BertTokenizer,
+                          get_linear_schedule_with_warmup)
+
 from keras import Sequential, losses, optimizers, callbacks, layers
 from keras.models import load_model
 from sklearn.model_selection import train_test_split
@@ -24,7 +34,8 @@ from sklearn import svm
 import sklearn.calibration as cal
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics import (confusion_matrix, precision_score, recall_score,
+from sklearn.metrics import (classification_report, confusion_matrix,
+                             precision_score, recall_score,
                              jaccard_score, f1_score)
 from dask_ml.cluster import KMeans
 from scipy import sparse
@@ -39,6 +50,9 @@ from modbot import preprocessing as pp
 from modbot import BERT_ENCODER, BERT_PREPROCESS
 
 logger = get_logger()
+
+
+seed = 42
 
 
 def get_model_class(model_type):
@@ -56,6 +70,7 @@ def get_model_class(model_type):
     """
     valid_models = {'CNN': CNN, 'LSTM': LSTM, 'SVM': SVM, 'BERT': BERT,
                     'BERT_CNN': BertCNN, 'BERT_LSTM': BertLSTM,
+                    'BERT_CNN_TORCH': BertCnnTorch,
                     'BERT_CNN_LSTM': BertCnnLstm,
                     'BERT_LSTM_CNN': BertLstmCnn}
     check = model_type.upper() in valid_models
@@ -296,10 +311,17 @@ class ModerationModel(ABC):
             Trained and evaluated keras model or svm
         """
         train_gen, test_gen = cls.get_data_generators(data_file, **kwargs)
-        model = cls(texts=np.array(train_gen.X).flatten(), **kwargs)
+        sig = signature(cls)
+        params = {k: v for k, v in kwargs.items() if k in sig.parameters}
+        if 'texts' in signature(cls).parameters:
+            model = cls(texts=np.array(train_gen.X).flatten(), **params)
+        else:
+            model = cls(**params)
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
-        model.train(train_gen, test_gen, **kwargs)
+        sig = signature(model.train)
+        params = {k: v for k, v in kwargs.items() if k in sig.parameters}
+        model.train(train_gen, test_gen, **params)
         return model
 
     @classmethod
@@ -326,8 +348,11 @@ class ModerationModel(ABC):
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
         just_evaluate = kwargs.get('just_evaluate', False)
+        sig = signature(model.train)
+        params = {k: v for k, v in kwargs.items() if k in sig.parameters}
+        params['model_path'] = model_path
         if not just_evaluate:
-            model.train(train_gen, test_gen, **kwargs)
+            model.train(train_gen, test_gen, **params)
         return model
 
     def predict(self, X, verbose=False):
@@ -513,7 +538,7 @@ class ModerationModel(ABC):
         """Transform texts"""
 
 
-class KerasModel(ModerationModel):
+class NNmodel(ModerationModel):
     """Base keras model for moderation"""
 
     #: Max vocab size for tokenizer
@@ -1208,7 +1233,7 @@ class KerasModel(ModerationModel):
 
         Returns
         -------
-            Initialized KerasModel model
+            Initialized NNmodel model
         """
 
         logger.info(f'Loading {cls.__name__} model from {inpath}')
@@ -1241,7 +1266,7 @@ class KerasModel(ModerationModel):
             accr[0], accr[1]))
 
 
-class LSTM(KerasModel):
+class LSTM(NNmodel):
     """LSTM model for moderation"""
 
     def build_layers(self, **kwargs):
@@ -1296,7 +1321,7 @@ class LSTM(KerasModel):
         return 'LSTM'
 
 
-class CNN(KerasModel):
+class CNN(NNmodel):
     """Moderation model using convolution layer"""
 
     def build_layers(self, **kwargs):
@@ -1343,7 +1368,7 @@ class CNN(KerasModel):
         return 'CNN'
 
 
-class BERT(KerasModel):
+class BERT(NNmodel):
     """Bert model"""
 
     def build_layers(self, **kwargs):
@@ -1784,3 +1809,213 @@ class KMeansComponent:
                              random_state=0)
         self.kmeans.fit(self.comps)
         return sparse.hstack((data, np.array(self.kmeans.labels_)[:, None]))
+
+
+class BertCnnTorchModel(nn.Module):
+    """Bert Cnn model pytorch implementation"""
+
+    def __init__(self, embed_size, lr=2e-5):
+        super().__init__()
+        filter_sizes = [1, 2, 3, 4, 5]
+        num_filters = 32
+        self.convs1 = nn.ModuleList([nn.Conv2d(4, num_filters, (K, embed_size))
+                                     for K in filter_sizes])
+        self.dropout = nn.Dropout(0.1)
+        self.fc1 = nn.Linear(len(filter_sizes) * num_filters, 1)
+        self.sigmoid = nn.Sigmoid()
+        self.bert_model = BertModel.from_pretrained('bert-base-uncased',
+                                                    output_hidden_states=True)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    def forward(self, x, input_masks, token_type_ids):
+        """Forward pass for model"""
+
+        x = self.bert_model(x, attention_mask=input_masks,
+                            token_type_ids=token_type_ids)[2][-4:]
+        x = torch.stack(x, dim=1)
+        x = [F.relu(conv(x)).squeeze(3) for conv in self.convs1]
+        x = [F.max_pool1d(i, i.size(2)).squeeze(2) for i in x]
+        x = torch.cat(x, 1)
+        x = self.dropout(x)
+        logit = self.fc1(x)
+        return self.sigmoid(logit)
+
+
+class BertCnnTorch(NNmodel):
+    """Bert Cnn model pytorch implementation"""
+
+    def __init__(self, texts=None, checkpoint=None, embed_size=768, lr=2e-5):
+
+        self.clf = self.build_layers(embed_size)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
+        if checkpoint is not None:
+            self.clf.load_state_dict(checkpoint['state_dict'])
+            self.optimizer.load_state_dict(checkpoint['optimizer'])
+
+        if torch.cuda.is_available():
+            logger.info('Using gpu for training')
+            self.device = torch.device("cuda:0")
+        else:
+            logger.info('Using cpu for training')
+            self.device = torch.device("cpu")
+
+    @property
+    def __name__(self):
+        return "BERT_CNN_TORCH"
+
+    def build_layers(self, embed_size):
+        return BertCnnTorchModel(embed_size)
+
+    def prepare_set(self, text, max_length=512):
+        """returns input_ids, attention_mask, token_type_ids for set of data
+        ready in BERT format"""
+
+        text = self.clean_texts(text)
+        t = self.tokenizer.batch_encode_plus(text, padding='max_length',
+                                             add_special_tokens=True,
+                                             max_length=max_length,
+                                             return_tensors='pt',
+                                             truncation=True)
+
+        return t["input_ids"], t["attention_mask"], t["token_type_ids"]
+
+    def predict_proba(self, X, verbose=False, batch_size=64):
+        """Make prediction on input texts"""
+        test_inputs, test_masks, test_type_ids = self.prepare_set(X)
+        test_data = TensorDataset(test_inputs, test_masks, test_type_ids)
+        test_sampler = SequentialSampler(test_data)
+        test_dataloader = DataLoader(test_data, sampler=test_sampler,
+                                     batch_size=batch_size)
+
+        self.clf.eval()
+        with torch.no_grad():
+            preds = []
+            if verbose:
+                iterator = tqdm(test_dataloader)
+            else:
+                iterator = test_dataloader
+            for batch in iterator:
+                out = tuple(t.to(self.device) for t in batch)
+                b_input_ids, b_input_mask, b_token_type_ids = out
+                y_pred = self.clf(b_input_ids, b_input_mask,
+                                  b_token_type_ids)
+                preds += list(y_pred.cpu().numpy().flatten())
+
+        return [[1 - x, x] for x in preds]
+
+    def evaluate(self, dev_dataloader, epoch, loss_fn, val_preds):
+        """Evaluate model on test data"""
+        with torch.no_grad():
+            val_loss = 0
+            logger.info(f'Evaluating on {len(dev_dataloader)} batches for '
+                        f'epoch {epoch}')
+            for batch in tqdm(dev_dataloader):
+                out = tuple(t.to(self.device) for t in batch)
+                b_input_ids, b_input_mask, b_token_type_ids, b_labels = out
+                y_pred = self.clf(b_input_ids, b_input_mask,
+                                  b_token_type_ids)
+                loss = loss_fn(y_pred, b_labels.unsqueeze(1))
+                y_pred = y_pred.cpu().numpy().flatten()
+                val_preds += [int(p >= 0.5) for p in y_pred]
+                val_loss += loss.item()
+                self.clf.zero_grad()
+        return val_loss, val_preds
+
+    def train(self, train_gen, test_gen, epochs=10, model_path="temp.pt",
+              batch_size=24, max_length=512, lr=2e-5):
+        """Train pytorch bert cnn model"""
+        x_train = train_gen.X
+        x_dev = test_gen.X
+        y_train = train_gen.Y
+        y_dev = test_gen.Y
+        self.get_class_info()
+        y_train, y_dev = (torch.FloatTensor(t) for t in (y_train, y_dev))
+
+        logger.info('Preparing train data')
+        out = self.prepare_set(x_train, max_length=max_length)
+        train_inputs, train_masks, train_type_ids = out
+        train_data = TensorDataset(train_inputs, train_masks, train_type_ids,
+                                   y_train)
+        train_sampler = RandomSampler(train_data)
+        train_dataloader = DataLoader(train_data, sampler=train_sampler,
+                                      batch_size=batch_size)
+
+        # Create the DataLoader for our dev set.
+        logger.info('Preparing test data')
+        out = self.prepare_set(x_dev, max_length=max_length)
+        dev_inputs, dev_masks, dev_type_ids = out
+        dev_data = TensorDataset(dev_inputs, dev_masks, dev_type_ids, y_dev)
+        dev_sampler = SequentialSampler(dev_data)
+        dev_dataloader = DataLoader(dev_data, sampler=dev_sampler,
+                                    batch_size=batch_size)
+
+        self.clf.to(self.device)
+
+        loss_fn = nn.BCELoss()
+        train_losses, val_losses = [], []
+        np.random.seed(seed)
+        torch.manual_seed(seed)
+        if self.device.type == "cuda":
+            torch.cuda.manual_seed_all(seed)
+
+        total_steps = len(train_dataloader) * epochs
+        scheduler = get_linear_schedule_with_warmup(
+            self.optimizer, num_warmup_steps=0, num_training_steps=total_steps)
+
+        self.clf.zero_grad()
+        best_score = 0
+
+        logger.info('Starting training')
+        for epoch in range(epochs):
+            train_loss = 0
+            self.clf.train(True)
+
+            logger.info(f'Training on {len(dev_dataloader)} batches for '
+                        f'epoch {epoch}')
+            for batch in tqdm(train_dataloader):
+                out = tuple(t.to(self.device) for t in batch)
+                b_input_ids, b_input_mask, b_token_type_ids, b_labels = out
+                y_pred = self.clf(b_input_ids, b_input_mask,
+                                  b_token_type_ids)
+                loss = loss_fn(y_pred, b_labels.unsqueeze(1))
+                loss.backward()
+                self.optimizer.step()
+                train_loss += loss.item()
+                scheduler.step()
+                self.clf.zero_grad()
+
+            train_losses.append(train_loss)
+            self.clf.eval()
+            val_preds = []
+            val_loss, val_preds = self.evaluate(dev_dataloader, epoch, loss_fn,
+                                                val_preds)
+            val_score = f1_score(y_dev.cpu().numpy().tolist(), val_preds)
+            val_losses.append(val_loss)
+            msg = (f"Epoch {epoch + 1} Train loss: {train_losses[-1]}. "
+                   f"Validation F1-Macro: {val_score}. "
+                   f"Validation loss: {val_losses[-1]}.")
+            logger.info(msg)
+
+            if val_score > best_score:
+                torch.save(self.clf.state_dict(), model_path)
+                logger.info(f'Model saved to {model_path}')
+                best_score = val_score
+
+        self.clf.load_state_dict(torch.load(model_path))
+        self.clf.to(self.device)
+        self.clf.eval()
+        return self.clf
+
+    def save(self, outpath):
+        """Save model"""
+        torch.save(self.clf.state_dict(), outpath)
+        logger.info(f'Model saved to {outpath}')
+
+    @classmethod
+    def load(cls, inpath):
+        """Load pytorch model"""
+        model = cls(checkpoint=torch.load(inpath))
+        logger.info(f'Loading {cls.__name__} model from {inpath}')
+        model.clf.to(model.device)
+        return model
