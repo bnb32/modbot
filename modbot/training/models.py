@@ -34,8 +34,7 @@ from sklearn import svm
 import sklearn.calibration as cal
 from sklearn.pipeline import Pipeline
 from sklearn.decomposition import TruncatedSVD
-from sklearn.metrics import (classification_report, confusion_matrix,
-                             precision_score, recall_score,
+from sklearn.metrics import (confusion_matrix, precision_score, recall_score,
                              jaccard_score, f1_score)
 from dask_ml.cluster import KMeans
 from scipy import sparse
@@ -1814,7 +1813,7 @@ class KMeansComponent:
 class BertCnnTorchModel(nn.Module):
     """Bert Cnn model pytorch implementation"""
 
-    def __init__(self, embed_size, lr=2e-5):
+    def __init__(self, embed_size):
         super().__init__()
         filter_sizes = [1, 2, 3, 4, 5]
         num_filters = 32
@@ -1904,8 +1903,9 @@ class BertCnnTorch(NNmodel):
 
         return [[1 - x, x] for x in preds]
 
-    def evaluate(self, dev_dataloader, epoch, loss_fn, val_preds):
+    def evaluate(self, dev_dataloader, epoch, loss_fn):
         """Evaluate model on test data"""
+        val_preds = []
         with torch.no_grad():
             val_loss = 0
             logger.info(f'Evaluating on {len(dev_dataloader)} batches for '
@@ -1923,7 +1923,7 @@ class BertCnnTorch(NNmodel):
         return val_loss, val_preds
 
     def train(self, train_gen, test_gen, epochs=10, model_path="temp.pt",
-              batch_size=24, max_length=512, lr=2e-5):
+              batch_size=24, max_length=512):
         """Train pytorch bert cnn model"""
         x_train = train_gen.X
         x_dev = test_gen.X
@@ -1971,7 +1971,7 @@ class BertCnnTorch(NNmodel):
             train_loss = 0
             self.clf.train(True)
 
-            logger.info(f'Training on {len(dev_dataloader)} batches for '
+            logger.info(f'Training on {len(train_dataloader)} batches for '
                         f'epoch {epoch}')
             for batch in tqdm(train_dataloader):
                 out = tuple(t.to(self.device) for t in batch)
@@ -1987,14 +1987,13 @@ class BertCnnTorch(NNmodel):
 
             train_losses.append(train_loss)
             self.clf.eval()
-            val_preds = []
-            val_loss, val_preds = self.evaluate(dev_dataloader, epoch, loss_fn,
-                                                val_preds)
+            val_loss, val_preds = self.evaluate(dev_dataloader, epoch, loss_fn)
             val_score = f1_score(y_dev.cpu().numpy().tolist(), val_preds)
             val_losses.append(val_loss)
-            msg = (f"Epoch {epoch + 1} Train loss: {train_losses[-1]}. "
-                   f"Validation F1-Macro: {val_score}. "
-                   f"Validation loss: {val_losses[-1]}.")
+            msg = (f"Epoch {epoch + 1} "
+                   f"Train loss: {round(train_losses[-1], 3)}. "
+                   f"Validation F1-Macro: {round(val_score, 3)}. "
+                   f"Validation loss: {round(val_losses[-1], 3)}.")
             logger.info(msg)
 
             if val_score > best_score:
