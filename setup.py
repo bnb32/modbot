@@ -13,4 +13,5 @@ setup(name='modbot', version='0.1.0',
                         'dask', 'requests', 'websockets', 'emoji', 'pytz',
                         'googletrans', 'tqdm', 'joblib',
                         'scipy>=1.7.3', 'tensorflow>=2.7', 'keras',
-                        'tensorflow_hub', 'tensorflow_text', 'torch'])
+                        'tensorflow_hub', 'tensorflow_text', 'torch', 
+                        'transformers'])
