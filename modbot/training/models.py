@@ -40,18 +40,13 @@ from dask_ml.cluster import KMeans
 from scipy import sparse
 
 from modbot.training.vectorizers import TokVectorizer
-from modbot.training.data_handling import (TextGenerator,
-                                           DataGenerator,
-                                           char_split)
+from modbot.training.data_handling import (TextGenerator, DataGenerator)
 from modbot.utilities.utilities import curvature
 from modbot.utilities.logging import get_logger
 from modbot import preprocessing as pp
 from modbot import BERT_ENCODER, BERT_PREPROCESS
 
 logger = get_logger()
-
-
-seed = 42
 
 
 def get_model_class(model_type):
@@ -657,29 +652,6 @@ class NNmodel(ModerationModel):
                     f'{len(adapted_vocab)} words in adapted_vocab')
         logger.info(f'{len(vocab_diff)} words in vocab_diff')
 
-    def get_encoder(self, texts, n_min=None, n_max=None, chunk_words=False):
-        """Get encoding layer for network input
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            Set of texts used to build vocabulary
-        n_min : int | None
-            Minimum size of ngram used when building vocab
-        m_max : int | None
-            Maximum size of ngram used when building vocab
-        chunk_words : bool
-            Whether to compute ngrams on individual words
-
-        Returns
-        -------
-        layers.TextVectorization
-            TextVectorization layer used to build network
-        """
-        vocab = self.get_vocab_direct(texts, n_min, n_max, chunk_words)
-        encoder = layers.TextVectorization(name='encoder', vocabulary=vocab)
-        return encoder
-
     @staticmethod
     def construct_vocab(encoder, texts):
         """Construct vocab with encoder
@@ -697,49 +669,6 @@ class NNmodel(ModerationModel):
             TextVectorization layer used to build network which has been
             adapted to get vocab
         """
-        logger.info('Constructing vocabulary')
-        text_dataset = TextGenerator(texts)
-        encoder.adapt(text_dataset)
-        return encoder
-
-    def get_encoder_1(self, texts):
-        """Get encoding layer for network input
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            Set of texts used to build vocabulary
-
-        Returns
-        -------
-        encoder : layers.TextVectorization
-            TextVectorization layer used to build network which has been
-            adapted to get vocab
-        """
-        encoder = layers.TextVectorization(
-            max_tokens=self.MAX_NB_WORDS, split=char_split,
-            ngrams=tuple(range(2, 9)), output_mode='count', name='encoder')
-        logger.info('Constructing vocabulary')
-        text_dataset = TextGenerator(texts)
-        encoder.adapt(text_dataset)
-        return encoder
-
-    def get_encoder_2(self, texts):
-        """Get encoding layer for network input
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            Set of texts used to build vocabulary
-
-        Returns
-        -------
-        encoder : layers.TextVectorization
-            TextVectorization layer used to build network which has been
-            adapted to get vocab
-        """
-        encoder = layers.TextVectorization(
-            max_tokens=self.MAX_NB_WORDS, name='encoder')
         logger.info('Constructing vocabulary')
         text_dataset = TextGenerator(texts)
         encoder.adapt(text_dataset)
@@ -883,227 +812,6 @@ class NNmodel(ModerationModel):
     @abstractmethod
     def build_layers(self, **kwargs):
         """Build model layers"""
-
-    def build_layers_1(self, texts):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts to tokenize
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        logger.info(
-            f'Initializing model with max sequence len: {self.max_len}')
-
-        self.vectorizer = TokVectorizer(max_len=self.max_len)
-        self.vectorizer.fit(texts)
-        model = Sequential()
-        model.add(layers.Input(name='inputs', shape=[self.max_len]))
-        model.add(layers.Embedding(self.MAX_NB_WORDS, self.EMBEDDING_DIM,
-                                   input_length=self.max_len,
-                                   name='token_embedder'))
-        model.add(layers.LSTM(64))
-        model.add(layers.Dense(256, name='FC1'))
-        model.add(layers.Activation('relu'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(1, name='out_layer'))
-        model.add(layers.Activation('sigmoid'))
-        model.compile(loss='binary_crossentropy',
-                      optimizer=optimizers.RMSprop(),
-                      metrics=['accuracy'])
-        return model
-
-    def build_layers_2(self, texts):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts to tokenize
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        logger.info(
-            f'Initializing model with max sequence len: {self.max_len}')
-        self.vectorizer = TokVectorizer(max_len=self.max_len)
-        self.vectorizer.fit(texts)
-        model = Sequential()
-        model.add(layers.Input(name='inputs', shape=[self.max_len]))
-        model.add(layers.Embedding(self.MAX_NB_WORDS, self.EMBEDDING_DIM,
-                                   input_length=self.max_len,
-                                   name='token_embedder'))
-        model.add(layers.Bidirectional(layers.LSTM(64, return_sequences=True)))
-        model.add(layers.Bidirectional(layers.LSTM(32)))
-        model.add(layers.Dense(256, name='FC1'))
-        model.add(layers.Activation('relu'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(1, name='out_layer'))
-        model.add(layers.Activation('sigmoid'))
-        model.compile(loss='binary_crossentropy',
-                      optimizer=optimizers.RMSprop(),
-                      metrics=['accuracy'])
-        return model
-
-    def build_layers_3(self, texts, n_min=None, n_max=None, chunk_words=False):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts from which to build vocab
-        n_min : int | None
-            Minimum size of ngram used when building vocab
-        m_max : int | None
-            Maximum size of ngram used when building vocab
-        chunk_words : bool
-            Whether to compute ngrams on each word
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        encoder = self.get_encoder(texts, n_min=n_min, n_max=n_max,
-                                   chunk_words=chunk_words)
-        vocab = encoder.get_vocabulary()
-        max_words = len(vocab)
-        embedder = layers.Embedding(input_dim=max_words,
-                                    output_dim=self.EMBEDDING_DIM)
-        model = Sequential()
-        model.add(encoder)
-        model.add(embedder)
-        model.add(layers.Bidirectional(layers.LSTM(64, return_sequences=True)))
-        model.add(layers.Bidirectional(layers.LSTM(32)))
-        model.add(layers.Dense(256, name='FC1'))
-        model.add(layers.Activation('relu'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(1, name='out_layer'))
-        model.add(layers.Activation('sigmoid'))
-        model.compile(loss='binary_crossentropy',
-                      optimizer=optimizers.RMSprop(),
-                      metrics=['accuracy'])
-        return model
-
-    def build_layers_4(self, texts, n_min=None, n_max=None, chunk_words=False):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts from which to build vocab
-        n_min : int | None
-            Minimum size of ngram used when building vocab
-        m_max : int | None
-            Maximum size of ngram used when building vocab
-        chunk_words : bool
-            Whether to compute ngrams on each word
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        encoder = self.get_encoder(texts, n_min=n_min, n_max=n_max,
-                                   chunk_words=chunk_words)
-        vocab = encoder.get_vocabulary()
-        max_words = len(vocab)
-        embedder = layers.Embedding(input_dim=max_words,
-                                    output_dim=self.EMBEDDING_DIM)
-        model = Sequential()
-        model.add(encoder)
-        model.add(embedder)
-        model.add(tf.keras.layers.SpatialDropout1D(0.2))
-        model.add(tf.keras.layers.LSTM(100, dropout=0.2,
-                                       recurrent_dropout=0.2))
-        model.add(tf.keras.layers.Dense(1, name='out_layer',
-                                        activation='sigmoid'))
-        model.compile(loss=losses.BinaryCrossentropy(),
-                      optimizer=optimizers.Adam(1e-4),
-                      metrics=['accuracy'])
-        return model
-
-    def build_layers_5(self, texts, n_min=None, n_max=None, chunk_words=False):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts from which to build vocab
-        n_min : int | None
-            Minimum size of ngram used when building vocab
-        m_max : int | None
-            Maximum size of ngram used when building vocab
-        chunk_words : bool
-            Whether to compute ngrams on each word
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        encoder = self.get_encoder(texts, n_min=n_min, n_max=n_max,
-                                   chunk_words=chunk_words)
-        vocab = encoder.get_vocabulary()
-        max_words = len(vocab)
-        embedder = layers.Embedding(input_dim=max_words,
-                                    output_dim=self.EMBEDDING_DIM)
-        model = Sequential()
-        model.add(encoder)
-        model.add(embedder)
-        model.add(layers.Bidirectional(layers.LSTM(64)))
-        model.add(layers.Dense(64, activation='relu'))
-        model.add(layers.Dense(1))
-        model.compile(loss=losses.BinaryCrossentropy(from_logits=True),
-                      optimizer=optimizers.Adam(1e-4),
-                      metrics=['accuracy'])
-        return model
-
-    def build_layers_6(self, texts, n_min=None, n_max=None, chunk_words=False):
-        """Build model layers
-
-        Parameters
-        ----------
-        texts : list | ndarray | pd.DataFrame
-            List of texts from which to build vocab
-        n_min : int | None
-            Minimum size of ngram used when building vocab
-        m_max : int | None
-            Maximum size of ngram used when building vocab
-        chunk_words : bool
-            Whether to compute ngrams on each word
-
-        Returns
-        -------
-        keras.Sequential
-            Sequential model
-        """
-        encoder = self.get_encoder(texts, n_min=n_min, n_max=n_max,
-                                   chunk_words=chunk_words)
-        vocab = encoder.get_vocabulary()
-        max_words = len(vocab)
-        embedder = layers.Embedding(input_dim=max_words,
-                                    output_dim=self.EMBEDDING_DIM)
-        model = Sequential()
-        model.add(encoder)
-        model.add(embedder)
-        model.add(layers.Bidirectional(layers.LSTM(64)))
-        model.add(layers.Dense(64, name='FC1'))
-        model.add(layers.Activation('relu'))
-        model.add(layers.Dropout(0.5))
-        model.add(layers.Dense(1, name='out_layer'))
-        model.add(layers.Activation('sigmoid'))
-        model.compile(loss='binary_crossentropy',
-                      optimizer=optimizers.RMSprop(),
-                      metrics=['accuracy'])
-        return model
 
     def train(self, train_gen, test_gen, **kwargs):
         """Train model and evaluate
@@ -1267,6 +975,29 @@ class NNmodel(ModerationModel):
 
 class LSTM(NNmodel):
     """LSTM model for moderation"""
+
+    def get_encoder(self, texts, n_min=None, n_max=None, chunk_words=False):
+        """Get encoding layer for network input
+
+        Parameters
+        ----------
+        texts : list | ndarray | pd.DataFrame
+            Set of texts used to build vocabulary
+        n_min : int | None
+            Minimum size of ngram used when building vocab
+        m_max : int | None
+            Maximum size of ngram used when building vocab
+        chunk_words : bool
+            Whether to compute ngrams on individual words
+
+        Returns
+        -------
+        layers.TextVectorization
+            TextVectorization layer used to build network
+        """
+        vocab = self.get_vocab_direct(texts, n_min, n_max, chunk_words)
+        encoder = layers.TextVectorization(name='encoder', vocabulary=vocab)
+        return encoder
 
     def build_layers(self, **kwargs):
         """Build model layers
@@ -1843,6 +1574,8 @@ class BertCnnTorchModel(nn.Module):
 class BertCnnTorch(NNmodel):
     """Bert Cnn model pytorch implementation"""
 
+    SEED = 42
+
     def __init__(self, texts=None, checkpoint=None, embed_size=768, lr=2e-5):
 
         self.clf = self.build_layers(embed_size)
@@ -1954,10 +1687,10 @@ class BertCnnTorch(NNmodel):
 
         loss_fn = nn.BCELoss()
         train_losses, val_losses = [], []
-        np.random.seed(seed)
-        torch.manual_seed(seed)
+        np.random.seed(self.SEED)
+        torch.manual_seed(self.SEED)
         if self.device.type == "cuda":
-            torch.cuda.manual_seed_all(seed)
+            torch.cuda.manual_seed_all(self.SEED)
 
         total_steps = len(train_dataloader) * epochs
         scheduler = get_linear_schedule_with_warmup(
