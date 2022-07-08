@@ -32,8 +32,9 @@ def training_argparse():
                         help='Model type to train', type=str)
     parser.add_argument('-model_path', default=None,
                         help='Path to model', type=none_or_str)
-    parser.add_argument('-multiplier', default=None, type=none_or_int,
-                        help='Desired ratio of zeros to ones.')
+    parser.add_argument('-offensive_weight', default=None, type=none_or_int,
+                        help='Desired ratio of ones to number of total '
+                             'samples.')
     parser.add_argument('-n_batches', default=None, type=none_or_int,
                         help='Number of training batches per epoch.')
     parser.add_argument('-epochs', default=5, type=int,

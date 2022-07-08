@@ -5,7 +5,7 @@ import pandas as pd
 import numpy as np
 
 from modbot import TEST_DATA_DIR
-from modbot.training.data_handling import DataGenerator
+from modbot.training.data_handling import WeightedGenerator
 
 
 def test_data_generator():
@@ -22,7 +22,7 @@ def test_data_generator():
     labels = data['is_offensive'][:-idx]
     assert len(texts) % batch_size == 0
     assert len(labels) % batch_size == 0
-    gen = DataGenerator(texts, labels, **kwargs)
+    gen = WeightedGenerator(texts, labels, **kwargs)
 
     for batch in gen:
         assert batch[0].shape[0] == batch_size

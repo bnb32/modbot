@@ -22,8 +22,8 @@ from torch.utils.data import (TensorDataset, DataLoader, RandomSampler,
                               SequentialSampler)
 from torch.optim import AdamW
 
-from transformers import (BertModel, BertTokenizer,
-                          get_linear_schedule_with_warmup)
+from transformers import (BertModel, get_linear_schedule_with_warmup)
+from transformers import BertTokenizerFast as BertTokenizer
 
 from keras import Sequential, losses, optimizers, callbacks, layers
 from keras.models import load_model
@@ -40,11 +40,16 @@ from dask_ml.cluster import KMeans
 from scipy import sparse
 
 from modbot.training.vectorizers import TokVectorizer
-from modbot.training.data_handling import (TextGenerator, DataGenerator)
+from modbot.training.data_handling import (DataGenerator, WeightedGenerator)
 from modbot.utilities.utilities import curvature
 from modbot.utilities.logging import get_logger
 from modbot import preprocessing as pp
 from modbot import BERT_ENCODER, BERT_PREPROCESS
+
+torch.backends.cudnn.benchmark = True
+torch.autograd.set_detect_anomaly(False)
+torch.autograd.profiler.profile(False)
+torch.autograd.profiler.emit_nvtx(False)
 
 logger = get_logger()
 
@@ -252,10 +257,10 @@ class ModerationModel(ABC):
 
         Returns
         -------
-        train_gen : DataGenerator
-            DataGenerator instance used for training batches
-        test_gen : DataGenerator
-            DataGenerator instance used for evaluation batches
+        train_gen : WeightedGenerator
+            WeightedGenerator instance used for training batches
+        test_gen : WeightedGenerator
+            WeightedGenerator instance used for evaluation batches
         """
         val_split = kwargs.get('val_split', 0.1)
         X, Y = cls.load_data(data_file)
@@ -267,7 +272,7 @@ class ModerationModel(ABC):
         train_kwargs = copy.deepcopy(kwargs)
         train_kwargs.update({'sample_size': train_sample_size})
         logger.info(f'Using train sample size: {train_sample_size}')
-        train_gen = DataGenerator(X_train, Y_train, **train_kwargs)
+        train_gen = WeightedGenerator(X_train, Y_train, **train_kwargs)
         logger.info('Getting test data generator')
         test_sample_size = kwargs.get('sample_size', None)
         test_sample_size = (len(Y_test) if test_sample_size is None
@@ -275,7 +280,7 @@ class ModerationModel(ABC):
         test_kwargs = copy.deepcopy(kwargs)
         test_kwargs.update({'sample_size': test_sample_size})
         logger.info(f'Using test sample size: {test_sample_size}')
-        test_gen = DataGenerator(X_test, Y_test, **test_kwargs)
+        test_gen = WeightedGenerator(X_test, Y_test, **test_kwargs)
         return train_gen, test_gen
 
     def get_class_info(self):
@@ -669,7 +674,7 @@ class NNmodel(ModerationModel):
             adapted to get vocab
         """
         logger.info('Constructing vocabulary')
-        text_dataset = TextGenerator(texts)
+        text_dataset = DataGenerator([texts])
         encoder.adapt(text_dataset)
         return encoder
 
@@ -817,10 +822,10 @@ class NNmodel(ModerationModel):
 
         Parameters
         ----------
-        train_gen : DataGenerator
-            DataGenerator instance used for training batches
-        test_gen : DataGenerator
-            DataGenerator instance used for evaluation batches
+        train_gen : WeightedGenerator
+            WeightedGenerator instance used for training batches
+        test_gen : WeightedGenerator
+            WeightedGenerator instance used for evaluation batches
         kwargs : dict
             Dictionary with optional keyword parameters. Can include
             sample_size, batch_size, epochs, n_batches.
@@ -870,10 +875,10 @@ class NNmodel(ModerationModel):
 
         Parameters
         ----------
-        train_gen : DataGenerator
-            DataGenerator instance used for training batches
-        test_gen : DataGenerator
-            DataGenerator instance used for evaluation batches
+        train_gen : WeightedGenerator
+            WeightedGenerator instance used for training batches
+        test_gen : WeightedGenerator
+            WeightedGenerator instance used for evaluation batches
         epochs : int
             Number of epochs to train model
 
@@ -916,8 +921,8 @@ class NNmodel(ModerationModel):
 
         Parameters
         ----------
-        test_gen : DataGenerator
-            DataGenerator instance used for model evaluation
+        test_gen : WeightedGenerator
+            WeightedGenerator instance used for model evaluation
 
         Returns
         -------
@@ -1429,9 +1434,9 @@ class SVM(ModerationModel):
 
         Parameters
         ----------
-        train_gen : DataGenerator
-            DataGenerator instance used for training batches
-        test_gen : DataGenerator
+        train_gen : WeightedGenerator
+            WeightedGenerator instance used for training batches
+        test_gen : WeightedGenerator
             Has no effect. For compliance with LSTM train method
         kwargs : dict
             Has no effect. For compliance with LSTM train method
@@ -1575,9 +1580,13 @@ class BertCnnTorch(NNmodel):
 
     SEED = 42
     MAX_SEQUENCE_LENGTH = 64
+    DLOADER_ARGS = {'num_workers': 1, 'pin_memory': True}
+    LEARNING_RATE = 1e-4
+    EMBED_SIZE = 768
 
-    def __init__(self, texts=None, checkpoint=None, embed_size=768, lr=2e-5):
-
+    def __init__(self, texts=None, checkpoint=None, embed_size=None, lr=None):
+        embed_size = embed_size if embed_size is not None else self.EMBED_SIZE
+        lr = lr if lr is not None else self.LEARNING_RATE
         self.clf = self.build_layers(embed_size)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
@@ -1586,10 +1595,10 @@ class BertCnnTorch(NNmodel):
             self.optimizer.load_state_dict(checkpoint['optimizer'])
 
         if torch.cuda.is_available():
-            logger.info('Using gpu for training')
+            logger.info('**Using GPU for training**')
             self.device = torch.device("cuda:0")
         else:
-            logger.info('Using cpu for training')
+            logger.info('**Using CPU for training**')
             self.device = torch.device("cpu")
 
     @property
@@ -1599,12 +1608,13 @@ class BertCnnTorch(NNmodel):
     def build_layers(self, embed_size):
         return BertCnnTorchModel(embed_size)
 
-    def prepare_set(self, text, max_length=64):
+    def prepare_set(self, text, max_length=None):
         """returns input_ids, attention_mask, token_type_ids for set of data
         ready in BERT format"""
-
+        max_length = (max_length if max_length is not None
+                      else self.MAX_SEQUENCE_LENGTH)
         text = self.clean_texts(text)
-        t = self.tokenizer.batch_encode_plus(text, padding='max_length',
+        t = self.tokenizer.batch_encode_plus(list(text), padding='max_length',
                                              add_special_tokens=True,
                                              max_length=max_length,
                                              return_tensors='pt',
@@ -1618,7 +1628,8 @@ class BertCnnTorch(NNmodel):
         test_data = TensorDataset(test_inputs, test_masks, test_type_ids)
         test_sampler = SequentialSampler(test_data)
         test_dataloader = DataLoader(test_data, sampler=test_sampler,
-                                     batch_size=batch_size)
+                                     batch_size=batch_size,
+                                     **self.DLOADER_ARGS)
 
         self.clf.eval()
         with torch.no_grad():
@@ -1652,12 +1663,15 @@ class BertCnnTorch(NNmodel):
                 y_pred = y_pred.cpu().numpy().flatten()
                 val_preds += [int(p >= 0.5) for p in y_pred]
                 val_loss += loss.item()
-                self.clf.zero_grad()
+                for param in self.clf.parameters():
+                    param.grad = None
         return val_loss, val_preds
 
     def train(self, train_gen, test_gen, epochs=10, model_path="temp.pt",
-              batch_size=24, max_length=64):
+              batch_size=24, max_length=None):
         """Train pytorch bert cnn model"""
+        max_length = (max_length if max_length is not None
+                      else self.MAX_SEQUENCE_LENGTH)
         x_train = train_gen.X
         x_dev = test_gen.X
         y_train = train_gen.Y
@@ -1665,17 +1679,18 @@ class BertCnnTorch(NNmodel):
         self.get_class_info()
         y_train, y_dev = (torch.FloatTensor(t) for t in (y_train, y_dev))
 
-        logger.info('Preparing train data')
+        logger.info('Encoding train data')
         out = self.prepare_set(x_train, max_length=max_length)
         train_inputs, train_masks, train_type_ids = out
         train_data = TensorDataset(train_inputs, train_masks, train_type_ids,
                                    y_train)
         train_sampler = RandomSampler(train_data)
         train_dataloader = DataLoader(train_data, sampler=train_sampler,
-                                      batch_size=batch_size)
+                                      batch_size=batch_size,
+                                      **self.DLOADER_ARGS)
 
         # Create the DataLoader for our dev set.
-        logger.info('Preparing test data')
+        logger.info('Encoding test data')
         out = self.prepare_set(x_dev, max_length=max_length)
         dev_inputs, dev_masks, dev_type_ids = out
         dev_data = TensorDataset(dev_inputs, dev_masks, dev_type_ids, y_dev)
@@ -1696,7 +1711,8 @@ class BertCnnTorch(NNmodel):
         scheduler = get_linear_schedule_with_warmup(
             self.optimizer, num_warmup_steps=0, num_training_steps=total_steps)
 
-        self.clf.zero_grad()
+        for param in self.clf.parameters():
+            param.grad = None
         best_score = 0
 
         logger.info('Starting training')
@@ -1716,7 +1732,8 @@ class BertCnnTorch(NNmodel):
                 self.optimizer.step()
                 train_loss += loss.item()
                 scheduler.step()
-                self.clf.zero_grad()
+                for param in self.clf.parameters():
+                    param.grad = None
 
             train_losses.append(train_loss)
             self.clf.eval()

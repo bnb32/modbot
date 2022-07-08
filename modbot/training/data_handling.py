@@ -10,15 +10,26 @@ from modbot.utilities.logging import get_logger
 logger = get_logger()
 
 
-class TextGenerator(utils.Sequence):
-    """Generator class for text batching"""
-    def __init__(self, X, batch_size=64):
-        self.batch_size = batch_size
-        self.X = X
+class DataGenerator(utils.Sequence):
+    """Generator class for batching"""
+    def __init__(self, arrs, **kwargs):
+        """Initialize the generator
+
+        Parameters
+        ----------
+        arrs : list
+            List of arrays to use for batching
+        kwargs : dict
+            Optional keyword arguments
+        """
+        self.batch_size = kwargs.get('batch_size', 64)
+        n_batches = kwargs.get('n_batches', None)
+        self.arrs = arrs
+        self.indices = pd.DataFrame({'index': np.arange(len(arrs[0]))})
+        self.n_batches = (n_batches if n_batches is not None
+                          else np.int(np.ceil(len(arrs[0]) / self.batch_size)))
+        self.chunks = np.array_split(self.indices['index'], self.n_batches)
         self._i = 0
-        self.n_batches = np.int(np.ceil(len(X) / batch_size))
-        self.chunks = np.array_split(np.arange(len(X)), self.n_batches)
-        self.chunks = [slice(c[0], c[-1] + 1) for c in self.chunks]
 
     def __iter__(self):
         self._i = 0
@@ -28,19 +39,48 @@ class TextGenerator(utils.Sequence):
         return self.n_batches
 
     def __getitem__(self, i):
-        X = self.X[self.chunks[i]]
-        return X
+        return self.get_deterministic_batch(i)
 
     def __next__(self):
         if self._i < self.n_batches:
-            X = self.X[self.chunks[self._i]]
+            arrs = self.__getitem__(self._i)
             self._i += 1
-            return X
+            return arrs
         else:
             raise StopIteration
 
+    def get_random_batch(self, _):
+        """Get batches of randomly selected texts and targets with specified
+        weights
 
-class DataGenerator(utils.Sequence):
+        Returns
+        -------
+        arrs : list
+            List of randomly selected data batches
+        """
+        indices = self.indices['index'].sample(n=self.batch_size,
+                                               random_state=42, replace=True)
+        arrs = [arr[indices] for arr in self.arrs]
+        return arrs
+
+    def get_deterministic_batch(self, i):
+        """Get batches of randomly selected texts and targets
+
+        Parameters
+        ----------
+        i : int
+            Index of chunk used to select slice of full dataframe
+
+        Returns
+        -------
+        arrs : list
+            List of data batches
+        """
+        arrs = [arr[self.chunks[i]] for arr in self.arrs]
+        return arrs
+
+
+class WeightedGenerator(DataGenerator):
     """Generator class for training over batches"""
     def __init__(self, X, Y, **kwargs):
         """Initialize data generator which provides generators for text and
@@ -53,19 +93,11 @@ class DataGenerator(utils.Sequence):
         Y : pd.DataFrame
             Pandas dataframe of labels for the corresponding texts
         """
-        self.batch_size = kwargs.get('batch_size', 64)
-        self.offensive_weight = kwargs.get('offensive_weight', None)
-        n_batches = kwargs.get('n_batches', None)
+        offensive_weight = kwargs.get('offensive_weight', None)
         sample_size = kwargs.get('sample_size', None)
-
-        self.X, self.Y = self.sample(X, Y, self.offensive_weight,
+        self.X, self.Y = self.sample(X, Y, offensive_weight=offensive_weight,
                                      sample_size=sample_size)
-        self.indices = pd.DataFrame({'index': np.arange(len(self.Y))})
-        self.n_batches = (n_batches if n_batches is not None
-                          else np.int(np.ceil(len(self.Y) / self.batch_size)))
-        self.chunks = np.array_split(self.indices['index'], self.n_batches)
-        self._i = 0
-
+        super().__init__(arrs=[self.X, self.Y], **kwargs)
         one_count = list(self.Y).count(1)
         zero_count = list(self.Y).count(0)
         frac = one_count / (zero_count + one_count)
@@ -73,17 +105,6 @@ class DataGenerator(utils.Sequence):
         logger.info(f'Using batch_size={self.batch_size}, '
                     f'n_batches={self.n_batches}, sample_size={sample_size}, '
                     f'offensive_weight={round(frac, 3)}')
-
-    def __iter__(self):
-        self._i = 0
-        return self
-
-    def __len__(self):
-        return self.n_batches
-
-    def __getitem__(self, i):
-        X, Y = self.get_batch(i)
-        return X, Y
 
     @classmethod
     def sample(cls, X, Y, offensive_weight=None, sample_size=None):
@@ -112,7 +133,6 @@ class DataGenerator(utils.Sequence):
         """
         if offensive_weight is None:
             return X, Y
-
         sample_size = len(Y) if sample_size is None else sample_size
         indices = pd.DataFrame({'index': np.arange(len(Y))})
         zero_weight = 1 - offensive_weight
@@ -134,67 +154,6 @@ class DataGenerator(utils.Sequence):
         X = X[new_indices].reset_index(drop=True)
         Y = Y[new_indices].reset_index(drop=True)
         return X, Y
-
-    def get_random_batch(self, _):
-        """Get batches of randomly selected texts and targets with specified
-        weights
-
-        Returns
-        -------
-        X : pd.DataFrame
-            Pandas dataframe of texts with the number of samples equal to the
-            batch size. The texts are randomly selected from the initially
-            sampled dataframe of texts.
-        Y : pd.DataFrame
-            Pandas dataframe of labels with the number of samples equal to the
-            batch size. The labels correspond to the randomly selected texts.
-        """
-        indices = self.indices['index'].sample(n=self.batch_size,
-                                               random_state=42, replace=True)
-        X = np.array(self.X[indices])
-        Y = np.array(self.Y[indices])
-        return X, Y
-
-    def get_batch(self, i):
-        """Get batch from the i-th chunk of training data
-
-        Parameters
-        ----------
-        i : int
-            Index of chunk used to select slice of full dataframe
-        """
-        return self.get_deterministic_batch(i)
-
-    def get_deterministic_batch(self, i):
-        """Get batches of randomly selected texts and targets
-
-        Parameters
-        ----------
-        i : int
-            Index of chunk used to select slice of full dataframe
-
-        Returns
-        -------
-        X : pd.DataFrame
-            Pandas dataframe of texts with the number of samples equal to the
-            batch size. The texts are selected from the i-th chunk of initially
-            sampled dataframe of texts.
-        Y : pd.DataFrame
-            Pandas dataframe of labels with the number of samples equal to the
-            batch size. The labels correspond to the i-th chunk of selected
-            texts.
-        """
-        X = np.array(self.X[self.chunks[i]])
-        Y = np.array(self.Y[self.chunks[i]])
-        return X, Y
-
-    def __next__(self):
-        if self._i < self.n_batches:
-            X, Y = self.get_batch(self._i)
-            self._i += 1
-            return X, Y
-        else:
-            raise StopIteration
 
     def transform(self, function):
         """Transform texts with provided function

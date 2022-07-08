@@ -77,8 +77,8 @@ class BaseConfig:
     #: Threshold probability to check for new classification
     CHECK_PMIN = 0.4
 
-    #: Ratio of zeros to ones for training data
-    MULTIPLIER = 100
+    #: Ratio of ones to total number of samples for training data
+    OFFENSIVE_WEIGHT = 0.01
 
     #: Path to Chatty data for training
     CHATTY_DIR = None

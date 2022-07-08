@@ -30,14 +30,12 @@ def vectorize_and_train(config, data_file):
     data_file : str
         Path to data file including texts and targets to use for training
     """
-
-    offensive_weight = 1 / (1 + config.MULTIPLIER)
     MODEL_CLASS = get_model_class(config.MODEL_TYPE)
     if config.continue_training or config.just_evaluate:
         model = MODEL_CLASS.continue_training(
             model_path=config.MODEL_PATH,
             data_file=data_file,
-            offensive_weight=offensive_weight,
+            offensive_weight=config.offensive_weight,
             epochs=config.epochs,
             just_evaluate=config.just_evaluate,
             batch_size=config.batch_size,
@@ -47,7 +45,7 @@ def vectorize_and_train(config, data_file):
     else:
         model = MODEL_CLASS.run(
             data_file=data_file,
-            offensive_weight=offensive_weight,
+            offensive_weight=config.offensive_weight,
             epochs=config.epochs,
             batch_size=config.batch_size,
             n_batches=config.n_batches,
