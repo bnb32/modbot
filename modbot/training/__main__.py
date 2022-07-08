@@ -46,12 +46,11 @@ if __name__ == '__main__':
     if (not config.append and not config.clean):
         TMP_OUT = TMP
 
-    if config.train or config.continue_training or config.just_evaluate:
-        clean_log(config, TMP, TMP)
-        if config.append:
-            append_file(TMP, TMP_OUT)
-            logger.info(f'Appended {TMP} to {TMP_OUT}')
-            TMP_IN = TMP_OUT
-        else:
-            TMP_IN = TMP
-        vectorize_and_train(config, data_file=TMP_IN)
+    clean_log(config, TMP, TMP)
+    if config.append:
+        append_file(TMP, TMP_OUT)
+        logger.info(f'Appended {TMP} to {TMP_OUT}')
+        TMP_IN = TMP_OUT
+    else:
+        TMP_IN = TMP
+    vectorize_and_train(config, data_file=TMP_IN)

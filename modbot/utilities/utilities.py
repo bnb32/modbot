@@ -58,11 +58,19 @@ def none_or_str(arg):
 
 
 def none_or_int(arg):
-    """Get none or string"""
+    """Get none or int"""
     if arg == 'None' or arg is None:
         return None
     else:
         return int(arg)
+
+
+def none_or_float(arg):
+    """Get none or float"""
+    if arg == 'None' or arg is None:
+        return None
+    else:
+        return float(arg)
 
 
 class UserInfo:

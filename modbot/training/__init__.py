@@ -1,7 +1,7 @@
 """Modbot training module"""
 import argparse
 
-from modbot.utilities.utilities import none_or_str, none_or_int
+from modbot.utilities.utilities import none_or_str, none_or_int, none_or_float
 from modbot import (DATA_DIR, LOG_DIR, VALID_MODELS, BERT_ENCODER,
                     BERT_PREPROCESS)
 
@@ -16,7 +16,6 @@ def training_argparse():
     parser.add_argument('-append', default=False, action='store_true',
                         help='Append from input file to existing '
                              'classification dataset.')
-    parser.add_argument('-train', default=False, action='store_true')
     parser.add_argument('-running_check', default=False,
                         action='store_true',
                         help='Use model to check messages that meet the lower '
@@ -31,14 +30,14 @@ def training_argparse():
                         help='Model type to train', type=str)
     parser.add_argument('-model_path', default=None,
                         help='Path to model', type=none_or_str)
-    parser.add_argument('-offensive_weight', default=None, type=none_or_int,
+    parser.add_argument('-offensive_weight', default=None, type=none_or_float,
                         help='Desired ratio of ones to number of total '
                              'samples.')
     parser.add_argument('-n_batches', default=None, type=none_or_int,
                         help='Number of training batches per epoch.')
     parser.add_argument('-epochs', default=5, type=int,
                         help='Number of training epochs.')
-    parser.add_argument('-batch_size', default=4, type=int,
+    parser.add_argument('-batch_size', default=32, type=int,
                         help='Number of samples per batch.')
     parser.add_argument('-sample_size', default=None, type=none_or_int,
                         help='Number of total samples to use for training.')

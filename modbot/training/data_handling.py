@@ -27,7 +27,7 @@ class DataGenerator(utils.Sequence):
         self.arrs = arrs
         self.indices = pd.DataFrame({'index': np.arange(len(arrs[0]))})
         self.n_batches = (n_batches if n_batches is not None
-                          else np.int(np.ceil(len(arrs[0]) / self.batch_size)))
+                          else int(np.ceil(len(arrs[0]) / self.batch_size)))
         self.chunks = np.array_split(self.indices['index'], self.n_batches)
         self._i = 0
 
@@ -132,7 +132,9 @@ class WeightedGenerator(DataGenerator):
             requested size and offensive weight
         """
         if offensive_weight is None:
-            return X, Y
+            one_count = list(Y).count(1)
+            zero_count = list(Y).count(0)
+            offensive_weight = one_count / (zero_count + one_count)
         sample_size = len(Y) if sample_size is None else sample_size
         indices = pd.DataFrame({'index': np.arange(len(Y))})
         zero_weight = 1 - offensive_weight

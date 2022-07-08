@@ -46,3 +46,15 @@ def test_lstm_save():
         model.save(model_path)
 
         assert os.path.exists(model_path)
+
+
+def test_lstm_load():
+    """Test lstm loading"""
+    with tempfile.TemporaryDirectory() as td:
+        model_path = os.path.join(td, 'model')
+        data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
+        model = LSTM.run(data_file)
+        model.save(model_path)
+        score = model.score(model.X_test, model.Y_test)
+        model = LSTM.load(model_path)
+        assert score == model.score(model.X_test, model.Y_test)

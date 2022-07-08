@@ -427,6 +427,11 @@ class ModerationModel(ABC):
                    'this song fucking rocks',
                    'she yawned again',
                    'Hey, wanna play chess with me?I',
+                   'wanna go out with me?',
+                   'suck my dick',
+                   'this game sucks',
+                   'you look tired',
+                   'im so tired',
                    ]
 
         predictions = [round(p, 3) for p in self.predict_one(phrases)]
@@ -493,7 +498,7 @@ class ModerationModel(ABC):
             df_scores.to_csv(out_file)
 
         logger.info(f'Scores:\n{df_scores}')
-        logger.info(f'Text phrases:\n{self.model_test()}')
+        logger.info(f'Test phrases:\n{self.model_test()}')
 
     @staticmethod
     def save_params(outpath, kwargs):
@@ -1587,19 +1592,22 @@ class BertCnnTorch(NNmodel):
     def __init__(self, texts=None, checkpoint=None, embed_size=None, lr=None):
         embed_size = embed_size if embed_size is not None else self.EMBED_SIZE
         lr = lr if lr is not None else self.LEARNING_RATE
-        self.clf = self.build_layers(embed_size)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-        self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
-        if checkpoint is not None:
-            self.clf.load_state_dict(checkpoint['state_dict'])
-            self.optimizer.load_state_dict(checkpoint['optimizer'])
-
         if torch.cuda.is_available():
             logger.info('**Using GPU for training**')
             self.device = torch.device("cuda:0")
         else:
             logger.info('**Using CPU for training**')
             self.device = torch.device("cpu")
+
+        self.clf = self.build_layers(embed_size)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
+        if checkpoint is not None:
+            self.clf.load_state_dict(checkpoint['model_state'])
+        self.clf.to(self.device)
+        self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
+        if checkpoint is not None:
+            self.optimizer.load_state_dict(checkpoint['optimizer_state'])
 
     @property
     def __name__(self):
@@ -1713,7 +1721,7 @@ class BertCnnTorch(NNmodel):
 
         for param in self.clf.parameters():
             param.grad = None
-        best_score = 0
+        best_score = -np.inf
 
         logger.info('Starting training')
         for epoch in range(epochs):
@@ -1745,26 +1753,27 @@ class BertCnnTorch(NNmodel):
                    f"Validation F1-Macro: {round(val_score, 3)}. "
                    f"Validation loss: {round(val_losses[-1], 3)}.")
             logger.info(msg)
+            self.detailed_score()
 
             if val_score > best_score:
-                torch.save(self.clf.state_dict(), model_path)
-                logger.info(f'Model saved to {model_path}')
+                self.save(model_path)
                 best_score = val_score
 
-        self.clf.load_state_dict(torch.load(model_path))
+        self.clf.load_state_dict(torch.load(model_path)['model_state'])
         self.clf.to(self.device)
         self.clf.eval()
         return self.clf
 
     def save(self, outpath):
         """Save model"""
-        torch.save(self.clf.state_dict(), outpath)
+        checkpoint = {'model_state': self.clf.state_dict(),
+                      'optimizer_state': self.optimizer.state_dict()}
+        torch.save(checkpoint, outpath)
         logger.info(f'Model saved to {outpath}')
 
     @classmethod
     def load(cls, inpath):
         """Load pytorch model"""
-        model = cls(checkpoint=torch.load(inpath))
         logger.info(f'Loading {cls.__name__} model from {inpath}')
-        model.clf.to(model.device)
+        model = cls(checkpoint=torch.load(inpath))
         return model
