@@ -1,6 +1,5 @@
 """Modbot training module"""
 import argparse
-import os
 
 from modbot.utilities.utilities import none_or_str, none_or_int
 from modbot import (DATA_DIR, LOG_DIR, VALID_MODELS, BERT_ENCODER,
