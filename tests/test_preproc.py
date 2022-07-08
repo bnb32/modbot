@@ -14,8 +14,6 @@ def test_data_generator():
     data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
     data = pd.read_csv(data_file)
 
-    print(data.shape)
-
     batch_size = 16
     offensive_weight = 0.2
     kwargs = {'batch_size': batch_size, 'offensive_weight': offensive_weight}
