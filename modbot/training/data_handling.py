@@ -76,7 +76,7 @@ class DataGenerator(utils.Sequence):
         arrs : list
             List of data batches
         """
-        arrs = [arr[self.chunks[i]] for arr in self.arrs]
+        arrs = [np.array(arr[self.chunks[i]]) for arr in self.arrs]
         return *arrs,
 
 
