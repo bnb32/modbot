@@ -33,8 +33,8 @@ if __name__ == '__main__':
     TMP_DIR = os.path.join(config.DATA_DIR, 'tmp')
     os.makedirs(TMP_DIR, exist_ok=True)
     TMP = os.path.join(TMP_DIR, 'clean_tmp.txt')
-    shutil.copy(config.infile, TMP)
     logger.info(f'Copying {args.infile} to {TMP}')
+    shutil.copy(config.infile, TMP)
 
     if config.append:
         TMP_OUT = os.path.join(config.DATA_DIR, f'{config.CHANNEL}_data.csv')

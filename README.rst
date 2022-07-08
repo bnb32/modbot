@@ -1,6 +1,20 @@
 *********************
-Modbot Overview
+Welcome to Modbot!
 *********************
+
+.. image:: https://github.com/bnb32/modbot/workflows/Documentation/badge.svg
+    :target: https://bnb32.github.io/modbot/
+
+.. image:: https://github.com/bnb32/modbot/workflows/Pytests/badge.svg
+    :target: https://github.com/bnb32/modbot/actions?query=workflow%3A%22Pytests%22
+
+.. image:: https://github.com/bnb32/modbot/workflows/Lint%20Code%20Base/badge.svg
+    :target: https://github.com/bnb32/modbot/actions?query=workflow%3A%22Lint+Code+Base%22
+
+.. image:: https://codecov.io/gh/bnb32/modbot/branch/main/graph/badge.svg
+    :target: https://codecov.io/gh/bnb32/modbot
+
+
 An ML based chatbot for detecting and filtering offensive twitch chat content.
 
 Documentation
