@@ -317,9 +317,7 @@ class ModerationModel(ABC):
             model = cls(**params)
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
-        sig = signature(model.train)
-        params = {k: v for k, v in kwargs.items() if k in sig.parameters}
-        model.train(train_gen, test_gen, **params)
+        model.train(train_gen, test_gen, **kwargs)
         return model
 
     @classmethod

@@ -10,8 +10,9 @@ DATA_DIR = os.path.join(os.path.dirname(BOT_DIR), 'data')
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
 VALID_MODELS = ('BERT', 'BERT_CNN', 'BERT_CNN_LSTM', 'BERT_LSTM_CNN',
                 'BERT_LSTM', 'CNN', 'SVM', 'LSTM', 'BERT_CNN_TORCH')
-BERT_PREPROCESS = os.path.join(DATA_DIR, 'bert_preprocess')
-BERT_ENCODER = os.path.join(DATA_DIR, 'bert_encoder')
+BERT_PREPROCESS = 'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3'
+BERT_ENCODER = 'https://tfhub.dev/tensorflow/small_bert/'
+BERT_ENCODER += 'bert_en_uncased_L-4_H-512_A-8/1'
 
 
 def modbot_argparse():
