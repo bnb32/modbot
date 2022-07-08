@@ -16,7 +16,8 @@ def test_lstm():
 
         data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
         model_path = os.path.join(td, 'model')
-        model = LSTM.run(data_file, model_path=model_path, epochs=2)
+        model = LSTM.run(data_file, model_path=model_path, epochs=2,
+                         offensive_weight=0.5)
         model.detailed_score()
 
         prob = model.predict_proba(['fuck you'])[0][1]

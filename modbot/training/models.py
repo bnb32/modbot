@@ -1040,10 +1040,10 @@ class LSTM(NNmodel):
         model = Sequential()
         model.add(encoder)
         model.add(embedder)
-        model.add(tf.keras.layers.SpatialDropout1D(0.2))
-        model.add(tf.keras.layers.LSTM(100, dropout=0.2))
-        model.add(tf.keras.layers.Dense(1, name='out_layer',
-                                        activation='sigmoid'))
+        model.add(layers.SpatialDropout1D(0.2))
+        model.add(layers.LSTM(100, dropout=0.2))
+        model.add(layers.Dense(1, name='out_layer',
+                               activation='sigmoid'))
         model.compile(loss=losses.BinaryCrossentropy(),
                       optimizer=optimizers.Adam(1e-4),
                       metrics=['accuracy'])

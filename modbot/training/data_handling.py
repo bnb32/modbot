@@ -61,7 +61,7 @@ class DataGenerator(utils.Sequence):
         indices = self.indices['index'].sample(n=self.batch_size,
                                                random_state=42, replace=True)
         arrs = [arr[indices] for arr in self.arrs]
-        return arrs
+        return *arrs,
 
     def get_deterministic_batch(self, i):
         """Get batches of randomly selected texts and targets
@@ -77,7 +77,7 @@ class DataGenerator(utils.Sequence):
             List of data batches
         """
         arrs = [arr[self.chunks[i]] for arr in self.arrs]
-        return arrs
+        return *arrs,
 
 
 class WeightedGenerator(DataGenerator):
