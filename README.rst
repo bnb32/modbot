@@ -15,12 +15,6 @@ Welcome to Modbot!
     :target: https://codecov.io/gh/bnb32/modbot
 
 
-An ML based chatbot for detecting and filtering offensive twitch chat content.
-
-Documentation
-=============
-`<https://bnb32.github.io/modbot>`_
-
 Installation
 ============
 
