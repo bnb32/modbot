@@ -13,7 +13,7 @@ logger = get_logger()
 MODELS = (LSTM, SVM, CNN, BERT, BertCNN, BertCnnLstm, BertCnnTorch, BertLSTM)
 
 
-@pytest.mark.parameterize('MODEL', MODELS)
+@pytest.mark.parametrize('MODEL', MODELS)
 def test_model(MODEL):
     """Test model pipeline"""
     with tempfile.TemporaryDirectory() as td:
@@ -27,7 +27,7 @@ def test_model(MODEL):
         assert 0 <= float(prob) <= 1
 
 
-@pytest.mark.parameterize('MODEL', MODELS)
+@pytest.mark.parametrize('MODEL', MODELS)
 def test_model_save_load(MODEL):
     """Test model loading"""
     with tempfile.TemporaryDirectory() as td:
