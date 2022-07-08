@@ -71,8 +71,7 @@ def get_model_class(model_type):
     msg = (f'Can only load {valid_models.keys()} models. '
            f'Received {model_type}')
     assert check, msg
-    MODEL_CLASS = valid_models[model_type.upper()]
-    return MODEL_CLASS
+    return valid_models[model_type.upper()]
 
 
 class ModerationModel(ABC):
@@ -1575,6 +1574,7 @@ class BertCnnTorch(NNmodel):
     """Bert Cnn model pytorch implementation"""
 
     SEED = 42
+    MAX_SEQUENCE_LENGTH = 64
 
     def __init__(self, texts=None, checkpoint=None, embed_size=768, lr=2e-5):
 
@@ -1599,7 +1599,7 @@ class BertCnnTorch(NNmodel):
     def build_layers(self, embed_size):
         return BertCnnTorchModel(embed_size)
 
-    def prepare_set(self, text, max_length=512):
+    def prepare_set(self, text, max_length=64):
         """returns input_ids, attention_mask, token_type_ids for set of data
         ready in BERT format"""
 
@@ -1656,7 +1656,7 @@ class BertCnnTorch(NNmodel):
         return val_loss, val_preds
 
     def train(self, train_gen, test_gen, epochs=10, model_path="temp.pt",
-              batch_size=24, max_length=512):
+              batch_size=24, max_length=64):
         """Train pytorch bert cnn model"""
         x_train = train_gen.X
         x_dev = test_gen.X
