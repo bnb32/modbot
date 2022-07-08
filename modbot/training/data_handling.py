@@ -54,7 +54,7 @@ class DataGenerator(utils.Sequence):
             Pandas dataframe of labels for the corresponding texts
         """
         self.batch_size = kwargs.get('batch_size', 64)
-        self.offensive_weight = kwargs.get('offensive_weight', 0.5)
+        self.offensive_weight = kwargs.get('offensive_weight', None)
         n_batches = kwargs.get('n_batches', None)
         sample_size = kwargs.get('sample_size', None)
 
@@ -65,9 +65,14 @@ class DataGenerator(utils.Sequence):
                           else np.int(np.ceil(len(self.Y) / self.batch_size)))
         self.chunks = np.array_split(self.indices['index'], self.n_batches)
         self._i = 0
+
+        one_count = list(self.Y).count(1)
+        zero_count = list(self.Y).count(0)
+        frac = one_count / (zero_count + one_count)
+
         logger.info(f'Using batch_size={self.batch_size}, '
                     f'n_batches={self.n_batches}, sample_size={sample_size}, '
-                    f'offensive_weight={round(self.offensive_weight, 3)}')
+                    f'offensive_weight={round(frac, 3)}')
 
     def __iter__(self):
         self._i = 0
@@ -81,7 +86,7 @@ class DataGenerator(utils.Sequence):
         return X, Y
 
     @classmethod
-    def sample(cls, X, Y, offensive_weight=0.5, sample_size=None):
+    def sample(cls, X, Y, offensive_weight=None, sample_size=None):
         """Sample data as per offensive weight
 
         Parameters
@@ -105,6 +110,9 @@ class DataGenerator(utils.Sequence):
             Pandas dataframe of labels for the corresponding texts with the
             requested size and offensive weight
         """
+        if offensive_weight is None:
+            return X, Y
+
         sample_size = len(Y) if sample_size is None else sample_size
         indices = pd.DataFrame({'index': np.arange(len(Y))})
         zero_weight = 1 - offensive_weight
