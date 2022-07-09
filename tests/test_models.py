@@ -14,6 +14,7 @@ logger = get_logger()
 
 MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCNN), (BertCnnLstm),
           (BertCnnTorch), (BertLSTM)]
+MODELS = [(BertCnnTorch)]
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
@@ -21,9 +22,7 @@ def test_model(MODEL):
     """Test model pipeline"""
     with tempfile.TemporaryDirectory() as td:
         data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
-        model_path = get_model_path(MODEL.__name__, basedir=td)
-        model = MODEL.run(data_file, model_path=model_path, epochs=1,
-                          offensive_weight=0.5)
+        model = MODEL.run(data_file, epochs=1, offensive_weight=0.5)
         _ = model.detailed_score()
         prob = model.predict_proba(['fuck you'])[0][1]
         logger.info(f'Predicted prob: {prob}')
@@ -38,8 +37,7 @@ def test_model_save_load(MODEL):
         model_path = get_model_path(MODEL.__name__, basedir=td)
         data = pd.read_csv(data_file)
         X, Y = data['text'], data['is_offensive']
-        model = MODEL.run(data_file, model_path=model_path, epochs=1,
-                          offensive_weight=0.5)
+        model = MODEL.run(data_file, epochs=1, offensive_weight=0.5)
         model.save(model_path)
         score = model.score(X, Y)
         model = MODEL.load(model_path)

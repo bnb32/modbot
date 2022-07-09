@@ -744,6 +744,9 @@ def get_info_from_chatty(line):
                 msg = ' '.join(line.split()[4:]).strip('(').strip(')')
             else:
                 msg = ' '.join(line.split()[4:-1]).strip('(').strip(')')
+            info['deleted'] = True
+        if 'ban' in action:
+            info['banned'] = True
     info['line'] = line
     info['msg'] = info['raw_msg'] = msg
     info['mod'] = mod
@@ -845,9 +848,9 @@ class MsgMemory:
         check = simple_chars_equal(info['raw_msg'],
                                    self.memory[user][-1]['raw_msg'])
         if not check:
-            msg = ('Found conflicting delete action. '
-                   f'Action message: {info["raw_msg"]}. Memory '
-                   f'message: {self.memory[user][-1]["raw_msg"]}')
+            msg = ('Found conflicting delete action. Action message: '
+                   f'{info["raw_msg"]}. Memory message: '
+                   f'{self.memory[user][-1]["raw_msg"]}')
             logger.extra_verbose(msg)
             self.add_msg(info)
         self.memory[user][-1]['deleted'] = True
@@ -868,15 +871,12 @@ class MsgMemory:
             check = simple_chars_equal(info['raw_msg'],
                                        self.memory[user][-1]['raw_msg'])
             if not check:
-                msg = ('Found conflicting mod action. '
-                       f'Action message: {info["raw_msg"]}. Memory '
-                       f'message: {self.memory[user][-1]["raw_msg"]}')
+                msg = ('Found conflicting mod action. Action message: '
+                       f'{info["raw_msg"]}. Memory message: '
+                       f'{self.memory[user][-1]["raw_msg"]}')
                 logger.extra_verbose(msg)
                 self.add_msg(info)
-        try:
-            self.memory[user][-1]['mod'] = info['mod']
-        except Exception:
-            logger.warning(f'Could not update mod action for line: {line}')
+        self.memory[user][-1]['mod'] = info['mod']
 
     def build_full_memory(self, lines):
         """Build full memory for all lines

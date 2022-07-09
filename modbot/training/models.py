@@ -216,33 +216,36 @@ class ModerationModel(ABC):
         outpath : str
             Path to save model
         """
-        if '.joblib' in outpath:
-            model_dir = os.path.dirname(outpath)
-        else:
-            model_dir = outpath
-        if not os.path.exists(model_dir):
-            os.makedirs(model_dir)
-
-        logger.info(f'Saving {self.__name__} model: {outpath}')
-        if hasattr(self.clf, 'save'):
-            self.clf.save(outpath)
-            history_path = os.path.join(model_dir, 'history.csv')
-            logger.info(f'Saving history: {history_path}')
-            self.history.to_csv(history_path)
-        else:
-            with open(outpath, 'wb') as fh:
-                pickle.dump(self.model, fh)
-
-        if self.vectorizer is not None:
-            vec_path = os.path.join(model_dir, 'vectorizer.pkl')
-            if hasattr(self.vectorizer, 'save'):
-                self.vectorizer.save(vec_path)
+        if outpath is not None:
+            if '.joblib' in outpath:
+                model_dir = os.path.dirname(outpath)
             else:
-                with open(vec_path, 'wb') as fh:
-                    logger.info(f'Saving vectorizer to: {vec_path}')
-                    pickle.dump(self.vectorizer, fh)
+                model_dir = outpath
+            if not os.path.exists(model_dir):
+                os.makedirs(model_dir)
 
-        self.save_params(outpath, self.kwargs)
+            logger.info(f'Saving {self.__name__} model: {outpath}')
+            if hasattr(self.clf, 'save'):
+                self.clf.save(outpath)
+                history_path = os.path.join(model_dir, 'history.csv')
+                logger.info(f'Saving history: {history_path}')
+                self.history.to_csv(history_path)
+            else:
+                with open(outpath, 'wb') as fh:
+                    pickle.dump(self.model, fh)
+
+            if self.vectorizer is not None:
+                vec_path = os.path.join(model_dir, 'vectorizer.pkl')
+                if hasattr(self.vectorizer, 'save'):
+                    self.vectorizer.save(vec_path)
+                else:
+                    with open(vec_path, 'wb') as fh:
+                        logger.info(f'Saving vectorizer to: {vec_path}')
+                        pickle.dump(self.vectorizer, fh)
+
+            self.save_params(outpath, self.kwargs)
+        else:
+            logger.info(f'Outpath is None. Not saving {self.__name__} model.')
 
     @classmethod
     def get_data_generators(cls, data_file, **kwargs):
@@ -1686,7 +1689,7 @@ class BertCnnTorch(NNmodel):
     def train(self, train_gen, test_gen, **kwargs):
         """Train pytorch bert cnn model"""
         epochs = kwargs.get('epochs', 10)
-        model_path = kwargs.get('model_path', '/tmp/model')
+        model_path = kwargs.get('model_path', None)
         batch_size = kwargs.get('batch_size', 24)
         max_length = kwargs.get('max_length', self.MAX_SEQUENCE_LENGTH)
         eval_steps = kwargs.get('eval_steps', 100)
@@ -1746,8 +1749,8 @@ class BertCnnTorch(NNmodel):
                 for param in self.clf.parameters():
                     param.grad = None
 
-                eval_check = (step_count % eval_steps == 0
-                              or step_count % train_batches == 0)
+                eval_check = (step_count % (eval_steps - 1) == 0
+                              or step_count % (train_batches - 1) == 0)
                 eval_check = eval_check and step_count > 0
                 if eval_check:
                     self.clf.eval()
@@ -1759,23 +1762,31 @@ class BertCnnTorch(NNmodel):
             epoch_count += 1
             train_losses.append(train_loss)
 
-        self.clf.load_state_dict(torch.load(model_path)['model_state'])
+        if model_path is not None:
+            self.clf.load_state_dict(torch.load(model_path)['model_state'])
         self.clf.to(self.device)
         self.clf.eval()
         return self.clf
 
     def save(self, outpath):
         """Save model"""
-        checkpoint = {'model_state': self.clf.state_dict(),
-                      'optimizer_state': self.optimizer.state_dict(),
-                      'best_score': self.best_score,
-                      'epoch': self.epoch}
-        torch.save(checkpoint, outpath)
-        logger.info(f'{self.__name__} model saved to {outpath}')
+        if outpath is not None:
+            checkpoint = {'model_state': self.clf.state_dict(),
+                          'optimizer_state': self.optimizer.state_dict(),
+                          'best_score': self.best_score,
+                          'epoch': self.epoch}
+            torch.save(checkpoint, outpath)
+            logger.info(f'{self.__name__} model saved to {outpath}')
+        else:
+            logger.info(f'Outpath is None. Not saving {self.__name__} model')
 
     @classmethod
     def load(cls, inpath):
         """Load pytorch model"""
-        logger.info(f'Loading {cls.__name__} model from {inpath}')
-        model = cls(checkpoint=torch.load(inpath))
-        return model
+        if inpath is not None:
+            logger.info(f'Loading {cls.__name__} model from {inpath}')
+            model = cls(checkpoint=torch.load(inpath))
+            return model
+        else:
+            logger.info(f'Inpath is not None. Not loading {cls.__name__} '
+                        f'model.')
