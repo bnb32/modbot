@@ -12,8 +12,7 @@ from modbot.environment import get_model_path
 
 logger = get_logger()
 
-MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCNN), (BertCnnLstm),
-          (BertCnnTorch), (BertLSTM)]
+MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCnnTorch)]
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
