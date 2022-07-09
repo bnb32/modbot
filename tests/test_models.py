@@ -14,7 +14,6 @@ logger = get_logger()
 
 MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCNN), (BertCnnLstm),
           (BertCnnTorch), (BertLSTM)]
-MODELS = [(CNN)]
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
