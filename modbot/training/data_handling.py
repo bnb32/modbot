@@ -165,7 +165,7 @@ class WeightedGenerator(DataGenerator):
         function : model.transform
             Transformation routine from model
         """
-        self.X = function(self.X)
+        self.arrs[0] = function(self.arrs[0])
 
 
 @tf.function

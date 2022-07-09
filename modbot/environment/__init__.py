@@ -10,7 +10,7 @@ from modbot import BERT_PREPROCESS as default_bert_preprocess
 from modbot import BERT_ENCODER as default_bert_encoder
 
 
-def get_model_path(model_type):
+def get_model_path(model_type, basedir=default_data_dir):
     """Get default model path
 
     Parameters
@@ -23,7 +23,7 @@ def get_model_path(model_type):
     model_path : str
         Path to save/load model
     """
-    model_path = os.path.join(default_data_dir, f'{model_type.upper()}_model')
+    model_path = os.path.join(basedir, f'{model_type.upper()}_model')
     if model_type.upper() in ('SVM'):
         model_path = os.path.join(model_path, 'model.joblib')
     return model_path

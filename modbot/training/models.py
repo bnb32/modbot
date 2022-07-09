@@ -216,13 +216,14 @@ class ModerationModel(ABC):
         outpath : str
             Path to save model
         """
-        if os.path.isdir(outpath):
-            model_dir = outpath
-        else:
+        if '.joblib' in outpath:
             model_dir = os.path.dirname(outpath)
+        else:
+            model_dir = outpath
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
-        logger.info(f'Saving model: {outpath}')
+
+        logger.info(f'Saving {self.__name__} model: {outpath}')
         if hasattr(self.clf, 'save'):
             self.clf.save(outpath)
             history_path = os.path.join(model_dir, 'history.csv')
@@ -509,10 +510,11 @@ class ModerationModel(ABC):
         kwargs : dict
             Dictionary of kwargs used to build model
         """
-        if os.path.isdir(outpath):
-            model_dir = outpath
-        else:
+
+        if '.joblib' in outpath:
             model_dir = os.path.dirname(outpath)
+        else:
+            model_dir = outpath
         if not os.path.exists(model_dir):
             os.makedirs(model_dir)
         params_path = os.path.join(model_dir, 'params.json')
@@ -868,6 +870,7 @@ class NNmodel(ModerationModel):
         """
         if (hasattr(self, 'layer_names')
                 and self.layer_names[0] == 'token_embedder'):
+            logger.info('Transforming text input')
             X = self.vectorizer.transform(X)
         else:
             X = self.clean_texts(X)
@@ -949,12 +952,11 @@ class NNmodel(ModerationModel):
         -------
             Initialized NNmodel model
         """
-
         logger.info(f'Loading {cls.__name__} model from {inpath}')
-        if os.path.isdir(inpath):
-            model_dir = inpath
-        else:
+        if '.joblib' in inpath:
             model_dir = os.path.dirname(inpath)
+        else:
+            model_dir = inpath
         clf = load_model(inpath)
         vec_path = os.path.join(model_dir, 'vectorizer.pkl')
         if os.path.exists(vec_path):
@@ -1673,11 +1675,12 @@ class BertCnnTorch(NNmodel):
                     param.grad = None
         return val_loss, val_preds
 
-    def train(self, train_gen, test_gen, epochs=10, model_path="temp.pt",
-              batch_size=24, max_length=None):
+    def train(self, train_gen, test_gen, **kwargs):
         """Train pytorch bert cnn model"""
-        max_length = (max_length if max_length is not None
-                      else self.MAX_SEQUENCE_LENGTH)
+        epochs = kwargs.get('epochs', 10)
+        model_path = kwargs.get('model_path', '/tmp/model')
+        batch_size = kwargs.get('batch_size', 24)
+        max_length = kwargs.get('max_length', self.MAX_SEQUENCE_LENGTH)
         x_train = train_gen.X
         x_dev = test_gen.X
         y_train = train_gen.Y
@@ -1767,7 +1770,7 @@ class BertCnnTorch(NNmodel):
         checkpoint = {'model_state': self.clf.state_dict(),
                       'optimizer_state': self.optimizer.state_dict()}
         torch.save(checkpoint, outpath)
-        logger.info(f'Model saved to {outpath}')
+        logger.info(f'{self.__name__} model saved to {outpath}')
 
     @classmethod
     def load(cls, inpath):
