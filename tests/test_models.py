@@ -20,13 +20,12 @@ MODELS = [(BertCnnTorch)]
 @pytest.mark.parametrize('MODEL', MODELS)
 def test_model(MODEL):
     """Test model pipeline"""
-    with tempfile.TemporaryDirectory() as td:
-        data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
-        model = MODEL.run(data_file, epochs=1, offensive_weight=0.5)
-        _ = model.detailed_score()
-        prob = model.predict_proba(['fuck you'])[0][1]
-        logger.info(f'Predicted prob: {prob}')
-        assert 0 <= float(prob) <= 1
+    data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
+    model = MODEL.run(data_file, epochs=1, offensive_weight=0.5)
+    _ = model.detailed_score()
+    prob = model.predict_proba(['fuck you'])[0][1]
+    logger.info(f'Predicted prob: {prob}')
+    assert 0 <= float(prob) <= 1
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
