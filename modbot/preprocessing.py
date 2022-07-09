@@ -1,6 +1,5 @@
 """Preprocessing methods"""
 from nltk.stem import WordNetLemmatizer
-from numpy import isin
 from sklearn.feature_extraction._stop_words import ENGLISH_STOP_WORDS
 
 import re
@@ -652,7 +651,6 @@ class LogCleaning:
         lines = self.prep_log(rawfile)
         self.mem.build_full_memory(lines)
         self.mem.chunk_memory()
-        memory = self.mem.chunks
 
         cmsgs = []
         bmsgs = []
