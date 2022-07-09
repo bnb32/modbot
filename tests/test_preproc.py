@@ -55,7 +55,7 @@ def test_log_cleaning():
     memory = log_cleaner.mem.chunks
     for user in memory:
         for m in memory[user]:
-            if m['mod'] == run_config.NICKNAME:
+            if m['mod'] == run_config.NICKNAME and m['deleted']:
                 for _, line in enumerate(ban_lines):
                     if m['raw_msg'] in line:
                         ban_lines.remove(line)

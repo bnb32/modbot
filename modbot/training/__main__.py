@@ -2,6 +2,7 @@
 import os
 import pprint
 import shutil
+import sys
 
 from modbot.utilities.logging import get_logger
 from modbot.training.training import (clean_log,
@@ -23,8 +24,14 @@ if __name__ == '__main__':
     parser = training_argparse()
     args = parser.parse_args()
     config = RunConfig(args=args)
-
     logger = get_logger(config.LOGGER_LEVEL)
+
+    msg = ('**Not running anything. Select either -train or -clean or '
+           '-continue_training or -just_evaluate**')
+    if not (config.clean or config.train or config.continue_training):
+        logger.warning(msg)
+        sys.exit()
+
     logger.info('Running with configuration:\n'
                 f'{pprint.pformat(config.public_attrs, indent=1)}')
     logger.info('Saving configuration')
@@ -53,4 +60,6 @@ if __name__ == '__main__':
         TMP_IN = TMP_OUT
     else:
         TMP_IN = TMP
-    vectorize_and_train(config, data_file=TMP_IN)
+
+    if config.train or config.continue_training or config.just_evaluate:
+        vectorize_and_train(config, data_file=TMP_IN)

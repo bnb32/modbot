@@ -13,6 +13,8 @@ def training_argparse():
                         help='Input file for training and/or classification.')
     parser.add_argument('-clean', default=False, action='store_true',
                         help='Process infile for future training.')
+    parser.add_argument('-train', default=False, action='store_true',
+                        help='Vectorize text and train model.')
     parser.add_argument('-append', default=False, action='store_true',
                         help='Append from input file to existing '
                              'classification dataset.')

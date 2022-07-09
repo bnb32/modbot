@@ -56,11 +56,11 @@ def vectorize_and_train(config, data_file):
             bert_encoder=config.bert_encoder)
 
     if not config.just_evaluate:
-        model.save(config.MODEL_PATH)
         model_dir = (os.path.dirname(config.MODEL_PATH)
                      if not os.path.isdir(config.MODEL_PATH)
                      else config.MODEL_PATH)
         model.detailed_score(out_dir=model_dir)
+        model.save(config.MODEL_PATH)
     else:
         model.detailed_score()
 
@@ -124,13 +124,14 @@ def clean_log(config, infile, outfile, filt=False,
     """
 
     bounds = [0, 0] if bounds is None else bounds
-    wc = (Moderation(config) if config.MODEL_PATH is not None
-          and os.path.exists(config.MODEL_PATH)
-          and config.running_check else None)
+    model = (Moderation.initialize_model(config)
+             if config.MODEL_PATH is not None
+             and os.path.exists(config.MODEL_PATH)
+             and config.running_check else None)
 
     if config.clean:
         # clean log
-        cl = pp.LogCleaning(config, wc)
+        cl = pp.LogCleaning(config, model)
         logger.info('Cleaning log')
         cl.clean_log(infile, outfile)
 
@@ -157,4 +158,4 @@ def clean_log(config, infile, outfile, filt=False,
     if check_probs:
         # reclassify phrases
         logger.info('Using model to check log')
-        pp.check_probs(config, infile, outfile, bounds, wc)
+        pp.check_probs(config, infile, outfile, bounds, model)

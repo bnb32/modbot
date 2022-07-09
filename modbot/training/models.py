@@ -345,11 +345,9 @@ class ModerationModel(ABC):
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
         just_evaluate = kwargs.get('just_evaluate', False)
-        sig = signature(model.train)
-        params = {k: v for k, v in kwargs.items() if k in sig.parameters}
-        params['model_path'] = model_path
+        kwargs['model_path'] = model_path
         if not just_evaluate:
-            model.train(train_gen, test_gen, **params)
+            model.train(train_gen, test_gen, **kwargs)
         return model
 
     def predict(self, X, verbose=False):
@@ -1585,7 +1583,7 @@ class BertCnnTorch(NNmodel):
 
     SEED = 42
     MAX_SEQUENCE_LENGTH = 64
-    DLOADER_ARGS = {'num_workers': 1, 'pin_memory': True}
+    DLOADER_ARGS = {'num_workers': 2, 'pin_memory': True}
     LEARNING_RATE = 1e-4
     EMBED_SIZE = 768
 
@@ -1602,12 +1600,16 @@ class BertCnnTorch(NNmodel):
         self.clf = self.build_layers(embed_size)
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
+        self.best_score = -np.inf
+        self.epoch = 0
         if checkpoint is not None:
             self.clf.load_state_dict(checkpoint['model_state'])
-        self.clf.to(self.device)
-        self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
-        if checkpoint is not None:
+            self.clf.to(self.device)
+            self.best_score = checkpoint['best_score']
+            self.epoch = checkpoint['epoch'] + 1
             self.optimizer.load_state_dict(checkpoint['optimizer_state'])
+            logger.info('Loaded checkpoint with epoch, best_score: '
+                        f'{self.epoch}, {self.best_score}')
 
     @property
     def __name__(self):
@@ -1722,10 +1724,12 @@ class BertCnnTorch(NNmodel):
 
         for param in self.clf.parameters():
             param.grad = None
-        best_score = -np.inf
 
         logger.info('Starting training')
-        for epoch in range(epochs):
+        start_epoch = self.epoch
+        end_epoch = start_epoch + epochs
+        for epoch in range(start_epoch, end_epoch):
+            self.epoch = epoch
             train_loss = 0
             self.clf.train(True)
 
@@ -1756,9 +1760,9 @@ class BertCnnTorch(NNmodel):
             logger.info(msg)
             self.detailed_score()
 
-            if val_score > best_score:
+            if val_score > self.best_score:
                 self.save(model_path)
-                best_score = val_score
+                self.best_score = val_score
 
         self.clf.load_state_dict(torch.load(model_path)['model_state'])
         self.clf.to(self.device)
@@ -1768,7 +1772,9 @@ class BertCnnTorch(NNmodel):
     def save(self, outpath):
         """Save model"""
         checkpoint = {'model_state': self.clf.state_dict(),
-                      'optimizer_state': self.optimizer.state_dict()}
+                      'optimizer_state': self.optimizer.state_dict(),
+                      'best_score': self.best_score,
+                      'epoch': self.epoch}
         torch.save(checkpoint, outpath)
         logger.info(f'{self.__name__} model saved to {outpath}')
 

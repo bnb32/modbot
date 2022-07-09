@@ -1,5 +1,6 @@
 """Preprocessing methods"""
 from nltk.stem import WordNetLemmatizer
+from numpy import isin
 from sklearn.feature_extraction._stop_words import ENGLISH_STOP_WORDS
 
 import re
@@ -17,7 +18,8 @@ from modbot.environment import ProcessingConfig
 from modbot.utilities import utilities
 from modbot.utilities.utilities import (simple_chars_equal,
                                         remove_special_chars,
-                                        is_user_type_chatty)
+                                        is_user_type_chatty,
+                                        delete_usernames)
 from modbot.utilities.logging import get_logger
 
 stop_words = ENGLISH_STOP_WORDS
@@ -292,7 +294,10 @@ def contains_link(text):
     -------
     bool
     """
-    return any(link in text for link in ProcessingConfig.LINK_STRINGS)
+    check = text is not None
+    check = check and any(link in text for link
+                          in ProcessingConfig.LINK_STRINGS)
+    return check
 
 
 def filter_log(infile, outfile, proc_config):
@@ -362,22 +367,22 @@ def correct_messages(infile, outfile):
 
 class LogCleaning:
     """Class to handle different types of log cleaning"""
-    def __init__(self, config, wc=None, filter_emotes=False):
+    def __init__(self, config, model=None, filter_emotes=False):
         """Initialize log cleaning
 
         Parameters
         ----------
         config : Config
             Config class with processing parameters
-        wc : Moderation
-            Moderation class instance which can be used to check raw chat
+        model : ModerationModel
+            Model class instance which can be used to check raw chat
             probabilities
         filter_emotes : bool
             Whether to filter emotes from raw chat data
         """
         self.config = ProcessingConfig(run_config=config)
         self.mem = MsgMemory()
-        self.wc = wc
+        self.model = model
         self.review_decisions = getattr(config, 'review_decisions', False)
         self.filter_emotes = filter_emotes
 
@@ -438,8 +443,8 @@ class LogCleaning:
         """
         # prep log
         lines = cls.read_log(rawfile)
-        logger.info('Prepping log')
-        return [utilities.delete_usernames(
+        logger.info('Removing usernames, escape chars, and non-valid lines')
+        return [delete_usernames(
             re.sub('"', '\'', line)).rstrip('\n').rstrip().lstrip()
             for line in tqdm(lines) if cls.is_valid_line(line)]
 
@@ -468,8 +473,9 @@ class LogCleaning:
         cmsgs : list
             Messages classified as wholesome
         """
-        for n, text in enumerate(tqdm(ctmp)):
-            if self.wc is not None and probs[n] > self.config.CHECK_PMIN:
+        for n in tqdm(range(len(ctmp))):
+            text = ctmp[n]
+            if self.model is not None and probs[n] > self.config.CHECK_PMIN:
                 logger.info(f'Appending tocheck: {text}')
                 tocheck.append(text)
             elif check_msgs(text.lower(), self.config.BLACKLIST):
@@ -481,13 +487,11 @@ class LogCleaning:
                 cmsgs.append(text)
         return tocheck, bmsgs, cmsgs
 
-    def divide_messages(self, memory, user, tocheck, bmsgs, cmsgs, ctmp):
+    def divide_messages(self, user, tocheck, bmsgs, cmsgs, ctmp):
         """Divide messages into clean, bad, and to_check
 
         Parameters
         ----------
-        memory : dict
-            Dictionary of message history for log
         user : str
             User to check messages for
         tocheck : list
@@ -510,33 +514,34 @@ class LogCleaning:
         ctmp : list
             Messages another layer of review
         """
-        for m in memory[user]:
-            to_check_append = (
-                m['banned'] and m['mod'] in self.config.ban_checks)
-            to_check_append = to_check_append or (
-                m['deleted'] and m['mod'] in self.config.ban_checks)
-            to_check_append = to_check_append and (
-                m['mod'] not in self.config.ignore_actions)
+        for m in self.mem.chunks[user]:
+            if m['msg'] is not None:
+                to_check_append = (m['banned'] and m['mod']
+                                   in self.config.ban_checks)
+                to_check_append = to_check_append or (
+                    m['deleted'] and m['mod'] in self.config.ban_checks)
+                to_check_append = to_check_append and (
+                    m['mod'] not in self.config.ignore_actions)
 
-            ban_append = (m['deleted'] or m['banned']
-                          and m['mod'] not in self.config.ignore_actions
-                          and m['mod'] is not None)
-            clean_append = (not m['deleted'] and not m['banned'])
+                ban_append = (m['deleted'] or m['banned']
+                              and m['mod'] not in self.config.ignore_actions
+                              and m['mod'] is not None)
+                clean_append = (not m['deleted'] and not m['banned'])
 
-            if ((m['isSub'] is False or m['isSub'] is True)
-                    and not contains_link(m['msg'])):
+                if ((m['isSub'] is False or m['isSub'] is True)
+                        and not contains_link(m['msg'])):
 
-                for w in self.config.WHITELIST:
-                    m['msg'] = re.sub(w, '', m['msg'], flags=re.I)
+                    for w in self.config.WHITELIST:
+                        m['msg'] = re.sub(w, '', m['msg'], flags=re.I)
 
-                if to_check_append:
-                    logger.info('Appending tocheck (mod / msg): '
-                                f'{m["mod"]} / {m["msg"]}')
-                    tocheck.append(m['msg'])
-                elif ban_append:
-                    bmsgs.append(m['msg'])
-                elif clean_append:
-                    ctmp.append(m['msg'])
+                    if to_check_append:
+                        logger.info('Appending tocheck (mod / msg): '
+                                    f'{m["mod"]} / {m["msg"]}')
+                        tocheck.append(m['msg'])
+                    elif ban_append:
+                        bmsgs.append(m['msg'])
+                    elif clean_append:
+                        ctmp.append(m['msg'])
 
         return tocheck, bmsgs, cmsgs, ctmp
 
@@ -562,14 +567,16 @@ class LogCleaning:
 
         logger.info("Reviewing to-check messages: %s", (len(tocheck)))
         for text in tqdm(tocheck):
-            if (check_msgs(text.lower(), self.config.BLACKLIST)
-                    or remove_special_chars(text.lower()) in
-                    (remove_special_chars(bmsg.lower())
-                     for bmsg in bmsgs)):
+            check_one = (check_msgs(text.lower(), self.config.BLACKLIST)
+                         or remove_special_chars(text.lower()) in
+                         (remove_special_chars(bmsg.lower())
+                          for bmsg in bmsgs))
+            check_zero = (remove_special_chars(text.lower()) in
+                          (remove_special_chars(cmsg.lower())
+                           for cmsg in cmsgs))
+            if check_one:
                 rating = '1'
-            elif (remove_special_chars(text.lower()) in
-                  (remove_special_chars(cmsg.lower())
-                   for cmsg in cmsgs)):
+            elif check_zero:
                 rating = '0'
             else:
                 trans_result = translator.translate(text)
@@ -581,13 +588,10 @@ class LogCleaning:
 
             if rating not in ['0', '1', 's']:
                 rating = '0'
-
             if rating == 's':
                 logger.info("Skipped: %s", text)
-
             elif rating == '1':
                 bmsgs.append(text)
-
             elif rating == '0':
                 cmsgs.append(text)
         return bmsgs, cmsgs
@@ -658,38 +662,38 @@ class LogCleaning:
 
         if self.review_decisions:
             logger.info("Preparing previous bot decisions for review")
-            for user in tqdm(memory):
-                for m in memory[user]:
+            for user in tqdm(self.mem.chunks):
+                for m in self.mem.chunks[user]:
                     if m['mod'] == self.config.NICKNAME:
                         tocheck.append(m['msg'])
         else:
             logger.info(
                 "Dividing messages into 'bad' and 'other' for each user")
-            for user in tqdm(memory):
-                if (user not in self.config.ignore_users
-                        and not memory[user][0]['isVip']
-                        and not memory[user][0]['isMod']
-                        and not memory[user][0]['isPartner']):
-
-                    ban_check = any(m['banned'] for m in memory[user])
+            for user in tqdm(self.mem.chunks):
+                valid_check = (user not in self.config.ignore_users
+                               and not self.mem.chunks[user][0]['isVip']
+                               and not self.mem.chunks[user][0]['isMod']
+                               and not self.mem.chunks[user][0]['isPartner'])
+                if valid_check:
+                    ban_check = any(m['banned'] for m in self.mem.chunks[user])
                     ban_check = ban_check or any(m['deleted'] for m
-                                                 in memory[user])
+                                                 in self.mem.chunks[user])
                     if ban_check:
                         banned_user_count += 1
                     else:
                         clean_user_count += 1
 
-                    out = self.divide_messages(memory, user, tocheck, bmsgs,
-                                               cmsgs, ctmp)
+                    out = self.divide_messages(user, tocheck, bmsgs, cmsgs,
+                                               ctmp)
                     tocheck, bmsgs, cmsgs, ctmp = out
 
             logger.info("Banned/timed-out users: %s", banned_user_count)
             logger.info("Clean users: %s", clean_user_count)
 
             logger.info("Dividing 'other' into clean, to-check, and bad")
-            if self.wc is not None:
+            if self.model is not None:
                 logger.info("Calculating probabilities")
-                probs = self.wc.predict_prob(ctmp)
+                probs = self.model.predict_one(ctmp)
 
             tocheck, bmsgs, cmsgs = self.review_messages(tocheck, bmsgs,
                                                          cmsgs, ctmp, probs)
@@ -715,8 +719,8 @@ def get_info_from_chatty(line):
         Info dictionary
     """
     info = copy.deepcopy(utilities.INFO_DEFAULT)
-    msg = None
     mod = None
+    msg = None
     if line.startswith('<'):
         user = line.split('>')[0]
         user = user.strip('<')
@@ -736,7 +740,10 @@ def get_info_from_chatty(line):
         mod = line.split()[1].lower()
         action = line.split()[2].lower().replace('(', '')
         if 'delete' in action:
-            msg = ' '.join(line.split()[4:]).strip('(').strip(')')
+            if line[-2:] == '))':
+                msg = ' '.join(line.split()[4:]).strip('(').strip(')')
+            else:
+                msg = ' '.join(line.split()[4:-1]).strip('(').strip(')')
     info['line'] = line
     info['msg'] = info['raw_msg'] = msg
     info['mod'] = mod
@@ -761,8 +768,8 @@ class MsgMemory:
             Dictionary containing user info
         """
         entry = {k: v for k, v in info.items() if k != 'user'}
-        entry['msg'] = demojize(info['msg'])
-
+        if entry['msg'] is not None:
+            entry['msg'] = demojize(entry['msg'])
         self.memory[info['user']].append(entry)
 
     def del_msg(self, user):
@@ -819,12 +826,9 @@ class MsgMemory:
         line : str
             Log line that could contain a user name
         """
-        try:
-            user = line.split()[1].lower()
+        user = line.split()[1].lower()
+        if user in self.memory and self.memory[user]:
             self.memory[user][-1]['banned'] = True
-        except Exception:
-            logger.warning(f'Could not update banned status for line: {line}')
-            pass
 
     def update_deleted_status(self, line):
         """Update deleted status for user log
@@ -834,20 +838,19 @@ class MsgMemory:
         line : str
             Log line that could contain a user name
         """
-        try:
-            info = get_info_from_chatty(line)
-            user = info['user']
-            check = simple_chars_equal(info['msg'],
-                                       self.memory[user][-1]['msg'])
-            if not check:
-                logger.info('Found conflicting delete action. '
-                            f'Action message: {info["msg"]}. Memory message: '
-                            f'{self.memory[user][-1]["msg"]}')
-                self.add_msg(info)
-            self.memory[user][-1]['deleted'] = True
-        except Exception:
-            logger.warning(f'Could not update deleted status for line: {line}')
-            pass
+        info = get_info_from_chatty(line)
+        user = info['user']
+        if user not in self.memory or not self.memory[user]:
+            self.add_msg(info)
+        check = simple_chars_equal(info['raw_msg'],
+                                   self.memory[user][-1]['raw_msg'])
+        if not check:
+            msg = ('Found conflicting delete action. '
+                   f'Action message: {info["raw_msg"]}. Memory '
+                   f'message: {self.memory[user][-1]["raw_msg"]}')
+            logger.extra_verbose(msg)
+            self.add_msg(info)
+        self.memory[user][-1]['deleted'] = True
 
     def update_mod_action_status(self, line):
         """Update mod action status for user log
@@ -857,21 +860,23 @@ class MsgMemory:
         line : str
             Log line that could contain a user name
         """
+        info = get_info_from_chatty(line)
+        user = info['user']
+        if user not in self.memory or not self.memory[user]:
+            self.add_msg(info)
+        if info['msg'] is not None:
+            check = simple_chars_equal(info['raw_msg'],
+                                       self.memory[user][-1]['raw_msg'])
+            if not check:
+                msg = ('Found conflicting mod action. '
+                       f'Action message: {info["raw_msg"]}. Memory '
+                       f'message: {self.memory[user][-1]["raw_msg"]}')
+                logger.extra_verbose(msg)
+                self.add_msg(info)
         try:
-            info = get_info_from_chatty(line)
-            user = info['user']
-            if info['msg'] is not None:
-                check = simple_chars_equal(info['msg'],
-                                           self.memory[user][-1]['msg'])
-                if not check:
-                    logger.info('Found conflicting mod action. '
-                                f'Action message: {info["msg"]}. Memory '
-                                f'message: {self.memory[user][-1]["msg"]}')
-                    self.add_msg(info)
             self.memory[user][-1]['mod'] = info['mod']
         except Exception:
-            logger.warning(f'Could not update mod status for line: {line}')
-            pass
+            logger.warning(f'Could not update mod action for line: {line}')
 
     def build_full_memory(self, lines):
         """Build full memory for all lines
@@ -904,27 +909,29 @@ class MsgMemory:
         for user in tqdm(self.memory):
             count = 0
             for m in self.memory[user]:
-                if count == 0:
-                    info = copy.deepcopy(utilities.INFO_DEFAULT)
+                if m['msg'] is not None:
+                    if count == 0:
+                        info = copy.deepcopy(utilities.INFO_DEFAULT)
 
-                if info['msg'] is None:
-                    info['msg'] = m['msg'] + '. '
-                else:
-                    info['msg'] += m['msg'] + '. '
+                    if info['msg'] is None:
+                        info['msg'] = m['msg'] + '. '
+                    else:
+                        info['msg'] += m['msg'] + '. '
 
-                for k in m:
-                    if k not in ('msg', 'mod'):
-                        info[k] = m[k]
-                    if k == 'mod' and m['mod'] is not None:
-                        info['mod'] = m['mod']
+                    for k in m:
+                        if k not in ('msg', 'mod'):
+                            info[k] = m[k]
+                        if k == 'mod' and m['mod'] is not None:
+                            info['mod'] = m['mod']
 
-                count += 1
-
-                if (count == self.msg_limit or count == len(self.memory[user])
-                        or info['banned'] or info['deleted']):
-                    entry = {k: v for k, v in info.items() if k != 'user'}
-                    self.chunks[user].append(entry)
-                    count = 0
+                    count += 1
+                    count_check = (count == self.msg_limit
+                                   or count == len(self.memory[user])
+                                   or info['banned'] or info['deleted'])
+                    if count_check:
+                        entry = {k: v for k, v in info.items() if k != 'user'}
+                        self.chunks[user].append(entry)
+                        count = 0
 
     def chunk_recent(self, info):
         """Join number of past messages into a single string to use for

@@ -313,6 +313,7 @@ class ProcessingConfig(BaseConfig):
         """
         if run_config is not None:
             self.get_config(config=run_config)
+            file_name = run_config.file_name
         else:
             self.get_config(file_name=file_name)
             run_config = RunConfig(file_name=file_name)
