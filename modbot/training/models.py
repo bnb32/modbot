@@ -445,6 +445,11 @@ class ModerationModel(ABC):
             Number of positive matches to print
         out_dir : str | None
             Path to save scores
+
+        Returns
+        -------
+        df_scores : pd.DataFrame
+            A dataframe containing all model scores
         """
 
         pd.set_option('display.max_columns', None)
@@ -496,6 +501,7 @@ class ModerationModel(ABC):
 
         logger.info(f'Scores:\n{df_scores}')
         logger.info(f'Test phrases:\n{self.model_test()}')
+        return df_scores
 
     @staticmethod
     def save_params(outpath, kwargs):
@@ -1584,7 +1590,7 @@ class BertCnnTorch(NNmodel):
     SEED = 42
     MAX_SEQUENCE_LENGTH = 64
     DLOADER_ARGS = {'num_workers': 2, 'pin_memory': True}
-    LEARNING_RATE = 1e-4
+    LEARNING_RATE = 2e-5
     EMBED_SIZE = 768
 
     def __init__(self, texts=None, checkpoint=None, embed_size=None, lr=None):
@@ -1683,14 +1689,13 @@ class BertCnnTorch(NNmodel):
         model_path = kwargs.get('model_path', '/tmp/model')
         batch_size = kwargs.get('batch_size', 24)
         max_length = kwargs.get('max_length', self.MAX_SEQUENCE_LENGTH)
+        eval_steps = kwargs.get('eval_steps', 100)
         x_train = train_gen.X
-        x_dev = test_gen.X
         y_train = train_gen.Y
-        y_dev = test_gen.Y
         self.get_class_info()
-        y_train, y_dev = (torch.FloatTensor(t) for t in (y_train, y_dev))
+        y_train = torch.FloatTensor(y_train)
 
-        logger.info('Encoding train data')
+        logger.info('Encoding training data')
         out = self.prepare_set(x_train, max_length=max_length)
         train_inputs, train_masks, train_type_ids = out
         train_data = TensorDataset(train_inputs, train_masks, train_type_ids,
@@ -1699,26 +1704,16 @@ class BertCnnTorch(NNmodel):
         train_dataloader = DataLoader(train_data, sampler=train_sampler,
                                       batch_size=batch_size,
                                       **self.DLOADER_ARGS)
-
-        # Create the DataLoader for our dev set.
-        logger.info('Encoding test data')
-        out = self.prepare_set(x_dev, max_length=max_length)
-        dev_inputs, dev_masks, dev_type_ids = out
-        dev_data = TensorDataset(dev_inputs, dev_masks, dev_type_ids, y_dev)
-        dev_sampler = SequentialSampler(dev_data)
-        dev_dataloader = DataLoader(dev_data, sampler=dev_sampler,
-                                    batch_size=batch_size)
-
         self.clf.to(self.device)
-
         loss_fn = nn.BCELoss()
-        train_losses, val_losses = [], []
+        train_losses = []
         np.random.seed(self.SEED)
         torch.manual_seed(self.SEED)
         if self.device.type == "cuda":
             torch.cuda.manual_seed_all(self.SEED)
 
-        total_steps = len(train_dataloader) * epochs
+        train_batches = len(train_dataloader)
+        total_steps = train_batches * epochs
         scheduler = get_linear_schedule_with_warmup(
             self.optimizer, num_warmup_steps=0, num_training_steps=total_steps)
 
@@ -1728,14 +1723,16 @@ class BertCnnTorch(NNmodel):
         logger.info('Starting training')
         start_epoch = self.epoch
         end_epoch = start_epoch + epochs
+        epoch_count = 0
         for epoch in range(start_epoch, end_epoch):
             self.epoch = epoch
             train_loss = 0
             self.clf.train(True)
-
             logger.info(f'Training on {len(train_dataloader)} batches for '
                         f'epoch {epoch}')
+            batch_count = 0
             for batch in tqdm(train_dataloader):
+                step_count = len(train_dataloader) * epoch_count + batch_count
                 out = tuple(t.to(self.device) for t in batch)
                 b_input_ids, b_input_mask, b_token_type_ids, b_labels = out
                 y_pred = self.clf(b_input_ids, b_input_mask,
@@ -1745,24 +1742,22 @@ class BertCnnTorch(NNmodel):
                 self.optimizer.step()
                 train_loss += loss.item()
                 scheduler.step()
+                batch_count += 1
                 for param in self.clf.parameters():
                     param.grad = None
 
+                eval_check = (step_count % eval_steps == 0
+                              or step_count % train_batches == 0)
+                eval_check = eval_check and step_count > 0
+                if eval_check:
+                    self.clf.eval()
+                    scores = self.detailed_score()
+                    if float(scores['F1']) > self.best_score:
+                        self.best_score = float(scores['F1'])
+                        self.save(model_path)
+                    self.clf.train(True)
+            epoch_count += 1
             train_losses.append(train_loss)
-            self.clf.eval()
-            val_loss, val_preds = self.evaluate(dev_dataloader, epoch, loss_fn)
-            val_score = f1_score(y_dev.cpu().numpy().tolist(), val_preds)
-            val_losses.append(val_loss)
-            msg = (f"Epoch {epoch + 1} "
-                   f"Train loss: {round(train_losses[-1], 3)}. "
-                   f"Validation F1-Macro: {round(val_score, 3)}. "
-                   f"Validation loss: {round(val_losses[-1], 3)}.")
-            logger.info(msg)
-            self.detailed_score()
-
-            if val_score > self.best_score:
-                self.save(model_path)
-                self.best_score = val_score
 
         self.clf.load_state_dict(torch.load(model_path)['model_state'])
         self.clf.to(self.device)

@@ -41,7 +41,8 @@ def vectorize_and_train(config, data_file):
             batch_size=config.batch_size,
             n_batches=config.n_batches,
             sample_size=config.sample_size,
-            val_split=config.val_split)
+            val_split=config.val_split,
+            eval_steps=config.eval_steps)
     else:
         model = MODEL_CLASS.run(
             data_file=data_file,
@@ -53,7 +54,8 @@ def vectorize_and_train(config, data_file):
             model_path=config.MODEL_PATH,
             val_split=config.val_split,
             bert_preprocess=config.bert_preprocess,
-            bert_encoder=config.bert_encoder)
+            bert_encoder=config.bert_encoder,
+            eval_steps=config.eval_steps)
 
     if not config.just_evaluate:
         model_dir = (os.path.dirname(config.MODEL_PATH)
@@ -62,7 +64,7 @@ def vectorize_and_train(config, data_file):
         model.detailed_score(out_dir=model_dir)
         model.save(config.MODEL_PATH)
     else:
-        model.detailed_score()
+        _ = model.detailed_score()
 
     logger.info('Done')
 

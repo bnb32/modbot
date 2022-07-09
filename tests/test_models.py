@@ -24,7 +24,7 @@ def test_model(MODEL):
         model_path = get_model_path(MODEL.__name__, basedir=td)
         model = MODEL.run(data_file, model_path=model_path, epochs=1,
                           offensive_weight=0.5)
-        model.detailed_score()
+        _ = model.detailed_score()
         prob = model.predict_proba(['fuck you'])[0][1]
         logger.info(f'Predicted prob: {prob}')
         assert 0 <= float(prob) <= 1

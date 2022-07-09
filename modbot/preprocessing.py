@@ -15,11 +15,13 @@ import copy
 import pprint
 
 from modbot.environment import ProcessingConfig
-from modbot.utilities import utilities
 from modbot.utilities.utilities import (simple_chars_equal,
                                         remove_special_chars,
                                         is_user_type_chatty,
-                                        delete_usernames)
+                                        delete_usernames,
+                                        remove_reps,
+                                        prune_chars,
+                                        INFO_DEFAULT)
 from modbot.utilities.logging import get_logger
 
 stop_words = ENGLISH_STOP_WORDS
@@ -77,9 +79,9 @@ def correct_msg(line):
         Sanitized message
     """
     tmp = line
-    tmp = utilities.delete_usernames(tmp)
-    tmp = utilities.prune_chars(tmp)
-    tmp = utilities.remove_reps(tmp, sym_spell.words)
+    tmp = delete_usernames(tmp)
+    tmp = prune_chars(tmp)
+    tmp = remove_reps(tmp, sym_spell.words)
     return tmp
 
 
@@ -116,7 +118,7 @@ def my_tokenizer(s):
         List containing tokens
     """
     words = s.lower().split()
-    words = [utilities.prune_chars(w) for w in words if w not in stop_words]
+    words = [prune_chars(w) for w in words if w not in stop_words]
     return my_lemmatizer(words)
 
 
@@ -317,7 +319,7 @@ def filter_log(infile, outfile, proc_config):
     for n, t in tqdm(enumerate(texts)):
         tmp = filter_emotes(t, proc_config)
         tmp = re.sub('[^A-Za-z0-9 ]+', '', tmp)
-        tmp = utilities.remove_reps(tmp, sym_spell.words)
+        tmp = remove_reps(tmp, sym_spell.words)
         texts[n] = tmp
     write_data(outfile, texts, y)
 
@@ -718,7 +720,7 @@ def get_info_from_chatty(line):
     dict
         Info dictionary
     """
-    info = copy.deepcopy(utilities.INFO_DEFAULT)
+    info = copy.deepcopy(INFO_DEFAULT)
     mod = None
     msg = None
     if line.startswith('<'):
@@ -911,7 +913,7 @@ class MsgMemory:
             for m in self.memory[user]:
                 if m['msg'] is not None:
                     if count == 0:
-                        info = copy.deepcopy(utilities.INFO_DEFAULT)
+                        info = copy.deepcopy(INFO_DEFAULT)
 
                     if info['msg'] is None:
                         info['msg'] = m['msg'] + '. '

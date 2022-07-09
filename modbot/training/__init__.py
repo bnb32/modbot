@@ -43,8 +43,10 @@ def training_argparse():
                         help='Number of samples per batch.')
     parser.add_argument('-sample_size', default=None, type=none_or_int,
                         help='Number of total samples to use for training.')
-    parser.add_argument('-val_split', default=0.1, type=float,
+    parser.add_argument('-val_split', default=0.05, type=float,
                         help='Fraction of full dataset used as validation')
+    parser.add_argument('-eval_steps', default=100, type=int,
+                        help='Number of steps between model evaluations')
     parser.add_argument('-continue_training', default=False,
                         action='store_true',
                         help='Whether to continue training from saved model.')
