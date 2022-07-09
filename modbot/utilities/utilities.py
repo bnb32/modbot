@@ -203,6 +203,21 @@ def remove_special_chars(line):
     return re.sub('[^A-Za-z0-9_ ]+', '', line.rstrip('\n').rstrip().lstrip())
 
 
+def simple_chars_equal(line1, line2):
+    """Compare characters in line1 and line2
+
+    Parameters
+    ----------
+    line1 : str
+        First line to compare
+    line2 : str
+        Second line to compare
+    """
+    tmp1 = remove_special_chars(line1).replace(' ', '')
+    tmp2 = remove_special_chars(line2).replace(' ', '')
+    return tmp1 == tmp2
+
+
 def prune_chars(line):
     """Remove some special characters from line
 

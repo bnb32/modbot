@@ -15,6 +15,9 @@ import pprint
 
 from modbot.environment import ProcessingConfig
 from modbot.utilities import utilities
+from modbot.utilities.utilities import (simple_chars_equal,
+                                        remove_special_chars,
+                                        is_user_type_chatty)
 from modbot.utilities.logging import get_logger
 
 stop_words = ENGLISH_STOP_WORDS
@@ -560,12 +563,12 @@ class LogCleaning:
         logger.info("Reviewing to-check messages: %s", (len(tocheck)))
         for text in tqdm(tocheck):
             if (check_msgs(text.lower(), self.config.BLACKLIST)
-                    or utilities.remove_special_chars(text.lower()) in
-                    (utilities.remove_special_chars(bmsg.lower())
+                    or remove_special_chars(text.lower()) in
+                    (remove_special_chars(bmsg.lower())
                      for bmsg in bmsgs)):
                 rating = '1'
-            elif (utilities.remove_special_chars(text.lower()) in
-                  (utilities.remove_special_chars(cmsg.lower())
+            elif (remove_special_chars(text.lower()) in
+                  (remove_special_chars(cmsg.lower())
                    for cmsg in cmsgs)):
                 rating = '0'
             else:
@@ -712,17 +715,32 @@ def get_info_from_chatty(line):
         Info dictionary
     """
     info = copy.deepcopy(utilities.INFO_DEFAULT)
-    user = line.split('>')[0]
-    user = user.strip('<')
+    msg = None
+    mod = None
+    if line.startswith('<'):
+        user = line.split('>')[0]
+        user = user.strip('<')
+        msg = line[line.index('>') + 1:].lstrip()
+        info['isSub'] = is_user_type_chatty("sub", user)
+        info['isMod'] = is_user_type_chatty("mod", user)
+        info['isVip'] = is_user_type_chatty("vip", user)
+        info['isPartner'] = is_user_type_chatty("partner", user)
+        info['isPleb'] = is_user_type_chatty("pleb", user)
+    elif line.startswith('BAN:'):
+        user = line.split()[1].lower()
+    elif line.startswith('DELETED:'):
+        user = line.split()[1].lower()
+        msg = ' '.join(line.split()[2:]).strip('(').strip(')')
+    elif line.startswith('MOD_ACTION:'):
+        user = line.split()[3].lower()
+        mod = line.split()[1].lower()
+        action = line.split()[2].lower().replace('(', '')
+        if 'delete' in action:
+            msg = ' '.join(line.split()[4:]).strip('(').strip(')')
     info['line'] = line
-    info['isSub'] = utilities.is_user_type_chatty("sub", user)
-    info['isMod'] = utilities.is_user_type_chatty("mod", user)
-    info['isVip'] = utilities.is_user_type_chatty("vip", user)
-    info['isPartner'] = utilities.is_user_type_chatty("partner", user)
-    info['isPleb'] = utilities.is_user_type_chatty("pleb", user)
-    info['msg'] = line[line.index('>') + 1:].lstrip()
-    info['raw_msg'] = line[line.index('>') + 1:].lstrip()
-    info['user'] = utilities.remove_special_chars(user).lower()
+    info['msg'] = info['raw_msg'] = msg
+    info['mod'] = mod
+    info['user'] = remove_special_chars(user).lower()
     return info
 
 
@@ -817,21 +835,14 @@ class MsgMemory:
             Log line that could contain a user name
         """
         try:
-            user = line.split()[1].lower()
-            msg = ' '.join(line.split()[2:]).strip('(').strip(')')
-            tmp_act_msg = utilities.remove_special_chars(msg)
-            tmp_act_msg = tmp_act_msg.replace(' ', '')
-            tmp_mem_msg = utilities.remove_special_chars(
-                self.memory[user][-1]['raw_msg'])
-            tmp_mem_msg = tmp_mem_msg.replace(' ', '')
-            if tmp_mem_msg != tmp_act_msg:
+            info = get_info_from_chatty(line)
+            user = info['user']
+            check = simple_chars_equal(info['msg'],
+                                       self.memory[user][-1]['msg'])
+            if not check:
                 logger.info('Found conflicting delete action. '
-                            f'Action message: {msg}. Memory message: '
-                            f'{self.memory[user][-1]["raw_msg"]}')
-                info = copy.deepcopy(utilities.INFO_DEFAULT)
-                info['raw_msg'] = info['msg'] = msg
-                info['user'] = user
-                info['line'] = line
+                            f'Action message: {info["msg"]}. Memory message: '
+                            f'{self.memory[user][-1]["msg"]}')
                 self.add_msg(info)
             self.memory[user][-1]['deleted'] = True
         except Exception:
@@ -847,27 +858,17 @@ class MsgMemory:
             Log line that could contain a user name
         """
         try:
-            user = line.split()[3].lower()
-            mod = line.split()[1].lower()
-            action = line.split()[2].lower().replace('(', '')
-            if 'delete' in action:
-                msg = ' '.join(line.split()[4:]).strip('(').strip(')')
-                tmp_act_msg = utilities.remove_special_chars(msg)
-                tmp_act_msg = tmp_act_msg.replace(' ', '')
-                tmp_mem_msg = utilities.remove_special_chars(
-                    self.memory[user][-1]['raw_msg'])
-                tmp_mem_msg = tmp_mem_msg.replace(' ', '')
-                if tmp_mem_msg != tmp_act_msg:
+            info = get_info_from_chatty(line)
+            user = info['user']
+            if info['msg'] is not None:
+                check = simple_chars_equal(info['msg'],
+                                           self.memory[user][-1]['msg'])
+                if not check:
                     logger.info('Found conflicting mod action. '
-                                f'Action message: {msg}. Memory message: '
-                                f'{self.memory[user][-1]["raw_msg"]}')
-                    info = copy.deepcopy(utilities.INFO_DEFAULT)
-                    info['raw_msg'] = info['msg'] = msg
-                    info['deleted'] = True
-                    info['user'] = user
-                    info['line'] = line
+                                f'Action message: {info["msg"]}. Memory '
+                                f'message: {self.memory[user][-1]["msg"]}')
                     self.add_msg(info)
-            self.memory[user][-1]['mod'] = mod
+            self.memory[user][-1]['mod'] = info['mod']
         except Exception:
             logger.warning(f'Could not update mod status for line: {line}')
             pass
