@@ -4,14 +4,16 @@ import os
 import pytest
 import pandas as pd
 
-from modbot.training.models import (LSTM, SVM, CNN, BERT, BertCnnTorch)
+from modbot.training.models import (LSTM, SVM, CNN, BERT, BertCNN,
+                                    BertCnnLstm, BertCnnTorch, BertLSTM)
 from modbot import TEST_DATA_DIR
 from modbot.utilities.logging import get_logger
 from modbot.environment import get_model_path
 
 logger = get_logger()
 
-MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCnnTorch)]
+MODELS = [(SVM), (LSTM), (CNN), (BERT), (BertCNN), (BertCnnLstm),
+          (BertCnnTorch), (BertLSTM)]
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
