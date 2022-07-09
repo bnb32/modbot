@@ -359,14 +359,23 @@ def correct_messages(infile, outfile):
 
 class LogCleaning:
     """Class to handle different types of log cleaning"""
-    def __init__(self, config, rawfile, cleanfile, wc, filter_emotes=False):
+    def __init__(self, config, wc=None, filter_emotes=False):
+        """Initialize log cleaning
+
+        Parameters
+        ----------
+        config : Config
+            Config class with processing parameters
+        wc : Moderation
+            Moderation class instance which can be used to check raw chat
+            probabilities
+        filter_emotes : bool
+            Whether to filter emotes from raw chat data
+        """
         self.config = ProcessingConfig(run_config=config)
-        self.rawfile = rawfile
-        self.cleanfile = cleanfile
-        self.lines = None
         self.mem = MsgMemory()
         self.wc = wc
-        self.review_decisions = config.review_decisions
+        self.review_decisions = getattr(config, 'review_decisions', False)
         self.filter_emotes = filter_emotes
 
         logger.info('Using processing configuration:\n'
@@ -388,8 +397,14 @@ class LogCleaning:
         line_starts = ['BAN:', 'MOD_ACTION:', 'DELETED:']
         return line.startswith(tuple(line_starts + ['<']))
 
-    def read_log(self):
+    @classmethod
+    def read_log(cls, rawfile):
         """Read log and return lines
+
+        Parameters
+        ----------
+        rawfile : str
+            Path to raw chat file
 
         Returns
         -------
@@ -397,15 +412,21 @@ class LogCleaning:
             List of lines from log
         """
         # read raw log
-        logger.info('Reading log: %s', self.rawfile)
-        with open(self.rawfile, 'r', encoding='utf-8') as f:
+        logger.info('Reading log: %s', rawfile)
+        with open(rawfile, 'r', encoding='utf-8') as f:
             lines = f.readlines()
             lines = [line.lstrip() for line in tqdm(lines)]
         return lines
 
-    def prep_log(self):
+    @classmethod
+    def prep_log(cls, rawfile):
         """Read log and do some preprocessing. Remove usernames and only
         return valid lines
+
+        Parameters
+        ----------
+        rawfile : str
+            Path to raw chat data
 
         Returns
         -------
@@ -413,11 +434,11 @@ class LogCleaning:
             List of valid lines from log with usernames removed
         """
         # prep log
-        self.lines = self.read_log()
+        lines = cls.read_log(rawfile)
         logger.info('Prepping log')
         return [utilities.delete_usernames(
             re.sub('"', '\'', line)).rstrip('\n').rstrip().lstrip()
-            for line in tqdm(self.lines) if self.is_valid_line(line)]
+            for line in tqdm(lines) if cls.is_valid_line(line)]
 
     def review_messages(self, tocheck, bmsgs, cmsgs, ctmp, probs):
         """Perform initial review on temporarily clean messages
@@ -605,14 +626,21 @@ class LogCleaning:
 
         return texts, y
 
-    def clean_log(self):
+    def clean_log(self, rawfile, cleanfile=None):
         """Clean log. Do preprocessing and classify messages according to
         whether they were timed out or banned by a moderator. Manually check
         some lines if they contain certain phrases or if they were moderated
         by this bot.
+
+        Parameters
+        ----------
+        rawfile : str
+            Path to raw chat data
+        cleanfile : str
+            Path to clean output file
         """
         # prep log
-        lines = self.prep_log()
+        lines = self.prep_log(rawfile)
         self.mem.build_full_memory(lines)
         self.mem.chunk_memory()
         memory = self.mem.chunks
@@ -640,7 +668,10 @@ class LogCleaning:
                         and not memory[user][0]['isMod']
                         and not memory[user][0]['isPartner']):
 
-                    if any(m['banned'] for m in memory[user]):
+                    ban_check = any(m['banned'] for m in memory[user])
+                    ban_check = ban_check or any(m['deleted'] for m
+                                                 in memory[user])
+                    if ban_check:
                         banned_user_count += 1
                     else:
                         clean_user_count += 1
@@ -661,7 +692,10 @@ class LogCleaning:
                                                          cmsgs, ctmp, probs)
             bmsgs, cmsgs = self.further_review(tocheck, bmsgs, cmsgs)
         texts, y = self.append_messages(bmsgs, cmsgs)
-        write_data(self.cleanfile, texts, y)
+        if cleanfile is not None:
+            write_data(cleanfile, texts, y)
+        else:
+            return texts, y
 
 
 def get_info_from_chatty(line):
@@ -680,12 +714,14 @@ def get_info_from_chatty(line):
     info = copy.deepcopy(utilities.INFO_DEFAULT)
     user = line.split('>')[0]
     user = user.strip('<')
+    info['line'] = line
     info['isSub'] = utilities.is_user_type_chatty("sub", user)
     info['isMod'] = utilities.is_user_type_chatty("mod", user)
     info['isVip'] = utilities.is_user_type_chatty("vip", user)
     info['isPartner'] = utilities.is_user_type_chatty("partner", user)
     info['isPleb'] = utilities.is_user_type_chatty("pleb", user)
     info['msg'] = line[line.index('>') + 1:].lstrip()
+    info['raw_msg'] = line[line.index('>') + 1:].lstrip()
     info['user'] = utilities.remove_special_chars(user).lower()
     return info
 
@@ -769,6 +805,7 @@ class MsgMemory:
             user = line.split()[1].lower()
             self.memory[user][-1]['banned'] = True
         except Exception:
+            logger.warning(f'Could not update banned status for line: {line}')
             pass
 
     def update_deleted_status(self, line):
@@ -781,8 +818,24 @@ class MsgMemory:
         """
         try:
             user = line.split()[1].lower()
+            msg = ' '.join(line.split()[2:]).strip('(').strip(')')
+            tmp_act_msg = utilities.remove_special_chars(msg)
+            tmp_act_msg = tmp_act_msg.replace(' ', '')
+            tmp_mem_msg = utilities.remove_special_chars(
+                self.memory[user][-1]['raw_msg'])
+            tmp_mem_msg = tmp_mem_msg.replace(' ', '')
+            if tmp_mem_msg != tmp_act_msg:
+                logger.info('Found conflicting delete action. '
+                            f'Action message: {msg}. Memory message: '
+                            f'{self.memory[user][-1]["raw_msg"]}')
+                info = copy.deepcopy(utilities.INFO_DEFAULT)
+                info['raw_msg'] = info['msg'] = msg
+                info['user'] = user
+                info['line'] = line
+                self.add_msg(info)
             self.memory[user][-1]['deleted'] = True
         except Exception:
+            logger.warning(f'Could not update deleted status for line: {line}')
             pass
 
     def update_mod_action_status(self, line):
@@ -796,8 +849,27 @@ class MsgMemory:
         try:
             user = line.split()[3].lower()
             mod = line.split()[1].lower()
+            action = line.split()[2].lower().replace('(', '')
+            if 'delete' in action:
+                msg = ' '.join(line.split()[4:]).strip('(').strip(')')
+                tmp_act_msg = utilities.remove_special_chars(msg)
+                tmp_act_msg = tmp_act_msg.replace(' ', '')
+                tmp_mem_msg = utilities.remove_special_chars(
+                    self.memory[user][-1]['raw_msg'])
+                tmp_mem_msg = tmp_mem_msg.replace(' ', '')
+                if tmp_mem_msg != tmp_act_msg:
+                    logger.info('Found conflicting mod action. '
+                                f'Action message: {msg}. Memory message: '
+                                f'{self.memory[user][-1]["raw_msg"]}')
+                    info = copy.deepcopy(utilities.INFO_DEFAULT)
+                    info['raw_msg'] = info['msg'] = msg
+                    info['deleted'] = True
+                    info['user'] = user
+                    info['line'] = line
+                    self.add_msg(info)
             self.memory[user][-1]['mod'] = mod
         except Exception:
+            logger.warning(f'Could not update mod status for line: {line}')
             pass
 
     def build_full_memory(self, lines):
@@ -810,6 +882,8 @@ class MsgMemory:
         """
         logger.info("Building full memory")
         for line in tqdm(lines):
+            action_check = ('(ban' in line or '(delete' in line
+                            or '(timeout' in line)
             if line.startswith('<'):
                 info = get_info_from_chatty(line)
                 self.add_msg(info)
@@ -817,7 +891,7 @@ class MsgMemory:
                 self.update_banned_status(line)
             elif line.startswith('DELETED:'):
                 self.update_deleted_status(line)
-            elif line.startswith('MOD_ACTION:'):
+            elif line.startswith('MOD_ACTION:') and action_check:
                 self.update_mod_action_status(line)
 
     def chunk_memory(self):

@@ -130,9 +130,9 @@ def clean_log(config, infile, outfile, filt=False,
 
     if config.clean:
         # clean log
-        cl = pp.LogCleaning(config, infile, outfile, wc)
+        cl = pp.LogCleaning(config, wc)
         logger.info('Cleaning log')
-        cl.clean_log()
+        cl.clean_log(infile, outfile)
 
     if filt:
         # filter log
