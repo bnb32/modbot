@@ -1592,7 +1592,7 @@ class BertCnnTorch(NNmodel):
 
     SEED = 42
     MAX_SEQUENCE_LENGTH = 64
-    DLOADER_ARGS = {'num_workers': 2, 'pin_memory': True}
+    DLOADER_ARGS = {'num_workers': 1, 'pin_memory': True}
     LEARNING_RATE = 2e-5
     EMBED_SIZE = 768
 
