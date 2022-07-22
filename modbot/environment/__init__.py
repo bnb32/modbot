@@ -201,9 +201,10 @@ class BaseConfig:
         args : parser.parse_args
             Args from argparser with which to update config
         """
-
         args.model_type = (args.model_type if args.model_type is not None
                            else self.MODEL_TYPE)
+        args.model_path = (args.model_path if args.model_path is not None
+                           else self.MODEL_PATH)
         args.model_path = (get_model_path(args.model_type)
                            if args.model_path is None else args.model_path)
         for key in vars(args):

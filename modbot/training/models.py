@@ -18,8 +18,7 @@ import tensorflow_text as tf_text  # pylint: disable=unused-import # noqa: F401
 from torch import nn
 import torch.nn.functional as F
 import torch
-from torch.utils.data import (TensorDataset, DataLoader, RandomSampler,
-                              SequentialSampler)
+from torch.utils.data import (TensorDataset, DataLoader, SequentialSampler)
 from torch.optim import AdamW
 
 from transformers import (BertModel, get_linear_schedule_with_warmup)
@@ -432,6 +431,9 @@ class ModerationModel(ABC):
                    'this game sucks',
                    'you look tired',
                    'im so tired',
+                   'ass',
+                   'you have a nice ass',
+                   'this song is ass'
                    ]
 
         predictions = [round(p, 3) for p in self.predict_one(phrases)]
@@ -439,11 +441,13 @@ class ModerationModel(ABC):
         test = pd.DataFrame({'text': phrases, 'probs': predictions})
         return test
 
-    def detailed_score(self, n_matches=10, out_dir=None):
+    def detailed_score(self, test_gen=None, n_matches=10, out_dir=None):
         """Score model and print confusion matrix and multiple other metrics
 
         Parameters
         ----------
+        test_gen : WeightedGenerator
+            generator for test data
         n_matches : int
             Number of positive matches to print
         out_dir : str | None
@@ -454,21 +458,30 @@ class ModerationModel(ABC):
         df_scores : pd.DataFrame
             A dataframe containing all model scores
         """
+        if test_gen is not None:
+            X, Y = test_gen.X, test_gen.Y
+        else:
+            X, Y = self.X_test, self.Y_test
 
         pd.set_option('display.max_columns', None)
         logger.info('Getting detailed info on model performance')
-        preds = self.predict_one(self.X_test, verbose=True)
+        preds = self.predict_one(X, verbose=True)
         discrete_preds = [int(p > 0.5) for p in preds]
-        confusion = confusion_matrix(self.Y_test, discrete_preds)
+        confusion = confusion_matrix(Y, discrete_preds)
 
-        logger.info(f'Getting info on matches across {len(self.X_test)} '
+        logger.info(f'Getting info on matches across {len(X)} '
                     'samples')
-        indices = np.where(self.Y_test == discrete_preds)[0]
-        one_indices = [i for i in indices if self.Y_test[i] == 1][:n_matches]
-        zero_indices = [i for i in indices if self.Y_test[i] == 0][:n_matches]
-        X_ones = [self.X_test[i] for i in one_indices]
-        X_zeros = [self.X_test[i] for i in zero_indices]
-        X_match = X_ones + X_zeros
+        one_mask = (Y == discrete_preds) & (Y == 1)
+        zero_mask = (Y == discrete_preds) & (Y == 0)
+        one_indices = np.where(one_mask)[0]
+        np.random.shuffle(one_indices)
+        one_indices = one_indices[:n_matches]
+        zero_indices = np.where(zero_mask)[0]
+        np.random.shuffle(zero_indices)
+        zero_indices = zero_indices[:n_matches]
+        X_ones = np.array(X)[one_indices]
+        X_zeros = np.array(X)[zero_indices]
+        X_match = np.concatenate([X_ones, X_zeros])
         one_probs = [round(preds[i], 3) for i in one_indices]
         zero_probs = [round(preds[i], 3) for i in zero_indices]
         probs = np.concatenate([one_probs, zero_probs])
@@ -486,10 +499,10 @@ class ModerationModel(ABC):
         test_zeros = sum(confusion[0][:])
 
         df_scores = pd.DataFrame(
-            {'precision': precision_score(self.Y_test, discrete_preds),
-             'recall': recall_score(self.Y_test, discrete_preds),
-             'jaccard': jaccard_score(self.Y_test, discrete_preds),
-             'F1': f1_score(self.Y_test, discrete_preds),
+            {'precision': precision_score(Y, discrete_preds),
+             'recall': recall_score(Y, discrete_preds),
+             'jaccard': jaccard_score(Y, discrete_preds),
+             'F1': f1_score(Y, discrete_preds),
              'TP': confusion[1][1] / test_ones,
              'FP': confusion[0][1] / test_zeros,
              'TN': confusion[0][0] / test_zeros,
@@ -540,7 +553,7 @@ class ModerationModel(ABC):
 
     @classmethod
     @abstractmethod
-    def load(cls, inpath):
+    def load(cls, inpath, **kwargs):
         """Load model from path"""
 
     @abstractmethod
@@ -622,9 +635,9 @@ class NNmodel(ModerationModel):
         logger.info(f'Model layers: {self.layer_names}')
 
     @property
-    @abstractmethod
     def __name__(self):
         """Model name"""
+        return "BASE_NN_MODEL"
 
     @staticmethod
     def standardize_grams(grams):
@@ -875,13 +888,7 @@ class NNmodel(ModerationModel):
         X : list | ndarray | pd.DataFrame
             Set of transformed texts ready to send to model
         """
-        if (hasattr(self, 'layer_names')
-                and self.layer_names[0] == 'token_embedder'):
-            logger.info('Transforming text input')
-            X = self.vectorizer.transform(X)
-        else:
-            X = self.clean_texts(X)
-        return X
+        return self.clean_texts(X)
 
     def fit(self, train_gen, test_gen, epochs=5):
         """Fit model
@@ -947,7 +954,7 @@ class NNmodel(ModerationModel):
         return accr
 
     @classmethod
-    def load(cls, inpath):
+    def load(cls, inpath, **kwargs):
         """Load model
 
         Parameters
@@ -970,7 +977,7 @@ class NNmodel(ModerationModel):
             vec = TokVectorizer.load(vec_path)
         else:
             vec = None
-        model = cls(clf=clf, vec=vec, model_path=inpath)
+        model = cls(clf=clf, vec=vec, model_path=inpath, **kwargs)
         history_path = os.path.join(model_dir, 'history.csv')
         if os.path.exists(history_path):
             model.history = pd.read_csv(history_path)
@@ -1107,6 +1114,9 @@ class CNN(NNmodel):
                       optimizer=optimizers.Adam(1e-4),
                       metrics=['accuracy'])
         return model
+
+    def transform(self, X):
+        return self.vectorizer.transform(X)
 
     @property
     def __name__(self):
@@ -1491,7 +1501,7 @@ class SVM(ModerationModel):
         return self.vectorizer.transform(X)
 
     @classmethod
-    def load(cls, inpath):
+    def load(cls, inpath, **kwargs):
         """Load SVM model from path
 
         Parameters
@@ -1506,9 +1516,7 @@ class SVM(ModerationModel):
         """
         logger.info(f'Loading {cls.__name__} model from {inpath}')
         model = joblib.load(inpath)
-        model = cls(model=model)
-
-        return model
+        return cls(model=model, **kwargs)
 
 
 class KMeansComponent:
@@ -1587,69 +1595,63 @@ class BertCnnTorchModel(nn.Module):
         return self.sigmoid(logit)
 
 
-class BertCnnTorch(NNmodel):
-    """Bert Cnn model pytorch implementation"""
+class TorchModel(NNmodel):
+    """Base torch model"""
 
     SEED = 42
     MAX_SEQUENCE_LENGTH = 64
     DLOADER_ARGS = {'num_workers': 1, 'pin_memory': True}
     LEARNING_RATE = 2e-5
     EMBED_SIZE = 768
+    LOSS_FUNCTION = nn.BCELoss()
 
-    def __init__(self, texts=None, checkpoint=None, embed_size=None, lr=None):
+    def __init__(self, checkpoint=None, embed_size=None, lr=None,
+                 device='gpu'):
         embed_size = embed_size if embed_size is not None else self.EMBED_SIZE
         lr = lr if lr is not None else self.LEARNING_RATE
-        if torch.cuda.is_available():
-            logger.info('**Using GPU for training**')
+        if torch.cuda.is_available() and device == 'gpu':
+            logger.info('**Using GPU for training/inference**')
             self.device = torch.device("cuda:0")
         else:
-            logger.info('**Using CPU for training**')
+            logger.info('**Using CPU for training/inference**')
             self.device = torch.device("cpu")
 
         self.clf = self.build_layers(embed_size)
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.optimizer = AdamW(self.clf.parameters(), lr=lr, weight_decay=0.9)
         self.best_score = -np.inf
         self.epoch = 0
         if checkpoint is not None:
-            self.clf.load_state_dict(checkpoint['model_state'])
-            self.clf.to(self.device)
-            self.best_score = checkpoint['best_score']
-            self.epoch = checkpoint['epoch'] + 1
-            self.optimizer.load_state_dict(checkpoint['optimizer_state'])
-            logger.info('Loaded checkpoint with epoch, best_score: '
-                        f'{self.epoch}, {self.best_score}')
+            self.load_checkpoint(checkpoint)
+
+    def loss_fn(self, preds, truth):
+        """Loss function"""
+        return self.LOSS_FUNCTION(preds, truth)
+
+    def load_checkpoint(self, checkpoint):
+        """Load model from checkpoint"""
+        self.clf.load_state_dict(checkpoint['model_state'])
+        self.clf.to(self.device)
+        self.best_score = checkpoint['best_score']
+        self.epoch = checkpoint['epoch'] + 1
+        self.optimizer.load_state_dict(checkpoint['optimizer_state'])
+        logger.info(f'Loaded checkpoint with epoch ({self.epoch}) '
+                    f'best_score ({round(self.best_score, 3)})')
 
     @property
     def __name__(self):
-        return "BERT_CNN_TORCH"
+        return "BASE_TORCH_MODEL"
 
+    @abstractmethod
     def build_layers(self, embed_size):
-        return BertCnnTorchModel(embed_size)
+        """Build model layers"""
 
-    def prepare_set(self, text, max_length=None):
-        """returns input_ids, attention_mask, token_type_ids for set of data
-        ready in BERT format"""
-        max_length = (max_length if max_length is not None
-                      else self.MAX_SEQUENCE_LENGTH)
-        text = self.clean_texts(text)
-        t = self.tokenizer.batch_encode_plus(list(text), padding='max_length',
-                                             add_special_tokens=True,
-                                             max_length=max_length,
-                                             return_tensors='pt',
-                                             truncation=True)
+    @abstractmethod
+    def transform(self, X, Y=None, max_length=None, batch_size=None):
+        """returns dataloader for input to training or prediction methods"""
 
-        return t["input_ids"], t["attention_mask"], t["token_type_ids"]
-
-    def predict_proba(self, X, verbose=False, batch_size=64):
+    def predict_proba(self, X, verbose=False, batch_size=128):
         """Make prediction on input texts"""
-        test_inputs, test_masks, test_type_ids = self.prepare_set(X)
-        test_data = TensorDataset(test_inputs, test_masks, test_type_ids)
-        test_sampler = SequentialSampler(test_data)
-        test_dataloader = DataLoader(test_data, sampler=test_sampler,
-                                     batch_size=batch_size,
-                                     **self.DLOADER_ARGS)
-
+        test_dataloader = self.transform(X, batch_size=batch_size)
         self.clf.eval()
         with torch.no_grad():
             preds = []
@@ -1665,6 +1667,14 @@ class BertCnnTorch(NNmodel):
                 preds += list(y_pred.cpu().numpy().flatten())
 
         return [[1 - x, x] for x in preds]
+
+    @staticmethod
+    def eval_score(df_scores):
+        """Evaluation score to determine whether to save model"""
+        tp = float(df_scores['TP'])
+        tn = float(df_scores['TN'])
+        f1 = float(df_scores['F1'])
+        return round(10 * tn + tp + f1, 5)
 
     def evaluate(self, dev_dataloader, epoch, loss_fn):
         """Evaluate model on test data"""
@@ -1687,28 +1697,20 @@ class BertCnnTorch(NNmodel):
         return val_loss, val_preds
 
     def train(self, train_gen, test_gen, **kwargs):
-        """Train pytorch bert cnn model"""
+        """Train pytorch model"""
         epochs = kwargs.get('epochs', 10)
         model_path = kwargs.get('model_path', None)
-        batch_size = kwargs.get('batch_size', 24)
+        batch_size = kwargs.get('batch_size', 128)
         max_length = kwargs.get('max_length', self.MAX_SEQUENCE_LENGTH)
         eval_steps = kwargs.get('eval_steps', 100)
-        x_train = train_gen.X
-        y_train = train_gen.Y
         self.get_class_info()
-        y_train = torch.FloatTensor(y_train)
 
         logger.info('Encoding training data')
-        out = self.prepare_set(x_train, max_length=max_length)
-        train_inputs, train_masks, train_type_ids = out
-        train_data = TensorDataset(train_inputs, train_masks, train_type_ids,
-                                   y_train)
-        train_sampler = RandomSampler(train_data)
-        train_dataloader = DataLoader(train_data, sampler=train_sampler,
-                                      batch_size=batch_size,
-                                      **self.DLOADER_ARGS)
+        train_dataloader = self.transform(X=train_gen.X,
+                                          Y=torch.FloatTensor(train_gen.Y),
+                                          max_length=max_length,
+                                          batch_size=batch_size)
         self.clf.to(self.device)
-        loss_fn = nn.BCELoss()
         train_losses = []
         np.random.seed(self.SEED)
         torch.manual_seed(self.SEED)
@@ -1726,44 +1728,46 @@ class BertCnnTorch(NNmodel):
         logger.info('Starting training')
         start_epoch = self.epoch
         end_epoch = start_epoch + epochs
-        epoch_count = 0
         for epoch in range(start_epoch, end_epoch):
             self.epoch = epoch
             train_loss = 0
             self.clf.train(True)
             logger.info(f'Training on {len(train_dataloader)} batches for '
                         f'epoch {epoch}')
-            batch_count = 0
+            step_count = 0
             for batch in tqdm(train_dataloader):
-                step_count = len(train_dataloader) * epoch_count + batch_count
                 out = tuple(t.to(self.device) for t in batch)
                 b_input_ids, b_input_mask, b_token_type_ids, b_labels = out
                 y_pred = self.clf(b_input_ids, b_input_mask,
                                   b_token_type_ids)
-                loss = loss_fn(y_pred, b_labels.unsqueeze(1))
+                loss = self.loss_fn(y_pred, b_labels.unsqueeze(1))
                 loss.backward()
                 self.optimizer.step()
                 train_loss += loss.item()
                 scheduler.step()
-                batch_count += 1
                 for param in self.clf.parameters():
                     param.grad = None
 
-                eval_check = (step_count % (eval_steps - 1) == 0
+                eval_check = (step_count % eval_steps == 0
                               or step_count % (train_batches - 1) == 0)
                 eval_check = eval_check and step_count > 0
+                step_count += 1
                 if eval_check:
                     self.clf.eval()
-                    scores = self.detailed_score()
-                    if float(scores['F1']) > self.best_score:
-                        self.best_score = float(scores['F1'])
+                    score = self.eval_score(self.detailed_score(test_gen))
+                    msg = f'Epoch: {epoch}. New score: {score}. '
+                    msg += f'Old score: {self.best_score}.'
+                    logger.info(msg)
+                    if score > self.best_score:
+                        self.best_score = score
                         self.save(model_path)
                     self.clf.train(True)
-            epoch_count += 1
             train_losses.append(train_loss)
 
         if model_path is not None:
-            self.clf.load_state_dict(torch.load(model_path)['model_state'])
+            checkpoint = torch.load(model_path)
+            self.clf.load_state_dict(checkpoint['model_state'])
+            self.optimizer.load_state_dict(checkpoint['optimizer_state'])
         self.clf.to(self.device)
         self.clf.eval()
         return self.clf
@@ -1781,12 +1785,63 @@ class BertCnnTorch(NNmodel):
             logger.info(f'Outpath is None. Not saving {self.__name__} model')
 
     @classmethod
-    def load(cls, inpath):
+    def load(cls, inpath, **kwargs):
         """Load pytorch model"""
         if inpath is not None:
             logger.info(f'Loading {cls.__name__} model from {inpath}')
-            model = cls(checkpoint=torch.load(inpath))
+            model = cls(checkpoint=torch.load(inpath), **kwargs)
             return model
         else:
             logger.info(f'Inpath is not None. Not loading {cls.__name__} '
                         f'model.')
+
+
+class BertCnnTorch(TorchModel):
+    """Bert Cnn model pytorch implementation"""
+
+    def __init__(self, *args, **kwargs):
+        """Initialize model
+
+        Parameters
+        ----------
+        args
+            same args as base class
+        kwargs
+            same kwargs as base class
+        """
+        super().__init__(*args, **kwargs)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    def loss_fn(self, preds, truth):
+        fp = torch.sum(preds * (1 - truth)) / len(preds)
+        fn = torch.sum((1 - preds) * truth) / len(preds)
+        loss = 10 * fp + fn + self.LOSS_FUNCTION(preds, truth)
+        return loss
+
+    @property
+    def __name__(self):
+        return "BERT_CNN_TORCH"
+
+    def build_layers(self, embed_size):
+        return BertCnnTorchModel(embed_size)
+
+    def transform(self, X, Y=None, max_length=None, batch_size=None):
+        """returns dataloader for input to training or prediction methods"""
+        max_length = (max_length if max_length is not None
+                      else self.MAX_SEQUENCE_LENGTH)
+        t = self.tokenizer.batch_encode_plus(list(self.clean_texts(X)),
+                                             padding='max_length',
+                                             add_special_tokens=True,
+                                             max_length=max_length,
+                                             return_tensors='pt',
+                                             truncation=True)
+        if Y is not None:
+            out = TensorDataset(t["input_ids"], t["attention_mask"],
+                                t["token_type_ids"], Y)
+        else:
+            out = TensorDataset(t["input_ids"], t["attention_mask"],
+                                t["token_type_ids"])
+        sampler = SequentialSampler(out)
+        out = DataLoader(out, sampler=sampler, batch_size=batch_size,
+                         **self.DLOADER_ARGS)
+        return out

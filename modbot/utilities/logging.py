@@ -60,15 +60,30 @@ def get_logger(level=18):
         logging.Logger.chat = chat
         logging.Logger.mod = mod
 
-        logger.setLevel(level)
         sh = logging.StreamHandler(stdout)
-        sh.setLevel(level)
         formatter = logging.Formatter(
             '[%(levelname)s] %(filename)s:%(lineno)d %(asctime)s %(message)s')
         sh.setFormatter(formatter)
+        sh.setLevel(level)
         logger.addHandler(sh)
+        logger.setLevel(level)
         logger.propagate = False
     return logger
+
+
+def update_logger_level(logger, level):
+    """Update logger level
+
+    Parameters
+    ----------
+    logger : modbot_logger
+        Logger object
+    level : int
+        New level
+    """
+    for sh in logger.handlers:
+        sh.setLevel(level)
+    logger.setLevel(level)
 
 
 class Logging:

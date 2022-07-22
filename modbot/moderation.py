@@ -253,7 +253,7 @@ class Moderation(Permitting, Nuking):
         model : LSTM | SVM | CNN
         """
         MODEL_CLASS = get_model_class(run_config.MODEL_TYPE)
-        model = MODEL_CLASS.load(run_config.MODEL_PATH)
+        model = MODEL_CLASS.load(run_config.MODEL_PATH, device='cpu')
         return model
 
     def filter_words(self, texts):
@@ -543,8 +543,7 @@ class Moderation(Permitting, Nuking):
         """
         if message is not None:
             message_temp = f"PRIVMSG #{self.run_config.CHANNEL} :{message}"
-            tmp = message_temp + "\r\n"
-            stream_writer.write(tmp.encode("utf-8"))
+            stream_writer.write(message_temp)
             if info is None:
                 logger.mod(f"Sent: {message_temp}")
             else:

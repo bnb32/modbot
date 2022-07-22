@@ -34,8 +34,9 @@ if __name__ == '__main__':
 
     logger.info('Running with configuration:\n'
                 f'{pprint.pformat(config.public_attrs, indent=1)}')
-    logger.info('Saving configuration')
-    config.save(config.MODEL_PATH)
+    if config.train:
+        logger.info('Saving configuration')
+        config.save(config.MODEL_PATH)
 
     TMP_DIR = os.path.join(config.DATA_DIR, 'tmp')
     os.makedirs(TMP_DIR, exist_ok=True)

@@ -18,7 +18,7 @@ BERT_ENCODER += 'bert_en_uncased_L-2_H-128_A-2/2'
 def modbot_argparse():
     """Parse args for modbot run"""
     parser = argparse.ArgumentParser(description="Run moderation bot")
-    parser.add_argument('-config', type=str, default=None,
+    parser.add_argument('-config', '-c', type=str, default=None,
                         help='Configuration file')
     parser.add_argument('-model_path', default=None,
                         type=none_or_str, help='Path to model')

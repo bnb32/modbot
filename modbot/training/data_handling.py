@@ -143,8 +143,7 @@ class WeightedGenerator(DataGenerator):
 
         msg = ('Must have at least one sample for each class. Received a '
                f'sample_size and val_split that resulted in n_ones={n_ones} '
-               f'and n_zeros={n_zeros}. Increase the sample_size or the '
-               'val_split.')
+               f'and n_zeros={n_zeros}. Increase sample_size or val_split.')
         assert n_ones > 0 and n_zeros > 0, msg
 
         zeros = indices['index'][Y == 0].sample(

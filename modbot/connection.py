@@ -2,6 +2,7 @@
 import requests
 from websockets.client import connect as ws_connect
 from notify_run import Notify
+import socket
 import asyncio
 import uuid
 import json
@@ -14,16 +15,75 @@ from modbot.utilities.utilities import get_line_type, date_time
 
 logger = get_logger()
 
-ping_msg = "PING :tmi.twitch.tv\r\n"
-pong_out_msg = "PONG :tmi.twitch.tv\r\n"
-pong_in_msg = "PONG tmi.twitch.tv"
 
-authURL = "https://id.twitch.tv/oauth2/token"
-userURL = "https://api.twitch.tv/helix/users?login=%s"
+class StreamHandler:
+    """Class to handle reading from and writing to stream"""
+    __HOST = 'irc.chat.twitch.tv'
+    __PORT = 6667
+    __SOCKET = None
+
+    def __init__(self, writer=None, reader=None):
+        if writer is None or reader is None:
+            self.__SOCKET = socket.socket()
+            self.__SOCKET.connect((self.__HOST, self.__PORT))
+            self._write = self.__SOCKET.send
+            self._read = self.__SOCKET.recv
+            logger.info(f'Connected to {self.__HOST} on port {self.__PORT}')
+        else:
+            self._write = writer.write
+            self._read = reader.read
+
+    def write(self, message):
+        """Send IRC message"""
+        msg = message + '\r\n'
+        msg = msg.encode('utf-8')
+        logger.extra_verbose(f'Sending message: {message}')
+        self._write(msg)
+
+    def read(self, buffer_size):
+        """Read IRC message"""
+        data = b''
+        while True:
+            part = self._read(buffer_size)
+            data += part
+            if len(part) < buffer_size:
+                break
+        logger.extra_verbose(f'Reading message: {data}')
+        data = data.decode('utf-8')
+        return data
+
+    def close_connection(self):
+        """Close the connection"""
+        if self.__SOCKET is not None:
+            self.__SOCKET.close()
+            logger.info('IRC connection closed')
 
 
-class IrcSocketClient(Logging, Moderation):
-    """Class to handle IRC connection"""
+class StreamHandlerAsync(StreamHandler):
+    """A stream handler class for asynchronous IO."""
+
+    async def read(self, buffer_size):
+        """Read IRC message"""
+        data = b''
+        while True:
+            part = await self._read(buffer_size)
+            data += part
+            if len(part) < buffer_size:
+                break
+        logger.extra_verbose(f'Reading message: {data}')
+        data = data.decode('utf-8')
+        return data
+
+
+class IrcSocketClientMixIn(Logging, Moderation):
+    """Class with base methods for IrcSocketClient subclasses"""
+    _PING_MSG = "PING :tmi.twitch.tv"
+    _PONG_OUT_MSG = "PONG :tmi.twitch.tv"
+    _PONG_IN_MSG = "PONG tmi.twitch.tv"
+    _HOST = 'irc.chat.twitch.tv'
+    _PORT = 6667
+    _WAIT_TIME = 300
+
     def __init__(self, run_config):
         """
         Parameters
@@ -33,66 +93,40 @@ class IrcSocketClient(Logging, Moderation):
         """
         Logging.__init__(self, run_config)
         Moderation.__init__(self, run_config)
+        self.notify = Notify()
         self.last_ping = time.time()
         self.last_pong = time.time()
         self.last_msg_time = time.time()
-        self.ping_timeout = 60
-        self.sleep_time = 60
-        self.wait_time = 300
-        self.uri = 'irc.chat.twitch.tv'
-        self.port = 6667
-        self.reader = None
-        self.writer = None
-        self.notify = Notify()
+        self.shandler = None
         self.run_config = run_config
 
-    async def connect(self):
-        """Initiate IRC connection"""
-        try:
-            self.writer.write(ping_msg.encode("utf-8"))
-        except Exception:
-            logger.info('**Trying to connect to IRC**')
-            self.reader, self.writer = await asyncio.open_connection(self.uri,
-                                                                     self.port)
-            pwd = "PASS oauth:" + self.run_config._TOKEN + "\r\n"
-            self.writer.write(pwd.encode("utf-8"))
-            nick = "NICK " + self.run_config.NICKNAME + "\r\n"
-            self.writer.write(nick.encode("utf-8"))
-            chan = "JOIN #" + self.run_config.CHANNEL + "\r\n"
-            self.writer.write(chan.encode("utf-8"))
+    def _connect(self):
+        """Send initial messages for IRC connection"""
+        logger.info('**Trying to establish IRC connection to '
+                    f'{self.run_config.CHANNEL}**')
+        pwd = "PASS oauth:" + self.run_config._TOKEN
+        self.shandler.write(pwd)
+        nick = "NICK " + self.run_config.NICKNAME
+        self.shandler.write(nick)
+        chan = "JOIN #" + self.run_config.CHANNEL
+        self.shandler.write(chan)
+        line = "CAP REQ :twitch.tv/tags"
+        self.shandler.write(line)
+        line = "CAP REQ :twitch.tv/commands"
+        self.shandler.write(line)
+        line = "CAP REQ :twitch.tv/membership"
+        self.shandler.write(line)
 
-            loading = True
-            line = "CAP REQ :twitch.tv/tags\r\n"
-            self.writer.write(line.encode("utf-8"))
-            line = "CAP REQ :twitch.tv/commands\r\n"
-            self.writer.write(line.encode("utf-8"))
-            line = "CAP REQ :twitch.tv/membership\r\n"
-            self.writer.write(line.encode("utf-8"))
-
-            while loading:
-                line = await self.reader.read(1024)
-                line = line.decode("utf-8")
-                loading = ("End of /NAMES list" in line)
-                await asyncio.sleep(0.1)
-
-            logger.info('**IRC Connection established. IRC-Client correctly '
-                        f'connected to {self.run_config.CHANNEL}**')
-
-    async def receive_message(self):
-        """Receive IRC message"""
-        logger.extra_verbose('**Waiting for IRC message**')
-        line = await self.reader.read(1024)
-        line = line.decode("utf-8")
-
-        # keep connection
-        if line == ping_msg:
+    def handle_message(self, line):
+        """Receive non chat IRC messages"""
+        if self._PING_MSG in line:
             logger.verbose(f"**IRC Ping: {date_time()}**")
             self.last_ping = time.time()
-            self.writer.write(pong_out_msg.encode("utf-8"))
+            self.shandler.write(self._PONG_OUT_MSG)
             logger.verbose(f"**IRC Pong: {date_time()}**")
             self.last_pong = time.time()
             logger.verbose('**IRC connection still alive**')
-        elif pong_in_msg in line:
+        elif self._PONG_IN_MSG in line:
             logger.verbose(f"**IRC Ping: {date_time()}**")
             self.last_ping = time.time()
             logger.verbose(f"**IRC Pong: {date_time()}**")
@@ -111,64 +145,33 @@ class IrcSocketClient(Logging, Moderation):
         elif get_line_type(line) not in ['ban', 'delete', 'msg']:
             logger.extra_verbose(line)
         else:
-            # get info on line
-            await self.handle_message(line)
+            self._handle_message(line)
 
-    async def heartbeat(self):
-        """Keep IRC connection alive"""
-        if time.time() >= (self.last_ping + self.wait_time):
+    def heartbeat(self):
+        """Heartbeat routine for keeping IRC connection alive"""
+        if time.time() >= (self.last_ping + self._WAIT_TIME):
             logger.verbose(f"**IRC Ping: {date_time()}**")
             self.last_ping = time.time()
-            self.writer.write(ping_msg.encode("utf-8"))
+            self.shandler.write(self._PING_MSG)
             logger.verbose(f"**IRC Pong: {date_time()}**")
             self.last_pong = time.time()
             logger.verbose('**IRC Ping OK, keeping connection alive...**')
         else:
             pass
 
-    async def listen_forever(self):
-        """Listen for IRC connection"""
-        while True:
-            try:
-                await self.connect()
-                while True:
-                    try:
-                        await self.receive_message()
-                    except Exception:
-                        try:
-                            await self.heartbeat()
-                            continue
-                        except Exception:
-                            logger.info('**IRC Ping failed**')
-                            self.notify.send("Chatbot disconnnected")
-                            break
-
-            except KeyboardInterrupt:
-                logger.warning('Received exit, exiting IRC')
-                sys.exit()
-
-            except Exception:
-                logger.warning('Problem with IRC connection')
-                sys.exit()
-
-    async def handle_message(self, line):
-        """Handle moderation decisions based on IRC message"""
+    def _handle_message(self, line):
+        """Handle chat IRC messages"""
         info = self.get_info_from_irc(line)
         self.print_info(info)
-        self.send_reply(self.writer, info)
-        self.send_action(self.writer, info)
-
+        self.send_reply(self.shandler, info)
+        self.send_action(self.shandler, info)
         log_entry = self.build_chat_log_entry(info)
-
         if info['deleted']:
             log_entry = self.build_action_log_entry('delete', info['user'],
                                                     self.run_config.NICKNAME,
                                                     info['msg'], '', '')
-
             logger.mod(log_entry + f' ({info["prob"]})')
-
         self.UserLog[info['user']] = info['msg']
-
         # write to log
         try:
             self.append_log(log_entry)
@@ -177,8 +180,107 @@ class IrcSocketClient(Logging, Moderation):
             logger.warning(line)
 
 
-class WebSocketClient(Logging):
+class IrcSocketClient(IrcSocketClientMixIn):
+    """Class to handle IRC connection"""
+
+    def quit(self):
+        """Close IRC socket client"""
+        self.shandler.close_connection()
+
+    def connect(self):
+        """Initiate IRC connection"""
+        self._connect()
+        loading = True
+        while loading:
+            line = self.shandler.read(1024)
+            loading = ("End of /NAMES list" in line)
+
+        logger.info('**IRC-Client correctly connected to '
+                    f'{self.run_config.CHANNEL}**')
+
+    def listen_forever(self):
+        """Listen for IRC connection"""
+        self.connect()
+        try:
+            while True:
+                try:
+                    logger.extra_verbose('**Waiting for IRC message**')
+                    line = self.shandler.read(1024)
+                    self.handle_message(line)
+                except socket.timeout:
+                    try:
+                        self.heartbeat()
+                        continue
+                    except Exception:
+                        logger.info('**IRC Ping failed**')
+                        self.notify.send("Chatbot disconnnected")
+                        break
+
+        except KeyboardInterrupt:
+            logger.warning('Received exit, exiting IRC')
+
+        except Exception as e:
+            logger.warning(f'Unknown problem with IRC connection: {e}')
+            raise e
+
+
+class IrcSocketClientAsync(IrcSocketClientMixIn):
+    """Class to handle IRC connection"""
+
+    async def connect(self):
+        """Initiate IRC connection"""
+        logger.info('**Trying to connect to IRC**')
+        out = await asyncio.open_connection(self._HOST, self._PORT)
+        self.shandler = StreamHandlerAsync(reader=out[0], writer=out[1])
+        self._connect()
+        loading = True
+        while loading:
+            line = await self.shandler.read(1024)
+            loading = ("End of /NAMES list" in line)
+            await asyncio.sleep(0.1)
+        logger.info('**IRC Connection established. IRC-Client correctly '
+                    f'connected to {self.run_config.CHANNEL}**')
+
+    async def _heartbeat(self):
+        """Keep IRC connection alive"""
+        super().heartbeat()
+
+    async def listen_forever(self):
+        """Listen for IRC connection"""
+        await self.connect()
+        try:
+            while True:
+                try:
+                    logger.extra_verbose('**Waiting for IRC message**')
+                    line = await self.shandler.read(1024)
+                    self.handle_message(line)
+                except Exception:
+                    try:
+                        self.heartbeat()
+                        continue
+                    except Exception:
+                        logger.info('**IRC Ping failed**')
+                        self.notify.send("Chatbot disconnnected")
+                        break
+
+        except KeyboardInterrupt:
+            logger.warning('Received exit, exiting IRC')
+
+        except Exception as e:
+            logger.warning(f'Unknown problem with IRC connection: {e}')
+            raise e
+
+
+class WebSocketClientAsync(Logging):
     """Class to handle PubSub connection"""
+
+    _AUTH_URL = "https://id.twitch.tv/oauth2/token"
+    _USER_URL = "https://api.twitch.tv/helix/users?login={user}"
+    _URI = 'wss://pubsub-edge.twitch.tv'
+    _PING_TIMEOUT = 60
+    _WAIT_TIME = 300
+    _PRINT_TIME = 600
+
     def __init__(self, run_config):
         """
         Parameters
@@ -194,11 +296,8 @@ class WebSocketClient(Logging):
         self.message = {}
         self.last_ping = time.time()
         self.last_pong = time.time()
+        self.last_print = time.time()
         self.last_msg_time = time.time()
-        self.ping_timeout = 60
-        self.sleep_time = 60
-        self.wait_time = 300
-        self.uri = 'wss://pubsub-edge.twitch.tv'
         self.connected = False
         self.connection = None
 
@@ -218,11 +317,12 @@ class WebSocketClient(Logging):
         AutParams = {'client_id': self.run_config._CLIENT_ID,
                      'client_secret': self.run_config._CLIENT_SECRET,
                      'grant_type': 'client_credentials'}
-        AutCall = requests.post(url=authURL, params=AutParams)
+        AutCall = requests.post(url=self._AUTH_URL, params=AutParams)
         access_token = AutCall.json()['access_token']
         head = {'Client-ID': self.run_config._CLIENT_ID,
                 'Authorization': "Bearer " + access_token}
-        r = requests.get(userURL % user, headers=head).json()['data']
+        r = requests.get(self._USER_URL.format(user=user),
+                         headers=head).json()['data']
         return r[0]['id']
 
     @property
@@ -238,13 +338,14 @@ class WebSocketClient(Logging):
     async def heartbeat(self):
         """Keep PubSub connection alive"""
         self.last_ping = date_time()
-        logger.verbose('**PubSub Ping: %s**' % self.last_ping)
         pong = await self.connection.ping()
-        await asyncio.wait_for(pong, timeout=self.ping_timeout)
+        await asyncio.wait_for(pong, timeout=self._PING_TIMEOUT)
         self.last_pong = date_time()
-        logger.verbose('**PubSub Pong: %s**' % self.last_pong)
-
-        logger.verbose('**PubSub Ping OK, keeping connection alive...**')
+        if time.time() > (self.last_print + self._PRINT_TIME):
+            self.last_print = date_time()
+            logger.verbose('**PubSub Ping: %s**' % self.last_ping)
+            logger.verbose('**PubSub Pong: %s**' % self.last_pong)
+            logger.verbose('**PubSub Ping OK, keeping connection alive...**')
 
     def connection_status(self):
         """Report connection status"""
@@ -273,7 +374,7 @@ class WebSocketClient(Logging):
         """Recieve PubSub message"""
         logger.verbose('**Waiting for PubSub message**')
         message = await asyncio.wait_for(self.connection.recv(),
-                                         timeout=self.wait_time)
+                                         timeout=self._WAIT_TIME)
         self.last_msg_time = date_time()
         logger.verbose('**Message received: %s**' % self.last_msg_time)
 
@@ -285,7 +386,7 @@ class WebSocketClient(Logging):
         while True:
             try:
                 logger.info('**Trying to connect to PubSub**')
-                async with ws_connect(self.uri) as self.connection:
+                async with ws_connect(self._URI) as self.connection:
                     if self.connection.open:
                         await self.connect()
                         while True:
