@@ -1,9 +1,7 @@
 """Models"""
-from random import random
 import numpy as np
 import pandas as pd
 import dask.dataframe as dd
-import dask
 import os
 import tensorflow as tf
 import pickle
@@ -1460,8 +1458,9 @@ class SVM(ModerationModel):
         """
         self.get_class_info()
         logger.info('Training LinearSVM classifier')
-        train_gen.X = train_gen.X.apply(pp.correct_msg)
-        self.model.fit(train_gen.X, train_gen.Y)
+        train_gen.X = train_gen.X.apply(pp.correct_msg,
+                                        meta=('text', 'object'))
+        self.model.fit(train_gen.X.compute(), train_gen.Y.compute())
 
     def predict_proba(self, X, verbose=False):
         """Predict classification

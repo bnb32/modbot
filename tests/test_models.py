@@ -25,7 +25,7 @@ def test_model(MODEL):
     assert 0 <= float(prob) <= 1
 
 
-@pytest.mark.parametrize('MODEL', [(SVM), (BertCnnTorch)])
+@pytest.mark.parametrize('MODEL', MODELS)
 def test_model_save_load(MODEL):
     """Test model loading"""
     with tempfile.TemporaryDirectory() as td:
