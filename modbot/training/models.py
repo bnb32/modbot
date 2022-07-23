@@ -131,7 +131,6 @@ class ModerationModel(ABC):
         X : pd.DataFrame
             Pandas dataframe of cleaned texts
         """
-        print(X.shape)
         if isinstance(X, pd.Series):
             X = X.apply(cls.clean_text)
         elif isinstance(X, dd.Series):
@@ -139,7 +138,6 @@ class ModerationModel(ABC):
         else:
             for i, x in enumerate(X):
                 X[i] = cls.clean_text(x)
-        print(X.shape)
         return X
 
     @classmethod
