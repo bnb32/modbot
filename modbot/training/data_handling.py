@@ -1,4 +1,5 @@
 """Data handling module"""
+from attr import has
 import numpy as np
 import pandas as pd
 
@@ -18,18 +19,53 @@ class DataGenerator(utils.Sequence):
         Parameters
         ----------
         arrs : list
-            List of arrays to use for batching
+            List of pd.Dataframe objects to use for batching
         kwargs : dict
             Optional keyword arguments
         """
         self.batch_size = kwargs.get('batch_size', 64)
-        n_batches = kwargs.get('n_batches', None)
         self.arrs = arrs
-        self.indices = pd.DataFrame({'index': np.arange(len(arrs[0]))})
-        self.n_batches = (n_batches if n_batches is not None
-                          else int(np.ceil(len(arrs[0]) / self.batch_size)))
-        self.chunks = np.array_split(self.indices['index'], self.n_batches)
+        self._n_batches = kwargs.get('n_batches', None)
+        self._n_samples = None
+        self._indices = None
+        self._chunks = None
         self._i = 0
+
+    @property
+    def n_samples(self):
+        """Number of data samples"""
+        if self._n_samples is None:
+            self._n_samples = len(self.arrs[0])
+        return self._n_samples
+
+    @property
+    def indices(self):
+        """Indices for data samples"""
+        if self._indices is None:
+            if hasattr(self.arrs[0], 'index'):
+                self._indices = pd.Series(self.arrs[0].index)
+            else:
+                self._indices = pd.Series(list(range(self.n_samples)))
+        return self._indices
+
+    @indices.setter
+    def indices(self, indices):
+        """Update indices attribute"""
+        self._indices = indices
+
+    @property
+    def n_batches(self):
+        """Get number of batches based on batch size"""
+        if self._n_batches is None:
+            self._n_batches = int(np.ceil(len(self.arrs[0]) / self.batch_size))
+        return self._n_batches
+
+    @property
+    def chunks(self):
+        """Get index chunks for batching. Each chunk corresponds to a batch"""
+        if self._chunks is None:
+            self._chunks = np.array_split(self.indices, self.n_batches)
+        return self._chunks
 
     def __iter__(self):
         self._i = 0
@@ -58,8 +94,8 @@ class DataGenerator(utils.Sequence):
         arrs : list
             List of randomly selected data batches
         """
-        indices = self.indices['index'].sample(n=self.batch_size,
-                                               random_state=42, replace=True)
+        indices = self.indices.sample(n=self.batch_size, random_state=42,
+                                      replace=True)
         arrs = [arr[indices] for arr in self.arrs]
         return *arrs,
 
@@ -82,38 +118,67 @@ class DataGenerator(utils.Sequence):
 
 class WeightedGenerator(DataGenerator):
     """Generator class for training over batches"""
-    def __init__(self, X, Y, **kwargs):
+    def __init__(self, df, **kwargs):
         """Initialize data generator which provides generators for text and
         targets for training and evaluation
 
         Parameters
         ----------
-        X : pd.DataFrame
-            Pandas dataframe of texts
-        Y : pd.DataFrame
-            Pandas dataframe of labels for the corresponding texts
+        df : pd.DataFrame
+            Pandas dataframe of texts and labels
         """
+        self._one_count = None
+        self._zero_count = None
         offensive_weight = kwargs.get('offensive_weight', None)
         sample_size = kwargs.get('sample_size', None)
-        self.X, self.Y = self.sample(X, Y, offensive_weight=offensive_weight,
-                                     sample_size=sample_size)
-        super().__init__(arrs=[self.X, self.Y], **kwargs)
-        one_count = list(self.Y).count(1)
-        zero_count = list(self.Y).count(0)
-        frac = one_count / (zero_count + one_count)
-
+        indices = self.sample_indices(df['is_offensive'],
+                                      offensive_weight=offensive_weight,
+                                      sample_size=sample_size)
+        super().__init__([df['text'][indices], df['is_offensive'][indices]],
+                         **kwargs)
+        frac = self.one_count / (self.zero_count + self.one_count)
         logger.info(f'Using batch_size={self.batch_size}, '
                     f'n_batches={self.n_batches}, sample_size={sample_size}, '
                     f'offensive_weight={round(frac, 3)}')
 
+    @property
+    def one_count(self):
+        """Get number of samples with target=1"""
+        if self._one_count is None:
+            self._one_count = list(self.Y).count(1)
+        return self._one_count
+
+    @property
+    def zero_count(self):
+        """Get number of samples with target=0"""
+        if self._zero_count is None:
+            self._zero_count = list(self.Y).count(0)
+        return self._zero_count
+
+    @property
+    def X(self):
+        """alias for texts"""
+        return self.arrs[0]
+
+    @property
+    def Y(self):
+        """alias for targets"""
+        return self.arrs[1]
+
+    @X.setter
+    def X(self, value):
+        self.arrs[0] = value
+
+    @Y.setter
+    def Y(self, value):
+        self.arrs[1] = value
+
     @classmethod
-    def sample(cls, X, Y, offensive_weight=None, sample_size=None):
+    def sample_indices(cls, Y, offensive_weight=None, sample_size=None):
         """Sample data as per offensive weight
 
         Parameters
         ----------
-        X : pd.DataFrame
-            Pandas dataframe of texts
         Y : pd.DataFrame
             Pandas dataframe of labels for the corresponding texts
         offensive_weight : float
@@ -124,37 +189,35 @@ class WeightedGenerator(DataGenerator):
 
         Returns
         -------
-        X : pd.DataFrame
-            Pandas dataframe of texts with the requested sample size and
-            offensive weight
-        Y : pd.DataFrame
-            Pandas dataframe of labels for the corresponding texts with the
-            requested size and offensive weight
+        indices : np.array
+            Indices of the samples such that X[indices] is the requested sample
+            size with the requested offensive_weight
         """
         if offensive_weight is None:
             one_count = list(Y).count(1)
             zero_count = list(Y).count(0)
             offensive_weight = one_count / (zero_count + one_count)
         sample_size = len(Y) if sample_size is None else sample_size
-        indices = pd.DataFrame({'index': np.arange(len(Y))})
+        if hasattr(Y, 'index'):
+            indices = pd.Series(Y.index)
+        else:
+            indices = pd.Series(list(range(len(Y))))
         zero_weight = 1 - offensive_weight
         n_zeros = int(zero_weight * sample_size)
         n_ones = sample_size - n_zeros
 
         msg = ('Must have at least one sample for each class. Received a '
-               f'sample_size and val_split that resulted in n_ones={n_ones} '
-               f'and n_zeros={n_zeros}. Increase sample_size or val_split.')
+               f'sample_size and test_split that resulted in n_ones={n_ones} '
+               f'and n_zeros={n_zeros}. Increase sample_size or test_split.')
         assert n_ones > 0 and n_zeros > 0, msg
 
-        zeros = indices['index'][Y == 0].sample(
-            n=n_zeros, random_state=42, replace=True)
-        ones = indices['index'][Y == 1].sample(
-            n=n_ones, random_state=42, replace=True)
+        zeros = indices[Y == 0].sample(n=n_zeros, random_state=42,
+                                       replace=True)
+        ones = indices[Y == 1].sample(n=n_ones, random_state=42,
+                                      replace=True)
         new_indices = pd.concat([ones, zeros])
         new_indices = new_indices.sample(frac=1)
-        X = X[new_indices].reset_index(drop=True)
-        Y = Y[new_indices].reset_index(drop=True)
-        return X, Y
+        return new_indices
 
     def transform(self, function):
         """Transform texts with provided function

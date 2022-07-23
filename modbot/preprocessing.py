@@ -247,17 +247,20 @@ def write_data(outfile, texts, y):
     y : list
         List of targets to write to file
     """
+    index = 0
     with open(outfile, 'w', encoding='utf-8') as f:
         logger.info(f"Writing data: {outfile}")
-        f.write('is_offensive,text\n')
+        f.write('index,is_offensive,text\n')
         for t, v in zip(texts, y):
             if re.sub('[^A-Za-z]+', '', t) != "":
                 if int(v) == 1:
-                    f.write(f'{v},"{t}"\n')
+                    f.write(f'{index},{v},"{t}"\n')
+                    index += 1
         for t, v in zip(texts, y):
             if re.sub('[^A-Za-z]+', '', t) != "":
                 if int(v) == 0:
-                    f.write(f'{v},"{t}"\n')
+                    f.write(f'{index},{v},"{t}"\n')
+                    index += 1
 
 
 def check_msgs(line, checks):

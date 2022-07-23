@@ -41,7 +41,7 @@ def vectorize_and_train(config, data_file):
             batch_size=config.batch_size,
             n_batches=config.n_batches,
             sample_size=config.sample_size,
-            val_split=config.val_split,
+            test_split=config.test_split,
             eval_steps=config.eval_steps)
     else:
         model = MODEL_CLASS.run(
@@ -52,7 +52,7 @@ def vectorize_and_train(config, data_file):
             n_batches=config.n_batches,
             sample_size=config.sample_size,
             model_path=config.MODEL_PATH,
-            val_split=config.val_split,
+            test_split=config.test_split,
             bert_preprocess=config.bert_preprocess,
             bert_encoder=config.bert_encoder,
             eval_steps=config.eval_steps)

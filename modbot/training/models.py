@@ -1,6 +1,9 @@
 """Models"""
+from random import random
 import numpy as np
 import pandas as pd
+import dask.dataframe as dd
+import dask
 import os
 import tensorflow as tf
 import pickle
@@ -26,7 +29,6 @@ from transformers import BertTokenizerFast as BertTokenizer
 
 from keras import Sequential, losses, optimizers, callbacks, layers
 from keras.models import load_model
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import sklearn.feature_extraction.text as ft
 from sklearn import svm
@@ -36,6 +38,7 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import (confusion_matrix, precision_score, recall_score,
                              jaccard_score, f1_score)
 from dask_ml.cluster import KMeans
+from dask_ml.model_selection import train_test_split
 from scipy import sparse
 
 from modbot.training.vectorizers import TokVectorizer
@@ -128,8 +131,15 @@ class ModerationModel(ABC):
         X : pd.DataFrame
             Pandas dataframe of cleaned texts
         """
-        for i, x in enumerate(X):
-            X[i] = cls.clean_text(x)
+        print(X.shape)
+        if isinstance(X, pd.Series):
+            X = X.apply(cls.clean_text)
+        elif isinstance(X, dd.Series):
+            X = X.apply(cls.clean_text, meta=('text', 'object'))
+        else:
+            for i, x in enumerate(X):
+                X[i] = cls.clean_text(x)
+        print(X.shape)
         return X
 
     @classmethod
@@ -143,50 +153,37 @@ class ModerationModel(ABC):
 
         Returns
         -------
-        X : pd.DataFrame
-            Pandas dataframe of texts
-        Y : pd.DataFrame
-            Pandas dataframe of labels for the corresponding texts
+        df : pd.DataFrame
+            Pandas dataframe of texts and labels
         """
         logger.info('Reading in data: %s', data_file)
-        data = pd.read_csv(data_file)
-        data['text'] = data['text'].apply(cls.clean_text)
-        X = data['text'].astype(str)
-        Y = data['is_offensive']
-        return X, Y
+        data = dd.read_csv(data_file).set_index('index')
+        data['text'] = data['text'].apply(cls.clean_text,
+                                          meta=('text', 'object'))
+        return data
 
     @classmethod
-    def split_data(cls, X, Y, val_split=0.1):
+    def split_data(cls, df, test_split=0.1):
         """Split data into training and test sets
 
         Parameters
         -------
-        X : pd.DataFrame
-            Pandas dataframe of texts
-        Y : pd.DataFrame
-            Pandas dataframe of labels for the corresponding texts
+        df : pd.DataFrame
+            Pandas dataframe of texts and labels
+        test_split : float
+            Fraction of full dataset to use for test data
 
         Returns
         -------
-        X_train : pd.DataFrame
-            Pandas dataframe of texts for training
-        X_test : pd.DataFrame
-            Pandas dataframe of texts for evaluation
-        Y_train : pd.DataFrame
-            Pandas dataframe of labels for the corresponding training texts
-        Y_test : pd.DataFrame
-            Pandas dataframe of labels for the corresponding evaluation texts
+        df_train : pd.DataFrame
+            Pandas dataframe of texts and labels for training
+        df_test : pd.DataFrame
+            Pandas dataframe of texts and labels for testing
         """
         logger.info('Splitting data')
-        out = train_test_split(X, Y, test_size=val_split, random_state=42,
-                               stratify=Y)
-        X_train, X_test = out[:2]
-        X_train = X_train.reset_index(drop=True)
-        X_test = X_test.reset_index(drop=True)
-        Y_train, Y_test = out[2:]
-        Y_train = Y_train.reset_index(drop=True)
-        Y_test = Y_test.reset_index(drop=True)
-        return X_train, X_test, Y_train, Y_test
+        out = train_test_split(df, test_size=test_split, random_state=42,
+                               shuffle=True)
+        return out
 
     def score(self, X, Y):
         """Score model against targets
@@ -265,25 +262,25 @@ class ModerationModel(ABC):
         test_gen : WeightedGenerator
             WeightedGenerator instance used for evaluation batches
         """
-        val_split = kwargs.get('val_split', 0.1)
-        X, Y = cls.load_data(data_file)
-        X_train, X_test, Y_train, Y_test = cls.split_data(X, Y, val_split)
+        test_split = kwargs.get('test_split', 0.1)
+        df = cls.load_data(data_file)
+        df_train, df_test = cls.split_data(df, test_split)
         logger.info('Getting training data generator')
         train_sample_size = kwargs.get('sample_size', None)
-        train_sample_size = (len(Y_train) if train_sample_size is None
-                             else int((1 - val_split) * train_sample_size))
+        train_sample_size = (len(df_train) if train_sample_size is None
+                             else int((1 - test_split) * train_sample_size))
         train_kwargs = copy.deepcopy(kwargs)
         train_kwargs.update({'sample_size': train_sample_size})
         logger.info(f'Using train sample size: {train_sample_size}')
-        train_gen = WeightedGenerator(X_train, Y_train, **train_kwargs)
+        train_gen = WeightedGenerator(df_train, **train_kwargs)
         logger.info('Getting test data generator')
         test_sample_size = kwargs.get('sample_size', None)
-        test_sample_size = (len(Y_test) if test_sample_size is None
+        test_sample_size = (len(df_test) if test_sample_size is None
                             else int(test_sample_size - train_sample_size))
         test_kwargs = copy.deepcopy(kwargs)
         test_kwargs.update({'sample_size': test_sample_size})
         logger.info(f'Using test sample size: {test_sample_size}')
-        test_gen = WeightedGenerator(X_test, Y_test, **test_kwargs)
+        test_gen = WeightedGenerator(df_test, **test_kwargs)
         return train_gen, test_gen
 
     def get_class_info(self):
@@ -468,11 +465,11 @@ class ModerationModel(ABC):
         preds = self.predict_one(X, verbose=True)
         discrete_preds = [int(p > 0.5) for p in preds]
         confusion = confusion_matrix(Y, discrete_preds)
-
         logger.info(f'Getting info on matches across {len(X)} '
                     'samples')
-        one_mask = (Y == discrete_preds) & (Y == 1)
-        zero_mask = (Y == discrete_preds) & (Y == 0)
+        discrete_matches = (Y.compute() == discrete_preds)
+        one_mask = (Y.compute() == 1) & discrete_matches
+        zero_mask = (Y.compute() == 0) & discrete_matches
         one_indices = np.where(one_mask)[0]
         np.random.shuffle(one_indices)
         one_indices = one_indices[:n_matches]
@@ -1706,8 +1703,8 @@ class TorchModel(NNmodel):
         self.get_class_info()
 
         logger.info('Encoding training data')
-        train_dataloader = self.transform(X=train_gen.X,
-                                          Y=torch.FloatTensor(train_gen.Y),
+        train_dataloader = self.transform(X=train_gen.X.values.compute(),
+                                          Y=train_gen.Y.values.compute(),
                                           max_length=max_length,
                                           batch_size=batch_size)
         self.clf.to(self.device)
@@ -1732,7 +1729,7 @@ class TorchModel(NNmodel):
             self.epoch = epoch
             train_loss = 0
             self.clf.train(True)
-            logger.info(f'Training on {len(train_dataloader)} batches for '
+            logger.info(f'Training on {len(train_gen)} batches for '
                         f'epoch {epoch}')
             step_count = 0
             for batch in tqdm(train_dataloader):
@@ -1748,10 +1745,9 @@ class TorchModel(NNmodel):
                 for param in self.clf.parameters():
                     param.grad = None
 
-                eval_check = (step_count % eval_steps == 0
-                              or step_count % (train_batches - 1) == 0)
-                eval_check = eval_check and step_count > 0
                 step_count += 1
+                eval_check = (step_count % eval_steps == 0
+                              or step_count % train_batches == 0)
                 if eval_check:
                     self.clf.eval()
                     score = self.eval_score(self.detailed_score(test_gen))
@@ -1783,6 +1779,27 @@ class TorchModel(NNmodel):
             logger.info(f'{self.__name__} model saved to {outpath}')
         else:
             logger.info(f'Outpath is None. Not saving {self.__name__} model')
+
+    def transform(self, X, Y=None, max_length=None, batch_size=None):
+        """returns dataloader for input to training or prediction methods"""
+        max_length = (max_length if max_length is not None
+                      else self.MAX_SEQUENCE_LENGTH)
+        t = self.tokenizer.batch_encode_plus(list(self.clean_texts(X)),
+                                             padding='max_length',
+                                             add_special_tokens=True,
+                                             max_length=max_length,
+                                             return_tensors='pt',
+                                             truncation=True)
+        if Y is not None:
+            out = TensorDataset(t["input_ids"], t["attention_mask"],
+                                t["token_type_ids"], torch.FloatTensor(Y))
+        else:
+            out = TensorDataset(t["input_ids"], t["attention_mask"],
+                                t["token_type_ids"])
+        sampler = SequentialSampler(out)
+        out = DataLoader(out, sampler=sampler, batch_size=batch_size,
+                         **self.DLOADER_ARGS)
+        return out
 
     @classmethod
     def load(cls, inpath, **kwargs):
@@ -1824,24 +1841,3 @@ class BertCnnTorch(TorchModel):
 
     def build_layers(self, embed_size):
         return BertCnnTorchModel(embed_size)
-
-    def transform(self, X, Y=None, max_length=None, batch_size=None):
-        """returns dataloader for input to training or prediction methods"""
-        max_length = (max_length if max_length is not None
-                      else self.MAX_SEQUENCE_LENGTH)
-        t = self.tokenizer.batch_encode_plus(list(self.clean_texts(X)),
-                                             padding='max_length',
-                                             add_special_tokens=True,
-                                             max_length=max_length,
-                                             return_tensors='pt',
-                                             truncation=True)
-        if Y is not None:
-            out = TensorDataset(t["input_ids"], t["attention_mask"],
-                                t["token_type_ids"], Y)
-        else:
-            out = TensorDataset(t["input_ids"], t["attention_mask"],
-                                t["token_type_ids"])
-        sampler = SequentialSampler(out)
-        out = DataLoader(out, sampler=sampler, batch_size=batch_size,
-                         **self.DLOADER_ARGS)
-        return out
