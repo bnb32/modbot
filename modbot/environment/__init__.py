@@ -10,6 +10,19 @@ from modbot import BERT_PREPROCESS as default_bert_preprocess
 from modbot import BERT_ENCODER as default_bert_encoder
 
 
+DEFAULT_VARS = {
+    "EPOCHS": 5,
+    "BATCH_SIZE": 64,
+    "CHUNK_SIZE": 1024,
+    "MODEL_TYPE": "SVM",
+    "TEST_SPLIT": 0.01,
+    "EVAL_STEPS": 500,
+    "OFFENSIVE_WEIGHT": 0.01,
+    "SAMPLE_SIZE": None,
+    "LOGGER_LEVEL": 18,
+}
+
+
 def get_model_path(model_type, basedir=default_data_dir):
     """Get default model path
 
@@ -98,6 +111,12 @@ class BaseConfig:
     #: Path to bert encoder
     BERT_ENCODER = default_bert_encoder
 
+    #: config file path
+    FILE_NAME = None
+
+    #: file for training
+    INFILE = None
+
     def __init__(self, file_name=None, args=None):
         """
         Parameters
@@ -107,6 +126,10 @@ class BaseConfig:
         args : parser.parse_args
             Args from argparse method
         """
+        for attr, val in DEFAULT_VARS.items():
+            setattr(self, attr, val)
+
+        self.file_name = file_name
         check = (file_name is not None or args is not None)
         msg = ('Received neither config file path or args object. Using '
                'default configuration parameters.')
@@ -114,29 +137,30 @@ class BaseConfig:
             warnings.warn(msg)
 
         if file_name is not None:
-            self.file_name = file_name
+            self.FILE_NAME = file_name
         elif args is not None:
-            self.file_name = args.config
-        else:
-            self.file_name = None
+            self.FILE_NAME = args.config
         self.config_dict = {}
-        self.get_config(self.file_name)
+        self.get_config(self.FILE_NAME)
         if args is not None:
             self.update_config(args)
 
     @property
     def attrs(self):
         """Config attributes info"""
-        config_attrs = {k: getattr(self, k) for k in vars(self)}
+        keys = [k for k in sorted(dir(self)) if k.upper() == k]
+        keys += list(vars(self))
+        config_attrs = {k: getattr(self, k) for k in keys}
         config_attrs.pop('config_dict', None)
         return config_attrs
 
     def get_log_file(self):
         """Get default log file name"""
         date_string = datetime.now().strftime("%Y-%m-%d")
+        channel = self.CHANNEL or 'tmp'
         if self.LOG_PATH is None:
             self.LOG_PATH = os.path.join(self.LOG_DIR,
-                                         f'{date_string}_#{self.CHANNEL}.log')
+                                         f'{date_string}_#{channel}.log')
 
     def get_config(self, file_name=None, config=None):
         """Get configuration from file
@@ -157,12 +181,11 @@ class BaseConfig:
         if file_name is not None:
             with open(file_name, 'r') as fh:
                 self.config_dict = json.load(fh)
-
             for k, v in self.config_dict.items():
                 if hasattr(self, k):
                     setattr(self, k, v)
         elif config is not None:
-            for k in vars(config):
+            for k in dir(config):
                 if hasattr(self, k):
                     setattr(self, k, getattr(config, k))
         self.get_log_file()
@@ -170,19 +193,6 @@ class BaseConfig:
     @property
     def public_attrs(self):
         """Get public attributes
-
-        Returns
-        -------
-        dict
-            Dictionary of public global attributes
-        """
-        config_attrs = {k: getattr(self, k) for k in self.attrs
-                        if not k.startswith('_')}
-        return config_attrs
-
-    @property
-    def upper_attrs(self):
-        """Get public global attributes
 
         Returns
         -------
@@ -209,9 +219,13 @@ class BaseConfig:
                            if args.model_path is None else args.model_path)
         for key in vars(args):
             val = getattr(args, key)
+            default_val = getattr(self, key.upper(), None)
+            if getattr(args, key) is None and default_val is not None:
+                val = default_val
             if not hasattr(self, key):
+                setattr(self, key.upper(), val)
                 setattr(self, key, val)
-            if hasattr(self, key.upper()) and getattr(args, key) is not None:
+            if hasattr(self, key.upper()) and val is not None:
                 setattr(self, key.upper(), val)
         self.get_log_file()
 
@@ -223,7 +237,6 @@ class BaseConfig:
         outpath : str
             Path to save public attrs
         """
-
         if os.path.isdir(outpath):
             model_dir = outpath
         else:
@@ -303,6 +316,18 @@ class ProcessingConfig(BaseConfig):
               'HahaCat', 'HahaBaby', 'HahaNyandeer', 'Haha2020',
               'HahaBall', 'HahaDreidel', 'gutBaby']
 
+    # : moderators to ignore actions for
+    IGNORE_ACTIONS = []
+
+    # : moderators to check bans for
+    BAN_CHECKS = []
+
+    # : moderators to check deletes for
+    DELETE_CHECKS = []
+
+    # : users to ignore messages of
+    IGNORE_USERS = []
+
     def __init__(self, file_name=None, run_config=None):
         """
         Parameters
@@ -314,27 +339,20 @@ class ProcessingConfig(BaseConfig):
         """
         if run_config is not None:
             self.get_config(config=run_config)
-            file_name = run_config.file_name
+            file_name = run_config.FILE_NAME
         else:
             self.get_config(file_name=file_name)
             run_config = RunConfig(file_name=file_name)
-        self.file_name = file_name
+        self.FILE_NAME = file_name
 
         #: ignore actions of these moderators during training
-        self.ignore_actions = ['moobot', run_config.NICKNAME]
+        self.IGNORE_ACTIONS = ['moobot', run_config.NICKNAME]
 
         #: review bans of these moderators during training
-        self.ban_checks = [run_config.NICKNAME]
+        self.BAN_CHECKS = [run_config.NICKNAME]
 
         #: review deletions by these moderators during training
-        self.delete_checks = [run_config.NICKNAME]
+        self.DELETE_CHECKS = [run_config.NICKNAME]
 
         #: ignore messages of these users during training
-        self.ignore_users = []
-
-    @property
-    def attrs(self):
-        """Config attributes info"""
-        config_attrs = {k: getattr(self, k)
-                        for k in vars(self) if k == k.lower()}
-        return config_attrs
+        self.IGNORE_USERS = []

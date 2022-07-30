@@ -4,11 +4,14 @@ import pprint
 import shutil
 import sys
 
-from modbot.utilities.logging import get_logger
+from modbot.utilities.logging import get_logger, update_logger_level
 from modbot.training.training import (clean_log,
                                       vectorize_and_train)
 from modbot.training import training_argparse
 from modbot.environment import RunConfig
+
+
+logger = get_logger()
 
 
 def append_file(infile, outfile):
@@ -20,11 +23,12 @@ def append_file(infile, outfile):
                     f1.write(line)
 
 
-if __name__ == '__main__':
+def main():
+    """Main training program"""
     parser = training_argparse()
     args = parser.parse_args()
     config = RunConfig(args=args)
-    logger = get_logger(config.LOGGER_LEVEL)
+    update_logger_level(logger, config.LOGGER_LEVEL)
 
     msg = ('**Not running anything. Select either -train or -clean or '
            '-continue_training or -just_evaluate**')
@@ -41,7 +45,7 @@ if __name__ == '__main__':
     TMP_DIR = os.path.join(config.DATA_DIR, 'tmp')
     os.makedirs(TMP_DIR, exist_ok=True)
     TMP = os.path.join(TMP_DIR, 'clean_tmp.txt')
-    logger.info(f'Copying {args.infile} to {TMP}')
+    logger.info(f'Copying {config.infile} to {TMP}')
     shutil.copy(config.infile, TMP)
 
     if config.append:
@@ -64,3 +68,10 @@ if __name__ == '__main__':
 
     if config.train or config.continue_training or config.just_evaluate:
         vectorize_and_train(config, data_file=TMP_IN)
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        logger.info('Exiting training program')

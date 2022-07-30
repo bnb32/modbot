@@ -14,3 +14,4 @@ data/*
 my_config*.json
 
 tmp*
+torch_config.json

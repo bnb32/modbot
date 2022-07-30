@@ -27,7 +27,7 @@ def training_argparse():
     parser.add_argument('-review_decisions', default=False,
                         action='store_true',
                         help='Reclassify all decisions made by the bot.')
-    parser.add_argument('-model_type', default='SVM',
+    parser.add_argument('-model_type', default=None,
                         choices=VALID_MODELS,
                         help='Model type to train', type=str)
     parser.add_argument('-model_path', default=None,
@@ -37,15 +37,17 @@ def training_argparse():
                              'samples.')
     parser.add_argument('-n_batches', default=None, type=none_or_int,
                         help='Number of training batches per epoch.')
-    parser.add_argument('-epochs', default=5, type=int,
+    parser.add_argument('-epochs', default=None, type=int,
                         help='Number of training epochs.')
-    parser.add_argument('-batch_size', default=32, type=int,
+    parser.add_argument('-batch_size', default=None, type=int,
                         help='Number of samples per batch.')
+    parser.add_argument('-chunk_size', default=None, type=int,
+                        help='Number of samples to transform at one time.')
     parser.add_argument('-sample_size', default=None, type=none_or_int,
                         help='Number of total samples to use for training.')
-    parser.add_argument('-test_split', default=0.01, type=float,
+    parser.add_argument('-test_split', default=None, type=float,
                         help='Fraction of full dataset used as validation')
-    parser.add_argument('-eval_steps', default=100, type=int,
+    parser.add_argument('-eval_steps', default=None, type=int,
                         help='Number of steps between model evaluations')
     parser.add_argument('-continue_training', default=False,
                         action='store_true',
@@ -70,6 +72,6 @@ def training_argparse():
                         type=none_or_str, help='Channel to moderate')
     parser.add_argument('-nickname', default=None,
                         type=none_or_str, help='Name of modbot')
-    parser.add_argument('-config', type=str, default=None,
+    parser.add_argument('-config', '-c', type=str, default=None,
                         help='Configuration file')
     return parser

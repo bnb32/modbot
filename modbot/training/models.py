@@ -13,6 +13,7 @@ import copy
 import joblib
 import re
 import json
+from datetime import datetime as dt
 import tensorflow_hub as tf_hub
 import tensorflow_text as tf_text  # pylint: disable=unused-import # noqa: F401
 
@@ -28,6 +29,7 @@ from transformers import BertTokenizerFast as BertTokenizer
 from keras import Sequential, losses, optimizers, callbacks, layers
 from keras.models import load_model
 from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 import sklearn.feature_extraction.text as ft
 from sklearn import svm
 import sklearn.calibration as cal
@@ -36,7 +38,6 @@ from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import (confusion_matrix, precision_score, recall_score,
                              jaccard_score, f1_score)
 from dask_ml.cluster import KMeans
-from dask_ml.model_selection import train_test_split
 from scipy import sparse
 
 from modbot.training.vectorizers import TokVectorizer
@@ -178,7 +179,7 @@ class ModerationModel(ABC):
         """
         logger.info('Splitting data')
         out = train_test_split(df, test_size=test_split, random_state=42,
-                               shuffle=True)
+                               shuffle=True, stratify=df['is_offensive'])
         return out
 
     def score(self, X, Y):
@@ -259,7 +260,7 @@ class ModerationModel(ABC):
             WeightedGenerator instance used for evaluation batches
         """
         test_split = kwargs.get('test_split', 0.1)
-        df = cls.load_data(data_file)
+        df = cls.load_data(data_file).compute()
         df_train, df_test = cls.split_data(df, test_split)
         logger.info('Getting training data generator')
         train_sample_size = kwargs.get('sample_size', None)
@@ -267,7 +268,6 @@ class ModerationModel(ABC):
                              else int((1 - test_split) * train_sample_size))
         train_kwargs = copy.deepcopy(kwargs)
         train_kwargs.update({'sample_size': train_sample_size})
-        logger.info(f'Using train sample size: {train_sample_size}')
         train_gen = WeightedGenerator(df_train, **train_kwargs)
         logger.info('Getting test data generator')
         test_sample_size = kwargs.get('sample_size', None)
@@ -275,7 +275,6 @@ class ModerationModel(ABC):
                             else int(test_sample_size - train_sample_size))
         test_kwargs = copy.deepcopy(kwargs)
         test_kwargs.update({'sample_size': test_sample_size})
-        logger.info(f'Using test sample size: {test_sample_size}')
         test_gen = WeightedGenerator(df_test, **test_kwargs)
         return train_gen, test_gen
 
@@ -287,23 +286,22 @@ class ModerationModel(ABC):
                     f'n_ones={list(self.test_gen.Y).count(1)} for testing.')
 
     @classmethod
-    def run(cls, data_file, **kwargs):
+    def run(cls, data_file, config):
         """Run model pipeline. Load data, tokenize texts, and train
 
         Parameters
         ----------
         data_file : str
             Path to csv file storing texts and labels
-        kwargs : dict
-            Dictionary with optional keyword parameters. Can include
-            sample_size, batch_size, model_path, epochs, n_batches. Needs model
-            path to include checkpoint saving callback.
+        config : RunConfig
+            Config class with kwargs
 
         Returns
         -------
         ModerationModel
             Trained and evaluated keras model or svm
         """
+        kwargs = dict(config.attrs)
         train_gen, test_gen = cls.get_data_generators(data_file, **kwargs)
         sig = signature(cls)
         params = {k: v for k, v in kwargs.items() if k in sig.parameters}
@@ -313,34 +311,33 @@ class ModerationModel(ABC):
             model = cls(**params)
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
+        now = dt.now()
         model.train(train_gen, test_gen, **kwargs)
+        logger.info(f'Trained model in {dt.now() - now}.')
         return model
 
     @classmethod
-    def continue_training(cls, model_path, data_file, **kwargs):
+    def continue_training(cls, data_file, config):
         """Continue training. Load model, load data, tokenize texts, and train.
 
         Parameters
         ----------
-        model_path : str
-            Path to model
         data_file : str
             Path to csv file storing texts and labels
-        kwargs : dict
-            Dictionary with optional keyword parameters. Can include
-            sample_size, batch_size, epochs, n_batches.
+        config : RunConfig
+            Config class with kwargs
 
         Returns
         -------
         keras.Sequential
             Trained sequential and evaluated model
         """
-        model = cls.load(model_path)
+        model = cls.load(config.model_path)
+        kwargs = dict(config.attrs)
         train_gen, test_gen = cls.get_data_generators(data_file, **kwargs)
         model.train_gen, model.test_gen = train_gen, test_gen
         model.X_test, model.Y_test = test_gen.X, test_gen.Y
         just_evaluate = kwargs.get('just_evaluate', False)
-        kwargs['model_path'] = model_path
         if not just_evaluate:
             model.train(train_gen, test_gen, **kwargs)
         return model
@@ -463,9 +460,9 @@ class ModerationModel(ABC):
         confusion = confusion_matrix(Y, discrete_preds)
         logger.info(f'Getting info on matches across {len(X)} '
                     'samples')
-        discrete_matches = (Y.compute() == discrete_preds)
-        one_mask = (Y.compute() == 1) & discrete_matches
-        zero_mask = (Y.compute() == 0) & discrete_matches
+        discrete_matches = (Y == discrete_preds)
+        one_mask = (Y == 1) & discrete_matches
+        zero_mask = (Y == 0) & discrete_matches
         one_indices = np.where(one_mask)[0]
         np.random.shuffle(one_indices)
         one_indices = one_indices[:n_matches]
@@ -486,11 +483,11 @@ class ModerationModel(ABC):
                                 'prob': np.array(probs),
                                 'preds': preds,
                                 'truth': truth})
-        logger.info(f'First {int(2 * n_matches)} matches:\n{matches}')
 
         test_ones = sum(confusion[1][:])
         test_zeros = sum(confusion[0][:])
 
+        logger.info(f'Computing metrics on {len(Y)} samples')
         df_scores = pd.DataFrame(
             {'precision': precision_score(Y, discrete_preds),
              'recall': recall_score(Y, discrete_preds),
@@ -508,6 +505,7 @@ class ModerationModel(ABC):
             logger.info(f'Saving model scores to {out_file}')
             df_scores.to_csv(out_file)
 
+        logger.info(f'First {int(2 * n_matches)} matches:\n{matches}')
         logger.info(f'Scores:\n{df_scores}')
         logger.info(f'Test phrases:\n{self.model_test()}')
         return df_scores
@@ -1460,7 +1458,7 @@ class SVM(ModerationModel):
         logger.info('Training LinearSVM classifier')
         train_gen.X = train_gen.X.apply(pp.correct_msg,
                                         meta=('text', 'object'))
-        self.model.fit(train_gen.X.compute(), train_gen.Y.compute())
+        self.model.fit(train_gen.X, train_gen.Y)
 
     def predict_proba(self, X, verbose=False):
         """Predict classification
@@ -1639,10 +1637,6 @@ class TorchModel(NNmodel):
     def build_layers(self, embed_size):
         """Build model layers"""
 
-    @abstractmethod
-    def transform(self, X, Y=None, max_length=None, batch_size=None):
-        """returns dataloader for input to training or prediction methods"""
-
     def predict_proba(self, X, verbose=False, batch_size=128):
         """Make prediction on input texts"""
         test_dataloader = self.transform(X, batch_size=batch_size)
@@ -1690,28 +1684,43 @@ class TorchModel(NNmodel):
                     param.grad = None
         return val_loss, val_preds
 
-    def train(self, train_gen, test_gen, **kwargs):
-        """Train pytorch model"""
+    def batch_update(self, batch, train_loss, scheduler):
+        """Go through single batch pass and update loop"""
+        out = tuple(t.to(self.device) for t in batch)
+        b_input_ids, b_input_mask = out[:2]
+        b_token_type_ids, b_labels = out[2:]
+        y_pred = self.clf(b_input_ids, b_input_mask,
+                          b_token_type_ids)
+        loss = self.loss_fn(y_pred, b_labels.unsqueeze(1))
+        loss.backward()
+        self.optimizer.step()
+        train_loss += loss.item()
+        scheduler.step()
+        for param in self.clf.parameters():
+            param.grad = None
+        return train_loss
+
+    def save_check(self, test_gen, model_path):
+        """Evaluate model and check if eval merits saving"""
+        self.clf.eval()
+        df = self.detailed_score(test_gen)
+        score = self.eval_score(df)
+        msg = (f'Epoch: {self.epoch}. New score: {score}. '
+               f'Old score: {self.best_score}.')
+        logger.info(msg)
+        if score > self.best_score:
+            self.best_score = score
+            self.save(model_path)
+        self.clf.train(True)
+
+    def _train_loop(self, train_gen, test_gen, **kwargs):
+        """Training loop for pytorch model"""
         epochs = kwargs.get('epochs', 10)
         model_path = kwargs.get('model_path', None)
         batch_size = kwargs.get('batch_size', 128)
-        max_length = kwargs.get('max_length', self.MAX_SEQUENCE_LENGTH)
         eval_steps = kwargs.get('eval_steps', 100)
-        self.get_class_info()
 
-        logger.info('Encoding training data')
-        train_dataloader = self.transform(X=train_gen.X.values.compute(),
-                                          Y=train_gen.Y.values.compute(),
-                                          max_length=max_length,
-                                          batch_size=batch_size)
-        self.clf.to(self.device)
-        train_losses = []
-        np.random.seed(self.SEED)
-        torch.manual_seed(self.SEED)
-        if self.device.type == "cuda":
-            torch.cuda.manual_seed_all(self.SEED)
-
-        train_batches = len(train_dataloader)
+        train_batches = train_gen.n_batches
         total_steps = train_batches * epochs
         scheduler = get_linear_schedule_with_warmup(
             self.optimizer, num_warmup_steps=0, num_training_steps=total_steps)
@@ -1720,42 +1729,49 @@ class TorchModel(NNmodel):
             param.grad = None
 
         logger.info('Starting training')
+        train_losses = []
         start_epoch = self.epoch
         end_epoch = start_epoch + epochs
-        for epoch in range(start_epoch, end_epoch):
-            self.epoch = epoch
-            train_loss = 0
-            self.clf.train(True)
-            logger.info(f'Training on {len(train_gen)} batches for '
-                        f'epoch {epoch}')
-            step_count = 0
-            for batch in tqdm(train_dataloader):
-                out = tuple(t.to(self.device) for t in batch)
-                b_input_ids, b_input_mask, b_token_type_ids, b_labels = out
-                y_pred = self.clf(b_input_ids, b_input_mask,
-                                  b_token_type_ids)
-                loss = self.loss_fn(y_pred, b_labels.unsqueeze(1))
-                loss.backward()
-                self.optimizer.step()
-                train_loss += loss.item()
-                scheduler.step()
-                for param in self.clf.parameters():
-                    param.grad = None
+        self.clf.train(True)
+        step_count = 1
+        with tqdm(total=total_steps) as pbar:
+            pbar.update(1)
+            for epoch in range(start_epoch, end_epoch):
+                self.epoch = epoch
+                train_loss = 0
+                for i, chunk in enumerate(train_gen.chunks):
+                    train_dataloader = self.transform(X=train_gen.X[chunk],
+                                                      Y=train_gen.Y[chunk],
+                                                      batch_size=batch_size)
+                    for j, batch in enumerate(train_dataloader):
+                        msg = (f'Training on chunk {i + 1} / '
+                               f'{train_gen.n_chunks}, '
+                               f'batch {j + 1} / {len(train_dataloader)} '
+                               f'for epoch {self.epoch + 1} / {end_epoch}')
+                        pbar.set_description(msg)
+                        train_loss = self.batch_update(batch, train_loss,
+                                                       scheduler)
+                        eval_check = (step_count % eval_steps == 0
+                                      or step_count % train_batches == 0)
+                        if eval_check:
+                            self.save_check(test_gen, model_path)
+                        train_losses.append(train_loss)
+                        pbar.update(1)
+                        step_count += 1
+        return train_losses
 
-                step_count += 1
-                eval_check = (step_count % eval_steps == 0
-                              or step_count % train_batches == 0)
-                if eval_check:
-                    self.clf.eval()
-                    score = self.eval_score(self.detailed_score(test_gen))
-                    msg = f'Epoch: {epoch}. New score: {score}. '
-                    msg += f'Old score: {self.best_score}.'
-                    logger.info(msg)
-                    if score > self.best_score:
-                        self.best_score = score
-                        self.save(model_path)
-                    self.clf.train(True)
-            train_losses.append(train_loss)
+    def train(self, train_gen, test_gen, **kwargs):
+        """Train pytorch model"""
+        model_path = kwargs.get('model_path', None)
+        self.get_class_info()
+
+        self.clf.to(self.device)
+        np.random.seed(self.SEED)
+        torch.manual_seed(self.SEED)
+        if self.device.type == "cuda":
+            torch.cuda.manual_seed_all(self.SEED)
+
+        _ = self._train_loop(train_gen, test_gen, **kwargs)
 
         if model_path is not None:
             checkpoint = torch.load(model_path)
@@ -1777,22 +1793,26 @@ class TorchModel(NNmodel):
         else:
             logger.info(f'Outpath is None. Not saving {self.__name__} model')
 
-    def transform(self, X, Y=None, max_length=None, batch_size=None):
+    def _transform(self, X, Y=None):
         """returns dataloader for input to training or prediction methods"""
-        max_length = (max_length if max_length is not None
-                      else self.MAX_SEQUENCE_LENGTH)
-        t = self.tokenizer.batch_encode_plus(list(self.clean_texts(X)),
+        max_length = self.MAX_SEQUENCE_LENGTH
+        texts = list(self.clean_texts(X))
+        t = self.tokenizer.batch_encode_plus(texts,
                                              padding='max_length',
                                              add_special_tokens=True,
                                              max_length=max_length,
                                              return_tensors='pt',
                                              truncation=True)
         if Y is not None:
-            out = TensorDataset(t["input_ids"], t["attention_mask"],
-                                t["token_type_ids"], torch.FloatTensor(Y))
+            out = (t["input_ids"], t["attention_mask"], t["token_type_ids"],
+                   torch.FloatTensor(np.array(Y)))
         else:
-            out = TensorDataset(t["input_ids"], t["attention_mask"],
-                                t["token_type_ids"])
+            out = (t["input_ids"], t["attention_mask"], t["token_type_ids"])
+        return out
+
+    def transform(self, X, Y=None, batch_size=None):
+        """returns dataloader for input to training or prediction methods"""
+        out = TensorDataset(*self._transform(X, Y))
         sampler = SequentialSampler(out)
         out = DataLoader(out, sampler=sampler, batch_size=batch_size,
                          **self.DLOADER_ARGS)

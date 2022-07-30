@@ -22,7 +22,7 @@ def modbot_argparse():
                         help='Configuration file')
     parser.add_argument('-model_path', default=None,
                         type=none_or_str, help='Path to model')
-    parser.add_argument('-model_type', default='SVM',
+    parser.add_argument('-model_type', default=None,
                         choices=VALID_MODELS,
                         help='Model type to use for modding', type=str)
     parser.add_argument('-channel', default=None,

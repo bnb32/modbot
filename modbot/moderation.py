@@ -20,7 +20,7 @@ class Permitting:
     """
     def __init__(self, run_config):
         self.config = run_config
-        self.proc_config = ProcessingConfig(run_config.file_name)
+        self.proc_config = ProcessingConfig(run_config.FILE_NAME)
         self.permits = {}
         self.permit_duration = 180
 
@@ -227,7 +227,7 @@ class Moderation(Permitting, Nuking):
         Nuking.__init__(self)
         self.model = self.initialize_model(run_config)
         self.run_config = run_config
-        self.proc_config = ProcessingConfig(run_config.file_name)
+        self.proc_config = ProcessingConfig(run_config.FILE_NAME)
         self.msgs = pp.MsgMemory()
         self.permits = {}
         self.pleb_prob = run_config.PLEB_PMIN

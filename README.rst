@@ -48,19 +48,19 @@ From scratch with classified messages in csv file
 
 .. code-block:: bash
 
-    python -m modbot.training -train -infile <messages.csv> -config my_config.json
+    modbot-train -train -infile <messages.csv> -c my_config.json
 
 Train from scratch from chatty data:
 
 .. code-block:: bash
 
-    python -m modbot.training -infile <infile> -train -clean -config my_config.json
+    modbot-train -infile <infile> -train -clean -c my_config.json
 
 Retrain with additional chatty data:
 
 .. code-block:: bash
 
-    python -m modbot.training -append -infile <infile> -train -clean -config my_config.json
+    modbot-train -append -infile <infile> -train -clean -c my_config.json
 
 
 Running
@@ -70,7 +70,7 @@ Run bot:
 
 .. code-block:: bash
 
-    python -m modbot -config my_config.json
+    modbot -c my_config.json
 
 
 .. inclusion-intro

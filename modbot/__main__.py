@@ -2,7 +2,6 @@
 import sys
 import pprint
 import asyncio
-import subprocess
 
 from modbot.connection import WebSocketClientAsync, IrcSocketClientAsync
 from modbot.utilities.logging import get_logger, update_logger_level
@@ -10,7 +9,7 @@ from modbot import modbot_argparse
 from modbot.environment import RunConfig
 
 
-if __name__ == '__main__':
+def main():
     parser = modbot_argparse()
     args = parser.parse_args()
     config = RunConfig(args=args)
@@ -22,7 +21,7 @@ if __name__ == '__main__':
     webClient = WebSocketClientAsync(config)
 
     msg = ('Running with configuration:\n'
-           f'{pprint.pformat(config.upper_attrs, indent=1)}')
+           f'{pprint.pformat(config.public_attrs, indent=1)}')
     logger.info(msg)
     try:
         loop = asyncio.new_event_loop()
@@ -34,3 +33,7 @@ if __name__ == '__main__':
         logger.warning("Exiting modbot!")
         ircClient.quit()
         sys.exit()
+
+
+if __name__ == '__main__':
+    main()

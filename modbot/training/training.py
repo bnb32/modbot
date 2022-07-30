@@ -32,30 +32,10 @@ def vectorize_and_train(config, data_file):
     """
     MODEL_CLASS = get_model_class(config.MODEL_TYPE)
     if config.continue_training or config.just_evaluate:
-        model = MODEL_CLASS.continue_training(
-            model_path=config.MODEL_PATH,
-            data_file=data_file,
-            offensive_weight=config.offensive_weight,
-            epochs=config.epochs,
-            just_evaluate=config.just_evaluate,
-            batch_size=config.batch_size,
-            n_batches=config.n_batches,
-            sample_size=config.sample_size,
-            test_split=config.test_split,
-            eval_steps=config.eval_steps)
+        model = MODEL_CLASS.continue_training(data_file=data_file,
+                                              config=config)
     else:
-        model = MODEL_CLASS.run(
-            data_file=data_file,
-            offensive_weight=config.offensive_weight,
-            epochs=config.epochs,
-            batch_size=config.batch_size,
-            n_batches=config.n_batches,
-            sample_size=config.sample_size,
-            model_path=config.MODEL_PATH,
-            test_split=config.test_split,
-            bert_preprocess=config.bert_preprocess,
-            bert_encoder=config.bert_encoder,
-            eval_steps=config.eval_steps)
+        model = MODEL_CLASS.run(data_file=data_file, config=config)
 
     if not config.just_evaluate:
         model_dir = (os.path.dirname(config.MODEL_PATH)

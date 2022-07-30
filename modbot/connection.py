@@ -37,7 +37,6 @@ class StreamHandler:
         """Send IRC message"""
         msg = message + '\r\n'
         msg = msg.encode('utf-8')
-        logger.extra_verbose(f'Sending message: {message}')
         self._write(msg)
 
     def read(self, buffer_size):
@@ -48,7 +47,6 @@ class StreamHandler:
             data += part
             if len(part) < buffer_size:
                 break
-        logger.extra_verbose(f'Reading message: {data}')
         data = data.decode('utf-8')
         return data
 
@@ -70,7 +68,6 @@ class StreamHandlerAsync(StreamHandler):
             data += part
             if len(part) < buffer_size:
                 break
-        logger.extra_verbose(f'Reading message: {data}')
         data = data.decode('utf-8')
         return data
 

@@ -521,14 +521,14 @@ class LogCleaning:
         for m in self.mem.chunks[user]:
             if m['msg'] is not None:
                 to_check_append = (m['banned'] and m['mod']
-                                   in self.config.ban_checks)
+                                   in self.config.BAN_CHECKS)
                 to_check_append = to_check_append or (
-                    m['deleted'] and m['mod'] in self.config.ban_checks)
+                    m['deleted'] and m['mod'] in self.config.DELETE_CHECKS)
                 to_check_append = to_check_append and (
-                    m['mod'] not in self.config.ignore_actions)
+                    m['mod'] not in self.config.IGNORE_ACTIONS)
 
                 ban_append = (m['deleted'] or m['banned']
-                              and m['mod'] not in self.config.ignore_actions
+                              and m['mod'] not in self.config.IGNORE_ACTIONS
                               and m['mod'] is not None)
                 clean_append = (not m['deleted'] and not m['banned'])
 
@@ -673,7 +673,7 @@ class LogCleaning:
             logger.info(
                 "Dividing messages into 'bad' and 'other' for each user")
             for user in tqdm(self.mem.chunks):
-                valid_check = (user not in self.config.ignore_users
+                valid_check = (user not in self.config.IGNORE_USERS
                                and not self.mem.chunks[user][0]['isVip']
                                and not self.mem.chunks[user][0]['isMod']
                                and not self.mem.chunks[user][0]['isPartner'])

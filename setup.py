@@ -1,12 +1,17 @@
 """Setup script"""
 from distutils.core import setup
 
+from importlib_metadata import entry_points
+
 setup(name='modbot', version='0.1.0',
       url='https://github.com/bnb32/modbot',
       author='Brandon N. Benton',
       description='twitch moderation bot',
       packages=['modbot'],
       package_dir={'modbot': './modbot'},
+      entry_points={
+          "console_scripts": ["modbot-train = modbot.training.__main__:main",
+                              "modbot = modbot.__main__:main"]},
       install_requires=['nltk', 'gensim', 'scikit-learn>=1.0.1', 'symspellpy',
                         'notify_run', 'pandas', 'sphinx-argparse',
                         'numpy>=1.20.3', 'dask_ml',
