@@ -4,7 +4,7 @@ import pprint
 import asyncio
 
 from modbot.connection import WebSocketClientAsync, IrcSocketClientAsync
-from modbot.utilities.logging import get_logger, update_logger_level
+from modbot.utilities.logging import get_logger
 from modbot import modbot_argparse
 from modbot.environment import RunConfig
 
@@ -14,7 +14,7 @@ def main():
     args = parser.parse_args()
     config = RunConfig(args=args)
     logger = get_logger()
-    update_logger_level(logger, config.LOGGER_LEVEL)
+    logger.update_level(config.LOGGER_LEVEL)
     logger.info(f'Initialized main logger with level: {logger.level}')
 
     ircClient = IrcSocketClientAsync(config)

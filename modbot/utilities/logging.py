@@ -1,5 +1,4 @@
 """Logging module for storing chat and connection info"""
-import os
 from emoji import demojize
 import logging
 from sys import stdout
@@ -29,6 +28,14 @@ class ColoredFormatter(logging.Formatter):
     msg_format = '%(message)s'
     full_format = level_format + other_format + msg_format
 
+    COLORS = {
+        'VERBOSE': [226, 226, 226],
+        'EXTRA_VERBOSE': [202, 202, 202],
+        'ERROR': [196, 196, 196],
+        'MOD': [46, 46, 46],
+        'CHAT': [33, 33, 33, 161, 135, 196]
+    }
+
     FORMATS = {}
     for level in COLORS:
         COL_SEQ = f"\u001b[38;5;{COLORS[level][0]}m"
@@ -50,11 +57,11 @@ class ColoredFormatter(logging.Formatter):
             username = msg_split[1]
             msg = " ".join(msg_split[2:-1])
             prob = msg_split[-1]
-            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-1]}m"
+            COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-1]}m"
             prob = COL_SEQ + prob + "\u001b[0m"
-            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-2]}m"
+            COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-2]}m"
             msg = COL_SEQ + msg + "\u001b[0m"
-            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-3]}m"
+            COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-3]}m"
             username = COL_SEQ + username + "\u001b[0m"
             msg = " ".join([badges, username, msg, prob])
             record.msg = msg
@@ -62,77 +69,100 @@ class ColoredFormatter(logging.Formatter):
         return formatter.format(record)
 
 
-def extra_verbose(self, message, *args, **kws):
-    """Extra verbose log level"""
-    self._log(EXTRA_VERBOSE_LEVEL, message, args, **kws)
+class CustomLogger(logging.getLoggerClass()):
+
+    LEVELS = {'VERBOSE': logging.INFO - 2,
+              'EXTRA_VERBOSE': logging.INFO - 4,
+              'CHAT': logging.INFO + 2,
+              'MOD': logging.INFO + 4,
+              'PRIVATE': logging.INFO - 10}
+
+    def __init__(self, name='modbot_logger', level=18):
+        """Initialize logger
+
+        Returns
+        -------
+        logger
+            Logger object
+        """
+        super().__init__(name=name, level=level)
+
+        if not self.handlers:
+            for level in self.LEVELS:
+                logging.addLevelName(self.LEVELS[level], level)
+
+            sh = logging.StreamHandler(stdout)
+            formatter = ColoredFormatter()
+            sh.setFormatter(formatter)
+            sh.setLevel(level)
+            self.addHandler(sh)
+            self.setLevel(level)
+            self.propagate = False
+
+    def extra_verbose(self, message, *args, **kws):
+        """Extra verbose log level"""
+        self._log(self.LEVELS['EXTRA_VERBOSE'], message, args, **kws)
+
+    def verbose(self, message, *args, **kws):
+        """Verbose log level"""
+        self._log(self.LEVELS['VERBOSE'], message, args, **kws)
+
+    def chat(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['CHAT'], message, args, **kws)
+
+    def mod(self, message, *args, **kws):
+        """MOD log level"""
+        self._log(self.LEVELS['MOD'], message, args, **kws)
+
+    def private(self, message, *args, **kws):
+        """MOD log level"""
+        self._log(self.LEVELS['PRIVATE'], message, args, **kws)
+
+    def update_level(self, level):
+        """Update logger level
+
+        Parameters
+        ----------
+        logger : modbot_logger
+            Logger object
+        level : str
+            New level. e.g. VERBOSE
+        """
+        for sh in self.handlers:
+            if level in self.LEVELS:
+                levno = self.LEVELS[level]
+            else:
+                levno = getattr(logging, level, 10)
+            sh.setLevel(levno)
+        self.setLevel(levno)
 
 
-def verbose(self, message, *args, **kws):
-    """Verbose log level"""
-    self._log(VERBOSE_LEVEL, message, args, **kws)
+def get_logger(name='modbot_logger', level=18):
+    """Get main logger"""
+    return CustomLogger(name=name, level=level)
 
 
-def chat(self, message, *args, **kws):
-    """Chat log level"""
-    self._log(CHAT_LEVEL, message, args, **kws)
+class PrivateLogger(CustomLogger):
 
+    def __init__(self, name='private_logger', level=10, log_path=None):
+        """Initialize logger
 
-def mod(self, message, *args, **kws):
-    """MOD log level"""
-    self._log(MOD_LEVEL, message, args, **kws)
+        Returns
+        -------
+        logger
+            Logger object
+        """
+        logging.getLoggerClass().__init__(self, name=name, level=level)
 
-
-def private(self, message, *args, **kws):
-    """MOD log level"""
-    self._log(PRIVATE_LEVEL, message, args, **kws)
-
-
-def get_logger(level=18):
-    """Initialize logger
-
-    Returns
-    -------
-    logger
-        Logger object
-    """
-    logger = logging.getLogger('modbot_logger')
-
-    if not logger.handlers:
-        logging.addLevelName(EXTRA_VERBOSE_LEVEL, 'EXTRA_VERBOSE')
-        logging.addLevelName(VERBOSE_LEVEL, 'VERBOSE')
-        logging.addLevelName(CHAT_LEVEL, 'CHAT')
-        logging.addLevelName(MOD_LEVEL, 'MOD')
-
-        logging.Logger.extra_verbose = extra_verbose
-        logging.Logger.verbose = verbose
-        logging.Logger.chat = chat
-        logging.Logger.mod = mod
-
-        sh = logging.StreamHandler(stdout)
-        format = '[$BOLD%(levelname)s$RESET] '
-        format += '%(filename)s:%(lineno)d %(asctime)s %(message)s'
-        formatter = ColoredFormatter()
-        sh.setFormatter(formatter)
-        sh.setLevel(level)
-        logger.addHandler(sh)
-        logger.setLevel(level)
-        logger.propagate = False
-    return logger
-
-
-def update_logger_level(logger, level):
-    """Update logger level
-
-    Parameters
-    ----------
-    logger : modbot_logger
-        Logger object
-    level : int
-        New level
-    """
-    for sh in logger.handlers:
-        sh.setLevel(level)
-    logger.setLevel(level)
+        if not self.handlers:
+            for level in self.LEVELS:
+                logging.addLevelName(self.LEVELS[level], level)
+            logFormatter = logging.Formatter("%(message)s")
+            fileHandler = logging.FileHandler(log_path)
+            fileHandler.setFormatter(logFormatter)
+            self.addHandler(fileHandler)
+            self.propagate = False
 
 
 class Logging:
@@ -158,19 +188,9 @@ class Logging:
         logger
             Private logger used to write chat messages and mod actions
         """
-        logger = get_logger()
-        os.makedirs(run_config.LOG_DIR, exist_ok=True)
-        private_logger = logging.getLogger('private_logger')
-        if not private_logger.handlers:
-            logging.Logger.private = private
-            logging.addLevelName(PRIVATE_LEVEL, 'PRIVATE')
-            logger.info('Initializing private logger for chat and mod actions')
-            private_logger.setLevel(level='PRIVATE')
-            logFormatter = logging.Formatter("%(message)s")
-            fileHandler = logging.FileHandler(self.log_path)
-            fileHandler.setFormatter(logFormatter)
-            private_logger.addHandler(fileHandler)
-            private_logger.propagate = False
+        private_logger = PrivateLogger('private_logger',
+                                       log_path=run_config.LOG_PATH)
+        private_logger.update_level('PRIVATE')
         return private_logger
 
     @staticmethod

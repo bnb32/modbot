@@ -19,7 +19,7 @@ DEFAULT_VARS = {
     "EVAL_STEPS": 500,
     "OFFENSIVE_WEIGHT": 0.01,
     "SAMPLE_SIZE": None,
-    "LOGGER_LEVEL": 18,
+    "LOGGER_LEVEL": 'VERBOSE',
 }
 
 
@@ -72,8 +72,8 @@ class BaseConfig:
     #: Whether to moderate subscribers
     TO_SUBS = True
 
-    #: Log level. 18 is Verbose
-    LOGGER_LEVEL = 18
+    #: Log level.
+    LOGGER_LEVEL = 'VERBOSE'
 
     #: Whether to write chat messages to log file
     WRITE_LOG = True
@@ -101,9 +101,6 @@ class BaseConfig:
 
     #: Directory to write logs
     LOG_DIR = default_log_dir
-
-    #: File to use for logging chat and mod actions
-    LOG_PATH = None
 
     #: Path to bert preprocess model
     BERT_PREPROCESS = default_bert_preprocess
@@ -154,13 +151,12 @@ class BaseConfig:
         config_attrs.pop('config_dict', None)
         return config_attrs
 
-    def get_log_file(self):
+    @property
+    def LOG_PATH(self):
         """Get default log file name"""
         date_string = datetime.now().strftime("%Y-%m-%d")
         channel = self.CHANNEL or 'tmp'
-        if self.LOG_PATH is None:
-            self.LOG_PATH = os.path.join(self.LOG_DIR,
-                                         f'{date_string}_#{channel}.log')
+        return os.path.join(self.LOG_DIR, f'{date_string}_#{channel}.log')
 
     def get_config(self, file_name=None, config=None):
         """Get configuration from file
@@ -188,7 +184,6 @@ class BaseConfig:
             for k in dir(config):
                 if hasattr(self, k):
                     setattr(self, k, getattr(config, k))
-        self.get_log_file()
 
     @property
     def public_attrs(self):
@@ -227,7 +222,6 @@ class BaseConfig:
                 setattr(self, key, val)
             if hasattr(self, key.upper()) and val is not None:
                 setattr(self, key.upper(), val)
-        self.get_log_file()
 
     def save(self, outpath):
         """Save config to json file

@@ -181,6 +181,10 @@ class IrcSocketClientMixIn(Logging, Moderation):
 
 class BaseSocketClientAsync:
 
+    @property
+    def __name__(self):
+        return 'BaseSocketClientAsync'
+
     @abstractmethod
     def receive_message(self):
         """Receive and handle socket message"""

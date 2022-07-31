@@ -4,7 +4,7 @@ import pprint
 import shutil
 import sys
 
-from modbot.utilities.logging import get_logger, update_logger_level
+from modbot.utilities.logging import get_logger
 from modbot.training.training import (clean_log,
                                       vectorize_and_train)
 from modbot.training import training_argparse
@@ -28,7 +28,7 @@ def main():
     parser = training_argparse()
     args = parser.parse_args()
     config = RunConfig(args=args)
-    update_logger_level(logger, config.LOGGER_LEVEL)
+    logger.update_level(config.LOGGER_LEVEL)
 
     msg = ('**Not running anything. Select either -train or -clean or '
            '-continue_training or -just_evaluate**')
