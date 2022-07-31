@@ -7,7 +7,6 @@ import socket
 import asyncio
 import uuid
 import json
-import sys
 from datetime import datetime as dt
 from datetime import timedelta
 
