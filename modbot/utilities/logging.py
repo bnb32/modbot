@@ -13,6 +13,54 @@ CHAT_LEVEL = logging.INFO + 2
 MOD_LEVEL = logging.INFO + 4
 PRIVATE_LEVEL = logging.INFO - 10
 
+COLORS = {
+    'VERBOSE': [226, 226, 226],
+    'EXTRA_VERBOSE': [202, 202, 202],
+    'ERROR': [196, 196, 196],
+    'MOD': [46, 46, 46],
+    'CHAT': [33, 33, 33, 161, 135, 196]
+}
+
+
+class ColoredFormatter(logging.Formatter):
+    """Colored formatting for log output"""
+    level_format = '[%(levelname)s] '
+    other_format = '%(filename)s:%(lineno)d %(asctime)s '
+    msg_format = '%(message)s'
+    full_format = level_format + other_format + msg_format
+
+    FORMATS = {}
+    for level in COLORS:
+        COL_SEQ = f"\u001b[38;5;{COLORS[level][0]}m"
+        val = COL_SEQ + level_format + "\u001b[0m"
+        COL_SEQ = f"\u001b[38;5;{COLORS[level][1]}m"
+        val += COL_SEQ + other_format + "\u001b[0m"
+        COL_SEQ = f"\u001b[38;5;{COLORS[level][2]}m"
+        val += COL_SEQ + msg_format + "\u001b[0m"
+        FORMATS[level] = val
+
+    def format(self, record):
+        """Apply level specific coloring"""
+        formatter = logging.Formatter(self.FORMATS.get(record.levelname,
+                                                       self.full_format))
+        if record.levelname == 'CHAT':
+            msg = record.msg
+            msg_split = msg.split()
+            badges = msg_split[0]
+            username = msg_split[1]
+            msg = " ".join(msg_split[2:-1])
+            prob = msg_split[-1]
+            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-1]}m"
+            prob = COL_SEQ + prob + "\u001b[0m"
+            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-2]}m"
+            msg = COL_SEQ + msg + "\u001b[0m"
+            COL_SEQ = f"\u001b[38;5;{COLORS['CHAT'][-3]}m"
+            username = COL_SEQ + username + "\u001b[0m"
+            msg = " ".join([badges, username, msg, prob])
+            record.msg = msg
+
+        return formatter.format(record)
+
 
 def extra_verbose(self, message, *args, **kws):
     """Extra verbose log level"""
@@ -61,8 +109,9 @@ def get_logger(level=18):
         logging.Logger.mod = mod
 
         sh = logging.StreamHandler(stdout)
-        formatter = logging.Formatter(
-            '[%(levelname)s] %(filename)s:%(lineno)d %(asctime)s %(message)s')
+        format = '[$BOLD%(levelname)s$RESET] '
+        format += '%(filename)s:%(lineno)d %(asctime)s %(message)s'
+        formatter = ColoredFormatter()
         sh.setFormatter(formatter)
         sh.setLevel(level)
         logger.addHandler(sh)

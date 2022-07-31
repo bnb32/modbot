@@ -1,7 +1,8 @@
 
 """WholesomeBot utilities"""
 import re
-from datetime import datetime, timedelta
+from datetime import datetime as dt
+from datetime import timedelta
 from pytz import timezone
 import copy
 import time
@@ -96,7 +97,7 @@ class UserInfo:
         info['badges'] = get_badges(line)
         info['msgId'] = get_msg_id(line)
         info['role'] = get_role(line)
-        info['time'] = time.time()
+        info['time'] = dt.now()
         info['deleted'] = False
         info['banned'] = False
         return info
@@ -139,8 +140,8 @@ def date_time():
     datetime
         String containing current datetime
     """
-    date_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
-    datetime_obj = datetime.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f")
+    date_str = dt.now().strftime("%Y-%m-%d %H:%M:%S.%f")
+    datetime_obj = dt.strptime(date_str, "%Y-%m-%d %H:%M:%S.%f")
     datetime_obj_pst = datetime_obj.replace(
         tzinfo=timezone('US/Eastern')) - timedelta(hours=3)
     return datetime_obj_pst.strftime("%Y-%m-%d %H:%M:%S.%f")

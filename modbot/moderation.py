@@ -1,7 +1,7 @@
 """Moderation module"""
 
-import time
-from datetime import datetime, timedelta
+from datetime import datetime as dt
+from datetime import timedelta
 
 import modbot.preprocessing as pp
 from modbot.utilities import utilities
@@ -35,8 +35,8 @@ class Permitting:
             Length of time in seconds
         """
         if user not in self.permits:
-            self.permits[user] = {'start': time.time(),
-                                  'length': length}
+            self.permits[user] = {'start': dt.now(),
+                                  'length': timedelta(seconds=length)}
 
     def del_permit(self, user):
         """Delete user from permit queue
@@ -77,7 +77,7 @@ class Permitting:
         """
         if self.has_permit(user):
             tmp = self.permits[user]['start'] + self.permits[user]['length']
-            if time.time() >= tmp:
+            if dt.now() >= tmp:
                 self.del_permit(user)
 
     @staticmethod
@@ -174,17 +174,17 @@ class Nuking:
             try:
                 self.nuke_timeout = utilities.parse_time(args.pop(-1))
                 scrollback_time = utilities.parse_time(args.pop(-1))
-                self.nuke_start = time.time() - scrollback_time
+                self.nuke_start = dt.now() - scrollback_time
                 if '-r' in args[-1]:
                     radiation_time = utilities.parse_radiation(args.pop(-1))
-                    self.nuke_end = time.time() + radiation_time
+                    self.nuke_end = dt.now() + radiation_time
                 else:
                     radiation_time = 0
-                    self.nuke_end = time.time()
+                    self.nuke_end = dt.now()
                 self.nuke_phrase = ' '.join(args[1:]).strip()
-                start = datetime.today() - timedelta(seconds=scrollback_time)
+                start = dt.now() - timedelta(seconds=scrollback_time)
                 tmp = f'Nuke start: {start}'
-                end = datetime.today() + timedelta(seconds=radiation_time)
+                end = dt.now() + timedelta(seconds=radiation_time)
                 tmp += f'Nuke end: {end}'
                 logger.mod(tmp)
                 return True
@@ -198,7 +198,7 @@ class Nuking:
 
     def time_nuke(self):
         """End nuke if the nuke time has elapsed"""
-        if self.nuke_ongoing and time.time() > self.nuke_end:
+        if self.nuke_ongoing and dt.now() > self.nuke_end:
             self.nuke_ongoing = False
         else:
             pass
