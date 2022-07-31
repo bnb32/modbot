@@ -1,8 +1,6 @@
 """Setup script"""
 from distutils.core import setup
 
-from importlib_metadata import entry_points
-
 setup(name='modbot', version='0.1.0',
       url='https://github.com/bnb32/modbot',
       author='Brandon N. Benton',
