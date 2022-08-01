@@ -3,6 +3,26 @@ import argparse
 
 from modbot.utilities.utilities import none_or_str, none_or_int, none_or_float
 from modbot import (DATA_DIR, LOG_DIR, BERT_ENCODER, BERT_PREPROCESS)
+import modbot.training.models
+
+
+def get_model_class(model_type):
+    """Get model class from string and check if valid model type
+
+    Parameters
+    ----------
+    model_type : str
+        A valid model class
+
+    Returns
+    -------
+    MODEL_CLASS
+        A valid model class
+    """
+    check = hasattr(modbot.training.models, model_type)
+    msg = (f'Could not find requested model_type: {model_type}')
+    assert check, msg
+    return getattr(modbot.training.models, model_type)
 
 
 def training_argparse():

@@ -6,8 +6,9 @@ from datetime import timedelta
 import modbot.preprocessing as pp
 from modbot.utilities import utilities
 from modbot.environment import ProcessingConfig
-from modbot.utilities.utilities import replies, get_model_class, UserInfo
+from modbot.utilities.utilities import replies, UserInfo
 from modbot.utilities.logging import get_logger
+from modbot.training import get_model_class
 
 
 logger = get_logger()

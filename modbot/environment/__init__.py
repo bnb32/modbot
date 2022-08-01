@@ -36,8 +36,8 @@ def get_model_path(model_type, basedir=default_data_dir):
     model_path : str
         Path to save/load model
     """
-    model_path = os.path.join(basedir, f'{model_type.upper()}_model')
-    if model_type.upper() in ('SVM'):
+    model_path = os.path.join(basedir, f'{model_type}_model')
+    if model_type in ('SVM'):
         model_path = os.path.join(model_path, 'model.joblib')
     return model_path
 
