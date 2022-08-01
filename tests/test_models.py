@@ -4,14 +4,14 @@ import os
 import pytest
 import pandas as pd
 
-from modbot.training.models import (SVM, BertCnnTorch)
+from modbot.training.models import SVM
 from modbot import TEST_DATA_DIR
 from modbot.utilities.logging import get_logger
 from modbot.environment import RunConfig, get_model_path
 
 logger = get_logger()
 
-MODELS = [(SVM), (BertCnnTorch)]
+MODELS = [(SVM)]
 
 
 @pytest.mark.parametrize('MODEL', MODELS)
