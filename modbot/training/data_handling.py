@@ -1,9 +1,6 @@
 """Data handling module"""
-from attr import has
 import numpy as np
 import pandas as pd
-import dask.dataframe as dd
-
 from keras import utils
 import tensorflow as tf
 
