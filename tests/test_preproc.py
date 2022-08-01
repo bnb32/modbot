@@ -24,7 +24,7 @@ def test_data_generator():
     labels = data['is_offensive'][:-idx]
     assert len(texts) % batch_size == 0
     assert len(labels) % batch_size == 0
-    gen = WeightedGenerator(texts, labels, **kwargs)
+    gen = WeightedGenerator(data, **kwargs)
 
     for batch in gen:
         assert batch[0].shape[0] == batch_size
