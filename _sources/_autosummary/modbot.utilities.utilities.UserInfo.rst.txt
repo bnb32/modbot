@@ -1,0 +1,24 @@
+modbot.utilities.utilities.UserInfo
+===================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autoclass:: UserInfo
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~UserInfo.get_info
+   
+   
+
+   
+   
+   

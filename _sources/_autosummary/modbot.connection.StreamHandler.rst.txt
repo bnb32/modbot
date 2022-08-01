@@ -1,0 +1,26 @@
+modbot.connection.StreamHandler
+===============================
+
+.. currentmodule:: modbot.connection
+
+.. autoclass:: StreamHandler
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~StreamHandler.close_connection
+      ~StreamHandler.read
+      ~StreamHandler.write
+   
+   
+
+   
+   
+   

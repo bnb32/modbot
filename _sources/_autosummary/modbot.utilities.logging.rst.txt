@@ -1,0 +1,41 @@
+modbot.utilities.logging
+========================
+
+.. automodule:: modbot.utilities.logging
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_logger
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      ColoredFormatter
+      CustomLogger
+      Logging
+      PrivateLogger
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,44 @@
+modbot.training.data\_handling.WeightedGenerator
+================================================
+
+.. currentmodule:: modbot.training.data_handling
+
+.. autoclass:: WeightedGenerator
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WeightedGenerator.get_deterministic_batch
+      ~WeightedGenerator.get_random_batch
+      ~WeightedGenerator.on_epoch_end
+      ~WeightedGenerator.sample_indices
+      ~WeightedGenerator.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WeightedGenerator.X
+      ~WeightedGenerator.Y
+      ~WeightedGenerator.batch_chunks
+      ~WeightedGenerator.chunk_size
+      ~WeightedGenerator.chunks
+      ~WeightedGenerator.indices
+      ~WeightedGenerator.n_batches
+      ~WeightedGenerator.n_chunks
+      ~WeightedGenerator.n_samples
+      ~WeightedGenerator.one_count
+      ~WeightedGenerator.zero_count
+   
+   

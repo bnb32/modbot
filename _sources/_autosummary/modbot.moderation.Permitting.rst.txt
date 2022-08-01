@@ -1,0 +1,30 @@
+modbot.moderation.Permitting
+============================
+
+.. currentmodule:: modbot.moderation
+
+.. autoclass:: Permitting
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Permitting.add_permit
+      ~Permitting.del_permit
+      ~Permitting.get_permit_time
+      ~Permitting.get_permit_user
+      ~Permitting.has_permit
+      ~Permitting.rep_permit
+      ~Permitting.time_permit
+   
+   
+
+   
+   
+   

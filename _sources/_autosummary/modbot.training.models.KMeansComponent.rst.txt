@@ -1,0 +1,28 @@
+modbot.training.models.KMeansComponent
+======================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: KMeansComponent
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~KMeansComponent.fit
+      ~KMeansComponent.fit_transform
+      ~KMeansComponent.get_optimal_k
+      ~KMeansComponent.optimize
+      ~KMeansComponent.transform
+   
+   
+
+   
+   
+   

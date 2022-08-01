@@ -1,0 +1,54 @@
+modbot.environment.BaseConfig
+=============================
+
+.. currentmodule:: modbot.environment
+
+.. autoclass:: BaseConfig
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BaseConfig.get_config
+      ~BaseConfig.save
+      ~BaseConfig.update_config
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BaseConfig.BERT_ENCODER
+      ~BaseConfig.BERT_PREPROCESS
+      ~BaseConfig.CHANNEL
+      ~BaseConfig.CHATTY_DIR
+      ~BaseConfig.CHECK_PMIN
+      ~BaseConfig.DATA_DIR
+      ~BaseConfig.FILE_NAME
+      ~BaseConfig.INFILE
+      ~BaseConfig.LOGGER_LEVEL
+      ~BaseConfig.LOG_DIR
+      ~BaseConfig.LOG_PATH
+      ~BaseConfig.MODEL_PATH
+      ~BaseConfig.MODEL_TYPE
+      ~BaseConfig.NICKNAME
+      ~BaseConfig.NOLINKS
+      ~BaseConfig.OFFENSIVE_WEIGHT
+      ~BaseConfig.PLEB_PMIN
+      ~BaseConfig.PMSG_ON
+      ~BaseConfig.SUB_PMIN
+      ~BaseConfig.TO_SUBS
+      ~BaseConfig.WRITE_LOG
+      ~BaseConfig.attrs
+      ~BaseConfig.public_attrs
+   
+   

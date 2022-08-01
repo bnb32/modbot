@@ -1,0 +1,6 @@
+modbot.preprocessing.write\_data
+================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: write_data

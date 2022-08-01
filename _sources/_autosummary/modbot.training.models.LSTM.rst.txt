@@ -1,0 +1,65 @@
+modbot.training.models.LSTM
+===========================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: LSTM
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LSTM.append_history
+      ~LSTM.build_layers
+      ~LSTM.chunk_words
+      ~LSTM.clean_text
+      ~LSTM.clean_texts
+      ~LSTM.construct_vocab
+      ~LSTM.continue_training
+      ~LSTM.detailed_score
+      ~LSTM.evaluate
+      ~LSTM.fit
+      ~LSTM.get_class_info
+      ~LSTM.get_data_generators
+      ~LSTM.get_encoder
+      ~LSTM.get_most_common_ngrams
+      ~LSTM.get_ngrams
+      ~LSTM.get_vocab_difference
+      ~LSTM.get_vocab_direct
+      ~LSTM.load
+      ~LSTM.load_data
+      ~LSTM.model_test
+      ~LSTM.predict
+      ~LSTM.predict_one
+      ~LSTM.predict_proba
+      ~LSTM.predict_zero
+      ~LSTM.print_eval
+      ~LSTM.run
+      ~LSTM.save
+      ~LSTM.save_params
+      ~LSTM.score
+      ~LSTM.split_data
+      ~LSTM.split_words
+      ~LSTM.standardize_grams
+      ~LSTM.train
+      ~LSTM.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LSTM.EMBEDDING_DIM
+      ~LSTM.MAX_NB_WORDS
+      ~LSTM.MAX_SEQUENCE_LENGTH
+   
+   

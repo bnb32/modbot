@@ -1,0 +1,6 @@
+modbot.training.training.clean\_log
+===================================
+
+.. currentmodule:: modbot.training.training
+
+.. autofunction:: clean_log

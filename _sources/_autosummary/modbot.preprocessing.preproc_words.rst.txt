@@ -1,0 +1,6 @@
+modbot.preprocessing.preproc\_words
+===================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: preproc_words

@@ -1,0 +1,55 @@
+modbot.connection.IrcSocketClientMixIn
+======================================
+
+.. currentmodule:: modbot.connection
+
+.. autoclass:: IrcSocketClientMixIn
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IrcSocketClientMixIn.add_permit
+      ~IrcSocketClientMixIn.append_log
+      ~IrcSocketClientMixIn.build_action_log_entry
+      ~IrcSocketClientMixIn.build_chat_log_entry
+      ~IrcSocketClientMixIn.del_permit
+      ~IrcSocketClientMixIn.filter_words
+      ~IrcSocketClientMixIn.get_delete
+      ~IrcSocketClientMixIn.get_info_from_irc
+      ~IrcSocketClientMixIn.get_info_from_pubsub
+      ~IrcSocketClientMixIn.get_info_prob
+      ~IrcSocketClientMixIn.get_permit_time
+      ~IrcSocketClientMixIn.get_permit_user
+      ~IrcSocketClientMixIn.get_timeout
+      ~IrcSocketClientMixIn.get_value
+      ~IrcSocketClientMixIn.handle_message
+      ~IrcSocketClientMixIn.has_permit
+      ~IrcSocketClientMixIn.heartbeat
+      ~IrcSocketClientMixIn.initialize_logger
+      ~IrcSocketClientMixIn.initialize_model
+      ~IrcSocketClientMixIn.is_exempt
+      ~IrcSocketClientMixIn.is_prob_exceeded
+      ~IrcSocketClientMixIn.print_info
+      ~IrcSocketClientMixIn.remove_allowed_phrases
+      ~IrcSocketClientMixIn.rep_nuke
+      ~IrcSocketClientMixIn.rep_permit
+      ~IrcSocketClientMixIn.send_action
+      ~IrcSocketClientMixIn.send_message
+      ~IrcSocketClientMixIn.send_nuke
+      ~IrcSocketClientMixIn.send_reply
+      ~IrcSocketClientMixIn.should_nuke
+      ~IrcSocketClientMixIn.time_nuke
+      ~IrcSocketClientMixIn.time_permit
+   
+   
+
+   
+   
+   

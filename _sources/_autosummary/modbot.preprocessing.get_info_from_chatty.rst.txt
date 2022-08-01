@@ -1,0 +1,6 @@
+modbot.preprocessing.get\_info\_from\_chatty
+============================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: get_info_from_chatty

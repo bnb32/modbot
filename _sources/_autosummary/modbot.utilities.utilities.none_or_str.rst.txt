@@ -1,0 +1,6 @@
+modbot.utilities.utilities.none\_or\_str
+========================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: none_or_str

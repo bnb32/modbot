@@ -1,0 +1,6 @@
+modbot.utilities.utilities.date\_time
+=====================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: date_time

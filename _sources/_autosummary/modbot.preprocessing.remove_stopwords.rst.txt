@@ -1,0 +1,6 @@
+modbot.preprocessing.remove\_stopwords
+======================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: remove_stopwords

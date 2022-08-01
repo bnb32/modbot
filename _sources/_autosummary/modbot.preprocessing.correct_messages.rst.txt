@@ -1,0 +1,6 @@
+modbot.preprocessing.correct\_messages
+======================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: correct_messages

@@ -1,0 +1,6 @@
+modbot.training.training.vectorize\_and\_train
+==============================================
+
+.. currentmodule:: modbot.training.training
+
+.. autofunction:: vectorize_and_train

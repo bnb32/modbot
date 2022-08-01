@@ -1,0 +1,31 @@
+modbot.utilities.loss\_metrics
+==============================
+
+.. automodule:: modbot.utilities.loss_metrics
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      gaussian_kernel
+      max_mean_discrepancy
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

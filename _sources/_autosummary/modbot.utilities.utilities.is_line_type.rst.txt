@@ -1,0 +1,6 @@
+modbot.utilities.utilities.is\_line\_type
+=========================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: is_line_type

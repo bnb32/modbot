@@ -1,0 +1,6 @@
+modbot.training.data\_handling.char\_split
+==========================================
+
+.. currentmodule:: modbot.training.data_handling
+
+.. autofunction:: char_split

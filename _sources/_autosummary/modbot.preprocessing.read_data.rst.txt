@@ -1,0 +1,6 @@
+modbot.preprocessing.read\_data
+===============================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: read_data

@@ -1,0 +1,6 @@
+modbot.preprocessing.my\_lemmatizer
+===================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: my_lemmatizer

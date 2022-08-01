@@ -1,0 +1,6 @@
+modbot.preprocessing.filter\_all\_emotes
+========================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: filter_all_emotes

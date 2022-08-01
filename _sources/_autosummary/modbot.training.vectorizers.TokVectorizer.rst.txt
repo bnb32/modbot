@@ -1,0 +1,37 @@
+modbot.training.vectorizers.TokVectorizer
+=========================================
+
+.. currentmodule:: modbot.training.vectorizers
+
+.. autoclass:: TokVectorizer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TokVectorizer.encode
+      ~TokVectorizer.fit
+      ~TokVectorizer.fit_transform
+      ~TokVectorizer.load
+      ~TokVectorizer.save
+      ~TokVectorizer.tokenize
+      ~TokVectorizer.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TokVectorizer.MAX_NB_WORDS
+      ~TokVectorizer.MAX_SEQUENCE_LENGTH
+   
+   

@@ -1,0 +1,6 @@
+modbot.utilities.logging.get\_logger
+====================================
+
+.. currentmodule:: modbot.utilities.logging
+
+.. autofunction:: get_logger

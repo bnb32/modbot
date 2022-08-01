@@ -1,0 +1,64 @@
+modbot.training.models.NNmodel
+==============================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: NNmodel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~NNmodel.append_history
+      ~NNmodel.build_layers
+      ~NNmodel.chunk_words
+      ~NNmodel.clean_text
+      ~NNmodel.clean_texts
+      ~NNmodel.construct_vocab
+      ~NNmodel.continue_training
+      ~NNmodel.detailed_score
+      ~NNmodel.evaluate
+      ~NNmodel.fit
+      ~NNmodel.get_class_info
+      ~NNmodel.get_data_generators
+      ~NNmodel.get_most_common_ngrams
+      ~NNmodel.get_ngrams
+      ~NNmodel.get_vocab_difference
+      ~NNmodel.get_vocab_direct
+      ~NNmodel.load
+      ~NNmodel.load_data
+      ~NNmodel.model_test
+      ~NNmodel.predict
+      ~NNmodel.predict_one
+      ~NNmodel.predict_proba
+      ~NNmodel.predict_zero
+      ~NNmodel.print_eval
+      ~NNmodel.run
+      ~NNmodel.save
+      ~NNmodel.save_params
+      ~NNmodel.score
+      ~NNmodel.split_data
+      ~NNmodel.split_words
+      ~NNmodel.standardize_grams
+      ~NNmodel.train
+      ~NNmodel.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NNmodel.EMBEDDING_DIM
+      ~NNmodel.MAX_NB_WORDS
+      ~NNmodel.MAX_SEQUENCE_LENGTH
+   
+   

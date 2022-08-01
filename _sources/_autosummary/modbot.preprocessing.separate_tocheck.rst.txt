@@ -1,0 +1,6 @@
+modbot.preprocessing.separate\_tocheck
+======================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: separate_tocheck

@@ -1,0 +1,43 @@
+modbot.training.models.ModerationModel
+======================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: ModerationModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ModerationModel.clean_text
+      ~ModerationModel.clean_texts
+      ~ModerationModel.continue_training
+      ~ModerationModel.detailed_score
+      ~ModerationModel.get_class_info
+      ~ModerationModel.get_data_generators
+      ~ModerationModel.load
+      ~ModerationModel.load_data
+      ~ModerationModel.model_test
+      ~ModerationModel.predict
+      ~ModerationModel.predict_one
+      ~ModerationModel.predict_proba
+      ~ModerationModel.predict_zero
+      ~ModerationModel.run
+      ~ModerationModel.save
+      ~ModerationModel.save_params
+      ~ModerationModel.score
+      ~ModerationModel.split_data
+      ~ModerationModel.train
+      ~ModerationModel.transform
+   
+   
+
+   
+   
+   

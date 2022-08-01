@@ -1,0 +1,34 @@
+modbot.preprocessing.MsgMemory
+==============================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autoclass:: MsgMemory
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MsgMemory.add_msg
+      ~MsgMemory.build_full_memory
+      ~MsgMemory.check_msgs
+      ~MsgMemory.chunk_memory
+      ~MsgMemory.chunk_recent
+      ~MsgMemory.clear_user
+      ~MsgMemory.del_msg
+      ~MsgMemory.update_banned_status
+      ~MsgMemory.update_deleted_status
+      ~MsgMemory.update_mod_action_status
+      ~MsgMemory.update_user_ban
+   
+   
+
+   
+   
+   

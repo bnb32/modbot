@@ -1,0 +1,49 @@
+modbot.training.models.SVM
+==========================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: SVM
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SVM.clean_text
+      ~SVM.clean_texts
+      ~SVM.continue_training
+      ~SVM.detailed_score
+      ~SVM.get_class_info
+      ~SVM.get_data_generators
+      ~SVM.load
+      ~SVM.load_data
+      ~SVM.model_test
+      ~SVM.predict
+      ~SVM.predict_one
+      ~SVM.predict_proba
+      ~SVM.predict_zero
+      ~SVM.run
+      ~SVM.save
+      ~SVM.save_params
+      ~SVM.score
+      ~SVM.split_data
+      ~SVM.train
+      ~SVM.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SVM.PARAMS
+   
+   

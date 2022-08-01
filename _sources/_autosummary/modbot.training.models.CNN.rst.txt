@@ -1,0 +1,64 @@
+modbot.training.models.CNN
+==========================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: CNN
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CNN.append_history
+      ~CNN.build_layers
+      ~CNN.chunk_words
+      ~CNN.clean_text
+      ~CNN.clean_texts
+      ~CNN.construct_vocab
+      ~CNN.continue_training
+      ~CNN.detailed_score
+      ~CNN.evaluate
+      ~CNN.fit
+      ~CNN.get_class_info
+      ~CNN.get_data_generators
+      ~CNN.get_most_common_ngrams
+      ~CNN.get_ngrams
+      ~CNN.get_vocab_difference
+      ~CNN.get_vocab_direct
+      ~CNN.load
+      ~CNN.load_data
+      ~CNN.model_test
+      ~CNN.predict
+      ~CNN.predict_one
+      ~CNN.predict_proba
+      ~CNN.predict_zero
+      ~CNN.print_eval
+      ~CNN.run
+      ~CNN.save
+      ~CNN.save_params
+      ~CNN.score
+      ~CNN.split_data
+      ~CNN.split_words
+      ~CNN.standardize_grams
+      ~CNN.train
+      ~CNN.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CNN.EMBEDDING_DIM
+      ~CNN.MAX_NB_WORDS
+      ~CNN.MAX_SEQUENCE_LENGTH
+   
+   

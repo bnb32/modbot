@@ -1,0 +1,43 @@
+﻿modbot
+======
+
+.. automodule:: modbot
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      modbot_argparse
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   modbot.connection
+   modbot.environment
+   modbot.moderation
+   modbot.preprocessing
+   modbot.training
+   modbot.utilities
+   modbot.version
+

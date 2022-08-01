@@ -1,0 +1,26 @@
+modbot.moderation.Nuking
+========================
+
+.. currentmodule:: modbot.moderation
+
+.. autoclass:: Nuking
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Nuking.rep_nuke
+      ~Nuking.should_nuke
+      ~Nuking.time_nuke
+   
+   
+
+   
+   
+   
