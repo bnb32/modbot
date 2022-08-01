@@ -23,7 +23,7 @@ def test_model():
         assert 0 <= float(prob) <= 1
 
 
-def test_model_save_load(MODEL):
+def test_model_save_load():
     """Test model loading"""
     with tempfile.TemporaryDirectory() as td:
         data_file = os.path.join(TEST_DATA_DIR, 'test_data.csv')
