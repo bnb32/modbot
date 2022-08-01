@@ -5,7 +5,7 @@ from datetime import datetime as dt
 from datetime import timedelta
 from pytz import timezone
 import copy
-import time
+import modbot.training.models
 
 replies = {'timeout': "",
            'bio': "/me I'm an AI developed by drchessgremlin, "
@@ -36,6 +36,25 @@ INFO_DEFAULT = {
     'mod': None,
     'prob': 0.0,
 }
+
+
+def get_model_class(model_type):
+    """Get model class from string and check if valid model type
+
+    Parameters
+    ----------
+    model_type : str
+        A valid model class
+
+    Returns
+    -------
+    MODEL_CLASS
+        A valid model class
+    """
+    check = hasattr(modbot.training.models, model_type)
+    msg = (f'Could not find requested model_type: {model_type}')
+    assert check, msg
+    return getattr(modbot.training.models, model_type)
 
 
 def curvature(a):

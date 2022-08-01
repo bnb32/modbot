@@ -8,8 +8,6 @@ BOT_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_DIR = os.path.join(os.path.dirname(BOT_DIR), 'tests', 'data')
 DATA_DIR = os.path.join(os.path.dirname(BOT_DIR), 'data')
 LOG_DIR = os.path.join(DATA_DIR, 'logs')
-VALID_MODELS = ('BERT', 'BERT_CNN', 'BERT_CNN_LSTM', 'BERT_LSTM_CNN',
-                'BERT_LSTM', 'CNN', 'SVM', 'LSTM', 'BERT_CNN_TORCH')
 BERT_PREPROCESS = 'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3'
 BERT_ENCODER = 'https://tfhub.dev/tensorflow/small_bert/'
 BERT_ENCODER += 'bert_en_uncased_L-2_H-128_A-2/2'
@@ -23,7 +21,6 @@ def modbot_argparse():
     parser.add_argument('-model_path', default=None,
                         type=none_or_str, help='Path to model')
     parser.add_argument('-model_type', default=None,
-                        choices=VALID_MODELS,
                         help='Model type to use for modding', type=str)
     parser.add_argument('-channel', default=None,
                         type=none_or_str, help='Channel to moderate')

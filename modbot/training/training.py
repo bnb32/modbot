@@ -6,9 +6,9 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.feature_extraction._stop_words import ENGLISH_STOP_WORDS
 
 import modbot.preprocessing as pp
-from modbot.training.models import get_model_class
 from modbot.moderation import Moderation
 from modbot.utilities.logging import get_logger
+from modbot.utilities.utilities import get_model_class
 
 stop_words = ENGLISH_STOP_WORDS
 logger = get_logger()

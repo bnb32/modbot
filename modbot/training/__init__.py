@@ -2,8 +2,7 @@
 import argparse
 
 from modbot.utilities.utilities import none_or_str, none_or_int, none_or_float
-from modbot import (DATA_DIR, LOG_DIR, VALID_MODELS, BERT_ENCODER,
-                    BERT_PREPROCESS)
+from modbot import (DATA_DIR, LOG_DIR, BERT_ENCODER, BERT_PREPROCESS)
 
 
 def training_argparse():
@@ -28,7 +27,6 @@ def training_argparse():
                         action='store_true',
                         help='Reclassify all decisions made by the bot.')
     parser.add_argument('-model_type', default=None,
-                        choices=VALID_MODELS,
                         help='Model type to train', type=str)
     parser.add_argument('-model_path', default=None,
                         help='Path to model', type=none_or_str)
@@ -63,8 +61,7 @@ def training_argparse():
                         type=str, help='Path to bert preprocess model')
     parser.add_argument('-bert_encoder', default=BERT_ENCODER,
                         type=str, help='Path to bert encoder')
-    parser.add_argument('-chatty_dir', default=None,
-                        type=none_or_str,
+    parser.add_argument('-chatty_dir', default=None, type=none_or_str,
                         help='Path to chatty logs. Used only if updating, '
                              'appending, or rerunning log using '
                              'source=chatty.')
