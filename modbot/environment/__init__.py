@@ -181,8 +181,8 @@ class BaseConfig:
                 if hasattr(self, k):
                     setattr(self, k, v)
         elif config is not None:
-            for k in dir(config):
-                if hasattr(self, k):
+            for k in vars(config):
+                if hasattr(self, k) and hasattr(config, k):
                     setattr(self, k, getattr(config, k))
 
     @property

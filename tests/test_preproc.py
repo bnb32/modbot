@@ -17,23 +17,21 @@ def test_data_generator():
     data = pd.read_csv(data_file)
 
     batch_size = 16
-    offensive_weight = 0.2
+    offensive_weight = 0.1
     kwargs = {'batch_size': batch_size, 'offensive_weight': offensive_weight}
-    idx = len(data['text']) % batch_size
-    texts = data['text'][:-idx]
-    labels = data['is_offensive'][:-idx]
-    assert len(texts) % batch_size == 0
-    assert len(labels) % batch_size == 0
+    idx = len(data) % batch_size
+    data = data[:-idx]
+    assert len(data) % batch_size == 0
     gen = WeightedGenerator(data, **kwargs)
 
-    for batch in gen:
+    for _, batch in enumerate(gen):
         assert batch[0].shape[0] == batch_size
         assert batch[1].shape[0] == batch_size
 
     zeros = list(gen.Y).count(0)
     ones = list(gen.Y).count(1)
     frac = ones / (zeros + ones)
-    assert np.allclose(frac, offensive_weight, atol=0.01)
+    assert np.allclose(frac, offensive_weight, atol=0.02)
 
 
 def test_log_cleaning():

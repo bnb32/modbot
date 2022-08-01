@@ -133,7 +133,7 @@ class DataGenerator(utils.Sequence):
         arrs : list
             List of data batches
         """
-        return self.df.loc[self.chunks[i]]
+        return self.df.loc[self.batch_chunks[i]]
 
 
 class WeightedGenerator(DataGenerator):

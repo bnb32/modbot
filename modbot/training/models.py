@@ -1456,8 +1456,7 @@ class SVM(ModerationModel):
         """
         self.get_class_info()
         logger.info('Training LinearSVM classifier')
-        train_gen.X = train_gen.X.apply(pp.correct_msg,
-                                        meta=('text', 'object'))
+        train_gen.df['text'] = train_gen.df['text'].apply(pp.correct_msg)
         self.model.fit(train_gen.X, train_gen.Y)
 
     def predict_proba(self, X, verbose=False):
