@@ -118,8 +118,22 @@ class IrcSocketClientMixIn(Logging, Moderation):
         line = "CAP REQ :twitch.tv/membership"
         self.shandler.write(line)
 
+    @staticmethod
+    def check_joins_and_parts(line):
+        """Check user joins/parts to/from channel"""
+        tmp = line.replace('tmi.twitch.tv', '').split(':')
+        joined = [chunk.split('!')[0] for chunk in tmp if 'JOIN' in chunk]
+        parted = [chunk.split('!')[0] for chunk in tmp if 'PART' in chunk]
+        if joined:
+            logger.extra_verbose(f"JOINED: {', '.join(joined)}")
+        if parted:
+            logger.extra_verbose(f"PARTED: {', '.join(parted)}")
+        if not joined and not parted:
+            logger.extra_verbose(line)
+
     def handle_message(self, line):
         """Receive non chat IRC messages"""
+        line_type = get_line_type(line)
         if self._PING_MSG in line:
             logger.verbose(f"IRC Ping: {dt.now()}")
             self.last_ping = dt.now()
@@ -131,20 +145,15 @@ class IrcSocketClientMixIn(Logging, Moderation):
             self.last_ping = dt.now()
             logger.verbose(f"IRC Pong: {dt.now()}")
             self.last_pong = dt.now()
-        elif get_line_type(line) in ['join', 'part']:
-            tmp = line.replace('tmi.twitch.tv', '').split(':')
-            joined = [chunk.split('!')[0] for chunk in tmp if 'JOIN' in chunk]
-            parted = [chunk.split('!')[0] for chunk in tmp if 'PART' in chunk]
-            if joined:
-                logger.extra_verbose(f"JOINED: {', '.join(joined)}")
-            if parted:
-                logger.extra_verbose(f"PARTED: {', '.join(parted)}")
-            if not joined and not parted:
-                logger.extra_verbose(line)
-        elif get_line_type(line) not in ['ban', 'delete', 'msg']:
-            logger.extra_verbose(line)
+        elif line_type in ['join', 'part']:
+            self.check_joins_and_parts(line)
+        elif line_type in ['misc']:
+            logger.extra_verbose(line.strip('\n'))
         else:
-            self._handle_message(line)
+            info = self.get_info_from_irc(line)
+            if line_type in ['msg']:
+                self.print_info(info)
+            self._handle_message(info)
 
     def heartbeat(self):
         """Heartbeat routine for keeping IRC connection alive"""
@@ -157,25 +166,31 @@ class IrcSocketClientMixIn(Logging, Moderation):
         else:
             pass
 
-    def _handle_message(self, line):
+    def _update_user_log(self, info):
+        """Update global chat history"""
+        self.USER_LOG[info['user']] = self.USER_LOG.get(info['user'], [])
+        self.USER_LOG[info['user']].append(dict(msg=info['msg'],
+                                                prob=info['prob']))
+
+    def _handle_message(self, info):
         """Handle chat IRC messages"""
-        info = self.get_info_from_irc(line)
-        self.print_info(info)
         self.send_reply(self.shandler, info)
         self.send_action(self.shandler, info)
         log_entry = self.build_chat_log_entry(info)
         if info['deleted']:
-            log_entry = self.build_action_log_entry('delete', info['user'],
-                                                    self.run_config.NICKNAME,
-                                                    info['msg'], '', '')
+            log_entry = self.build_action_log_entry(
+                action='delete', user=info['user'],
+                moderator=self.run_config.NICKNAME, msg=info['msg'],
+                secs='', msg_id='')
             logger.mod(log_entry + f' ({info["prob"]})')
-        self.UserLog[info['user']] = info['msg']
+
+        self._update_user_log(info)
         # write to log
         try:
             self.append_log(log_entry)
-        except Exception:
-            logger.warning("**logging problem**")
-            logger.warning(line)
+        except Exception as e:
+            msg = (f"**logging problem: {e}**")
+            logger.warning(msg)
 
 
 class BaseSocketClientAsync:
@@ -260,7 +275,10 @@ class IrcSocketClientAsync(IrcSocketClientMixIn, BaseSocketClientAsync):
         if elapsed > self._WAIT_TIME:
             msg = f'{elapsed} since last message. Waiting on {self.__name__}.'
             logger.extra_verbose(msg)
-        line = await self.shandler.read(1024)
+        try:
+            line = await self.shandler.read(1024)
+        except Exception as e:
+            raise e
         self.last_msg_time = dt.now()
         self.handle_message(line)
 
@@ -395,10 +413,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
             tmp = json.loads(tmp['data']['message'])
             tmp = tmp['data']
             out = self.get_info_from_pubsub(tmp)
-            action, user, moderator, msg, secs, msg_id = out
-            log_entry = self.build_action_log_entry(action, user, moderator,
-                                                    msg, secs, msg_id)
-            logger.mod(log_entry)
+            log_entry = self.build_action_log_entry(*out[:-1])
+            logger.mod(log_entry.replace('\n', ' ') + f' ({out[-1]})')
             try:
                 self.append_log(log_entry)
             except Exception:

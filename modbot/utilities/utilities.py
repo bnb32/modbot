@@ -4,6 +4,10 @@ import re
 from datetime import datetime as dt
 import copy
 
+from modbot.utilities.logging import get_logger
+
+logger = get_logger()
+
 replies = {'timeout': "",
            'bio': "/me I'm an AI developed by drchessgremlin, "
                   "learning what is wholesome and non-wholesome based on what"
@@ -240,6 +244,8 @@ def get_line_type(line):
     for k, v in type_map.items():
         if k in line:
             return v
+    if not remove_special_chars(line).strip():
+        return "blank"
     return "misc"
 
 
@@ -277,8 +283,11 @@ def get_user(line):
     if is_line_type("msg", line):
         for line in line.split(';'):
             if line.startswith('user-type='):
-                msg = re.search('user-type=(.*)', line).group(1)
-                user = msg.split(":", 2)[1].split("!", 1)[0]
+                try:
+                    msg = re.search('user-type=(.*)', line).group(1)
+                    user = msg.split(":", 2)[1].split("!", 1)[0]
+                except Exception as e:
+                    raise e
     elif is_line_type("delete", line):
         line = line.split(';')
         user = line[0].strip('@login=')
@@ -348,7 +357,10 @@ def get_badges(line):
     if is_line_type("msg", line):
         for line in line.split(';'):
             if line.startswith('badges='):
-                badges = re.search('badges=(.*)', line).group(1)
+                try:
+                    badges = re.search('badges=(.*)', line).group(1)
+                except Exception as e:
+                    raise e
     return badges
 
 
@@ -368,7 +380,10 @@ def get_msg_id(line):
     msg_id = ''
     for line in line.split(';'):
         if line.startswith('id='):
-            msg_id = re.search('id=(.*)', line).group(1)
+            try:
+                msg_id = re.search('id=(.*)', line).group(1)
+            except Exception as e:
+                raise e
     return msg_id
 
 
@@ -446,4 +461,5 @@ def get_message(line):
     for line in line.split(';'):
         if line.startswith('user-type='):
             msg = re.search('user-type=(.*)', line).group(1)
-    return re.search(r'PRIVMSG #\w+ :(.*)', msg).group(1)
+            return re.search(r'PRIVMSG #\w+ :(.*)', msg).group(1)
+    return msg

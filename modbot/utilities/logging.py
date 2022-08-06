@@ -3,22 +3,12 @@ from emoji import demojize
 import logging
 from sys import stdout
 
-from modbot.utilities.utilities import is_user_type_irc
-
 
 VERBOSE_LEVEL = logging.INFO - 2
 EXTRA_VERBOSE_LEVEL = logging.INFO - 4
 CHAT_LEVEL = logging.INFO + 2
 MOD_LEVEL = logging.INFO + 4
 PRIVATE_LEVEL = logging.INFO - 10
-
-COLORS = {
-    'VERBOSE': [226, 226, 226],
-    'EXTRA_VERBOSE': [202, 202, 202],
-    'ERROR': [196, 196, 196],
-    'MOD': [46, 46, 46],
-    'CHAT': [33, 33, 33, 161, 135, 196]
-}
 
 
 class ColoredFormatter(logging.Formatter):
@@ -32,7 +22,7 @@ class ColoredFormatter(logging.Formatter):
         'VERBOSE': [226, 226, 226],
         'EXTRA_VERBOSE': [202, 202, 202],
         'ERROR': [196, 196, 196],
-        'MOD': [46, 46, 46],
+        'MOD': [46, 46, 46, 196],
         'CHAT': [33, 33, 33, 161, 135, 196]
     }
 
@@ -64,6 +54,16 @@ class ColoredFormatter(logging.Formatter):
             COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-3]}m"
             username = COL_SEQ + username + "\u001b[0m"
             msg = " ".join([badges, username, msg, prob])
+            record.msg = msg
+        if record.levelname == 'MOD':
+            msg = record.msg
+            msg_split = msg.split()
+            msg = " ".join(msg_split[0:-1])
+            prob = msg_split[-1]
+            if prob.startswith('('):
+                COL_SEQ = f"\u001b[38;5;{self.COLORS['MOD'][-1]}m"
+                prob = COL_SEQ + prob + "\u001b[0m"
+            msg = " ".join([msg, prob])
             record.msg = msg
 
         return formatter.format(record)
@@ -166,6 +166,9 @@ class PrivateLogger(CustomLogger):
 
 
 class Logging:
+    # History of user messages. Shared across all Logging subclasses
+    USER_LOG = {}
+
     """Log handling class"""
     def __init__(self, run_config):
         self.log_path = run_config.LOG_PATH
@@ -173,7 +176,6 @@ class Logging:
         self.logger = None
         if self.write_log:
             self.logger = self.initialize_logger(run_config)
-        self.UserLog = {}
 
     def initialize_logger(self, run_config):
         """Initialize private logger
@@ -226,10 +228,7 @@ class Logging:
         line : str
             Line to write to log after some sanitizing
         """
-        write_check = (not is_user_type_irc('vip', line)
-                       and not is_user_type_irc('mod', line)
-                       and self.write_log)
-        if write_check:
+        if self.write_log:
             self.logger.private(line.encode('ascii', 'ignore').decode())
 
     @staticmethod
@@ -328,20 +327,19 @@ class Logging:
         """
         action = self.get_value('moderation_action', msg_dict)
         moderator = self.get_value('created_by', msg_dict)
-        user = msg = secs = msg_id = ''
+        user = msg = secs = msg_id = prob = ''
         if 'args' in msg_dict:
             user = msg_dict['args'][0]
         else:
             user = self.get_value('target_user_login', msg_dict)
 
-        if action in ['ban', 'timeout']:
-            if user in self.UserLog:
-                msg = self.UserLog[user]
-            else:
-                msg = ''
+        if action in ['ban', 'timeout', 'delete']:
+            if user in self.USER_LOG:
+                msg = self.USER_LOG[user][-1].get('msg', '')
+                prob = self.USER_LOG[user][-1].get('prob', '')
         if "timeout" in action:
             secs = msg_dict['args'][1]
         if "delete" in action:
             msg = demojize(msg_dict['args'][1])
             msg_id = msg_dict['args'][2]
-        return action, user, moderator, msg, secs, msg_id
+        return action, user, moderator, msg, secs, msg_id, prob

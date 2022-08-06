@@ -301,11 +301,11 @@ class Moderation(Permitting, Nuking):
             username, probability of non-wholesome message
 
         """
-        if 'translated' in info:
+        if 'translated' in info and info.get('msg', None):
             logger.chat(f"({info['badges']}) {info['user']}: "
                         f"{info['msg']}->{info['translated']} "
                         f"({info['prob']})")
-        else:
+        elif info.get('msg', None):
             logger.chat(f"({info['badges']}) {info['user']}: {info['msg']} "
                         f"({info['prob']})")
 
