@@ -1,8 +1,9 @@
 """Module for handling IRC and PubSub connections"""
 from abc import abstractmethod
+from distutils.log import INFO
+from re import VERBOSE
 import requests
 from websockets.client import connect as ws_connect
-from notify_run import Notify
 import socket
 import asyncio
 import uuid
@@ -12,7 +13,7 @@ from datetime import timedelta
 
 from modbot.utilities.logging import Logging, get_logger
 from modbot.moderation import Moderation
-from modbot.utilities.utilities import get_line_type
+from modbot.utilities.utilities import INFO_DEFAULT, get_line_type
 
 logger = get_logger()
 
@@ -22,6 +23,7 @@ class StreamHandler:
     __HOST = 'irc.chat.twitch.tv'
     __PORT = 6667
     __SOCKET = None
+    INFO_LOGGER = logger.irc
 
     def __init__(self, writer=None, reader=None):
         if writer is None or reader is None:
@@ -29,8 +31,11 @@ class StreamHandler:
             self.__SOCKET.connect((self.__HOST, self.__PORT))
             self._write = self.__SOCKET.send
             self._read = self.__SOCKET.recv
-            logger.info(f'Connected to {self.__HOST} on port {self.__PORT}')
+            self.INFO_LOGGER(f'Connected to {self.__HOST} on port '
+                             f'{self.__PORT}')
         else:
+            self.writer = writer
+            self.reader = reader
             self._write = writer.write
             self._read = reader.read
 
@@ -55,7 +60,9 @@ class StreamHandler:
         """Close the connection"""
         if self.__SOCKET is not None:
             self.__SOCKET.close()
-            logger.info('IRC connection closed')
+            self.INFO_LOGGER('IRC connection closed')
+        else:
+            self.writer.close()
 
 
 class StreamHandlerAsync(StreamHandler):
@@ -81,6 +88,9 @@ class IrcSocketClientMixIn(Logging, Moderation):
     _HOST = 'irc.chat.twitch.tv'
     _PORT = 6667
     _WAIT_TIME = timedelta(seconds=300)
+    VERBOSE_LOGGER = logger.irc_p
+    EXTRA_VERBOSE_LOGGER = logger.irc_pp
+    INFO_LOGGER = logger.irc
 
     def __init__(self, run_config):
         """
@@ -91,12 +101,12 @@ class IrcSocketClientMixIn(Logging, Moderation):
         """
         Logging.__init__(self, run_config)
         Moderation.__init__(self, run_config)
-        self.notify = Notify()
         self.last_ping = dt.now()
         self.last_pong = dt.now()
         self.last_msg_time = dt.now()
         self.shandler = None
         self.run_config = run_config
+        self.first_connection = True
 
     @property
     def __name__(self):
@@ -118,37 +128,40 @@ class IrcSocketClientMixIn(Logging, Moderation):
         line = "CAP REQ :twitch.tv/membership"
         self.shandler.write(line)
 
-    @staticmethod
-    def check_joins_and_parts(line):
+    def check_joins_and_parts(self, line):
         """Check user joins/parts to/from channel"""
         tmp = line.replace('tmi.twitch.tv', '').split(':')
         joined = [chunk.split('!')[0] for chunk in tmp if 'JOIN' in chunk]
         parted = [chunk.split('!')[0] for chunk in tmp if 'PART' in chunk]
         if joined:
-            logger.extra_verbose(f"JOINED: {', '.join(joined)}")
+            if self.first_connection:
+                self.INFO_LOGGER(f"JOINED: {', '.join(joined)}")
+                self.first_connection = False
+            else:
+                self.EXTRA_VERBOSE_LOGGER(f"JOINED: {', '.join(joined)}")
         if parted:
-            logger.extra_verbose(f"PARTED: {', '.join(parted)}")
+            self.EXTRA_VERBOSE_LOGGER(f"PARTED: {', '.join(parted)}")
         if not joined and not parted:
-            logger.extra_verbose(line)
+            self.EXTRA_VERBOSE_LOGGER(line)
 
     def handle_message(self, line):
         """Receive non chat IRC messages"""
         line_type = get_line_type(line)
         if self._PING_MSG in line:
-            logger.verbose(f"IRC Ping: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Ping: {dt.now()}")
             self.last_ping = dt.now()
             self.shandler.write(self._PONG_OUT_MSG)
-            logger.verbose(f"IRC Pong: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Pong: {dt.now()}")
             self.last_pong = dt.now()
         elif self._PONG_IN_MSG in line:
-            logger.verbose(f"IRC Ping: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Ping: {dt.now()}")
             self.last_ping = dt.now()
-            logger.verbose(f"IRC Pong: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Pong: {dt.now()}")
             self.last_pong = dt.now()
         elif line_type in ['join', 'part']:
             self.check_joins_and_parts(line)
         elif line_type in ['misc']:
-            logger.extra_verbose(line.strip('\n'))
+            self.EXTRA_VERBOSE_LOGGER(line.strip('\n'))
         else:
             info = self.get_info_from_irc(line)
             if line_type in ['msg']:
@@ -158,10 +171,10 @@ class IrcSocketClientMixIn(Logging, Moderation):
     def heartbeat(self):
         """Heartbeat routine for keeping IRC connection alive"""
         if dt.now() - self.last_ping > self._WAIT_TIME:
-            logger.verbose(f"IRC Ping: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Ping: {dt.now()}")
             self.last_ping = dt.now()
             self.shandler.write(self._PING_MSG)
-            logger.verbose(f"IRC Pong: {dt.now()}")
+            self.VERBOSE_LOGGER(f"IRC Pong: {dt.now()}")
             self.last_pong = dt.now()
         else:
             pass
@@ -192,8 +205,16 @@ class IrcSocketClientMixIn(Logging, Moderation):
             msg = (f"**logging problem: {e}**")
             logger.warning(msg)
 
+    def quit(self):
+        """Close stream handler connection"""
+        self.shandler.close_connection()
+
 
 class BaseSocketClientAsync:
+
+    VERBOSE_LOGGER = logger.verbose
+    EXTRA_VERBOSE_LOGGER = logger.extra_verbose
+    INFO_LOGGER = logger.info
 
     @property
     def __name__(self):
@@ -214,12 +235,12 @@ class BaseSocketClientAsync:
     def connect_fail(self, e):
         """Response to connection failure"""
         msg = f'**{self.__name__} Ping failed: {e}**'
-        logger.verbose(msg)
+        self.VERBOSE_LOGGER(msg)
 
     def receive_fail(self, e):
         """Response to message receive failure"""
         msg = (f'Exception while receiving {self.__name__} message: {e}')
-        logger.extra_verbose(msg)
+        self.EXTRA_VERBOSE_LOGGER(msg)
 
     async def listen_forever(self):
         """Listen for socket connection"""
@@ -250,6 +271,10 @@ class BaseSocketClientAsync:
 class IrcSocketClientAsync(IrcSocketClientMixIn, BaseSocketClientAsync):
     """Class to handle IRC connection"""
 
+    VERBOSE_LOGGER = logger.irc_p
+    EXTRA_VERBOSE_LOGGER = logger.irc_pp
+    INFO_LOGGER = logger.irc
+
     async def connect(self):
         """Initiate IRC connection"""
         logger.info(f'**Trying to connect to {self.__name__}**')
@@ -274,18 +299,13 @@ class IrcSocketClientAsync(IrcSocketClientMixIn, BaseSocketClientAsync):
         elapsed = now - self.last_msg_time
         if elapsed > self._WAIT_TIME:
             msg = f'{elapsed} since last message. Waiting on {self.__name__}.'
-            logger.extra_verbose(msg)
+            self.EXTRA_VERBOSE_LOGGER(msg)
         try:
             line = await self.shandler.read(1024)
         except Exception as e:
             raise e
         self.last_msg_time = dt.now()
         self.handle_message(line)
-
-    def connect_fail(self, e):
-        """Response to connection failure"""
-        logger.info(f'**{self.__name__} Ping failed: {e}**')
-        self.notify.send(f"{self.__name__} disconnnected.")
 
 
 class WebSocketClientAsync(Logging, BaseSocketClientAsync):
@@ -297,6 +317,9 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
     _PING_TIMEOUT = timedelta(seconds=60)
     _WAIT_TIME = timedelta(seconds=300)
     _PRINT_TIME = timedelta(seconds=600)
+    VERBOSE_LOGGER = logger.pubsub_p
+    EXTRA_VERBOSE_LOGGER = logger.pubsub_pp
+    INFO_LOGGER = logger.pubsub
 
     def __init__(self, run_config):
         """
@@ -310,7 +333,6 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         self.topics = ["chat_moderator_actions.{}.{}"
                        .format(self.moderator_id, self.channel_id)]
         self.auth_token = self.run_config._TOKEN
-        self.message = {}
         self.last_ping = dt.now()
         self.last_pong = dt.now()
         self.last_print = dt.now()
@@ -365,8 +387,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         self.last_pong = dt.now()
         if dt.now() - self.last_print > self._PRINT_TIME:
             self.last_print = dt.now()
-            logger.verbose(f'{self.__name__} Ping: {self.last_ping}')
-            logger.verbose(f'{self.__name__} Pong: {self.last_pong}')
+            self.VERBOSE_LOGGER(f'{self.__name__} Ping: {self.last_ping}')
+            self.VERBOSE_LOGGER(f'{self.__name__} Pong: {self.last_pong}')
 
     async def connect(self):
         """Report initial connection"""
@@ -374,7 +396,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         self.connection = await ws_connect(self._URI)
         if self.connection.open:
             msg = f'**{self.__name__} connected to {self.run_config.CHANNEL}**'
-            logger.info(msg)
+            self.INFO_LOGGER(msg)
             if not self.connected:
                 self.connected = True
             message = {"type": "LISTEN",
@@ -389,14 +411,24 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         elapsed = dt.now() - self.last_msg_time
         if elapsed > self._WAIT_TIME:
             msg = f'{elapsed} since last message. Waiting on {self.__name__}.'
-            logger.extra_verbose(msg)
-        message = await asyncio.wait_for(self.connection.recv(),
-                                         timeout=self._WAIT_TIME.seconds)
+            self.EXTRA_VERBOSE_LOGGER(msg)
+
+        try:
+            message = await asyncio.wait_for(self.connection.recv(),
+                                             timeout=self._WAIT_TIME.seconds)
+        except Exception as e:
+            raise e
+
         self.last_msg_time = dt.now()
         msg = f'{self.__name__} message received: {self.last_msg_time}'
-        logger.verbose(msg)
-        self.message = message
-        await self.handle_message(message)
+        self.VERBOSE_LOGGER(msg)
+
+        if message:
+            self.EXTRA_VERBOSE_LOGGER(f'Handling {self.__name__} message.')
+            try:
+                await self.handle_message(message)
+            except Exception as e:
+                raise e
 
     async def handle_message(self, message):
         """Handle moderation decisions based on PubSub message
@@ -409,7 +441,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         tmp = json.loads(message)
         if 'PONG' in tmp['type']:
             self.last_pong = dt.now()
-        if 'MESSAGE' in tmp['type']:
+        elif 'MESSAGE' in tmp['type']:
             tmp = json.loads(tmp['data']['message'])
             tmp = tmp['data']
             out = self.get_info_from_pubsub(tmp)
@@ -420,6 +452,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
             except Exception:
                 logger.warning("**logging problem**")
                 logger.warning(log_entry)
+        else:
+            pass
 
     @staticmethod
     def generate_nonce():
@@ -427,3 +461,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         nonce = uuid.uuid1()
         oauth_nonce = nonce.hex
         return oauth_nonce
+
+    def quit(self):
+        """Close pubsub connection"""
+        self.connection.close()

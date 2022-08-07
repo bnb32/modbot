@@ -31,6 +31,8 @@ def main():
         loop.run_forever()
     except KeyboardInterrupt:
         logger.warning("Exiting modbot!")
+        webClient.quit()
+        ircClient.quit()
         sys.exit()
 
 

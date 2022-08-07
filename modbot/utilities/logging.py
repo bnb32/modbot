@@ -4,13 +4,6 @@ import logging
 from sys import stdout
 
 
-VERBOSE_LEVEL = logging.INFO - 2
-EXTRA_VERBOSE_LEVEL = logging.INFO - 4
-CHAT_LEVEL = logging.INFO + 2
-MOD_LEVEL = logging.INFO + 4
-PRIVATE_LEVEL = logging.INFO - 10
-
-
 class ColoredFormatter(logging.Formatter):
     """Colored formatting for log output"""
     level_format = '[%(levelname)s] '
@@ -19,11 +12,18 @@ class ColoredFormatter(logging.Formatter):
     full_format = level_format + other_format + msg_format
 
     COLORS = {
-        'VERBOSE': [226, 226, 226],
-        'EXTRA_VERBOSE': [202, 202, 202],
         'ERROR': [196, 196, 196],
         'MOD': [46, 46, 46, 196],
-        'CHAT': [33, 33, 33, 161, 135, 196]
+        'CHAT': [33, 33, 33, 161, 135, 196],
+        'INFO': [15, 15, 15, 196],
+        'INFO+': [226, 226, 226],
+        'INFO++': [202, 202, 202],
+        'PUBSUB': [91, 91, 91, 196],
+        'PUBSUB+': [92, 92, 92, 196],
+        'PUBSUB++': [93, 93, 93, 196],
+        'IRC': [67, 67, 67, 196],
+        'IRC+': [68, 68, 68, 196],
+        'IRC++': [69, 69, 69, 196]
     }
 
     FORMATS = {}
@@ -40,8 +40,8 @@ class ColoredFormatter(logging.Formatter):
         """Apply level specific coloring"""
         formatter = logging.Formatter(self.FORMATS.get(record.levelname,
                                                        self.full_format))
+        msg = record.msg
         if record.levelname == 'CHAT':
-            msg = record.msg
             msg_split = msg.split()
             badges = msg_split[0]
             username = msg_split[1]
@@ -54,9 +54,7 @@ class ColoredFormatter(logging.Formatter):
             COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-3]}m"
             username = COL_SEQ + username + "\u001b[0m"
             msg = " ".join([badges, username, msg, prob])
-            record.msg = msg
         if record.levelname == 'MOD':
-            msg = record.msg
             msg_split = msg.split()
             msg = " ".join(msg_split[0:-1])
             prob = msg_split[-1]
@@ -64,18 +62,28 @@ class ColoredFormatter(logging.Formatter):
                 COL_SEQ = f"\u001b[38;5;{self.COLORS['MOD'][-1]}m"
                 prob = COL_SEQ + prob + "\u001b[0m"
             msg = " ".join([msg, prob])
-            record.msg = msg
+        if msg.startswith('**'):
+            COL_SEQ = f"\u001b[38;5;{self.COLORS['INFO'][-1]}m"
+            msg = COL_SEQ + msg + "\u001b[0m"
+        record.msg = msg
 
         return formatter.format(record)
 
 
 class CustomLogger(logging.getLoggerClass()):
 
-    LEVELS = {'VERBOSE': logging.INFO - 2,
-              'EXTRA_VERBOSE': logging.INFO - 4,
+    LEVELS = {'INFO+': logging.INFO - 3,
+              'INFO++': logging.INFO - 6,
               'CHAT': logging.INFO + 2,
               'MOD': logging.INFO + 4,
-              'PRIVATE': logging.INFO - 10}
+              'PRIVATE': logging.INFO - 10,
+              'PUBSUB': logging.INFO - 2,
+              'PUBSUB+': logging.INFO - 5,
+              'PUBSUB++': logging.INFO - 8,
+              'IRC': logging.INFO - 1,
+              'IRC+': logging.INFO - 4,
+              'IRC++': logging.INFO - 7
+              }
 
     def __init__(self, name='modbot_logger', level=18):
         """Initialize logger
@@ -101,11 +109,35 @@ class CustomLogger(logging.getLoggerClass()):
 
     def extra_verbose(self, message, *args, **kws):
         """Extra verbose log level"""
-        self._log(self.LEVELS['EXTRA_VERBOSE'], message, args, **kws)
+        self._log(self.LEVELS['INFO++'], message, args, **kws)
 
     def verbose(self, message, *args, **kws):
         """Verbose log level"""
-        self._log(self.LEVELS['VERBOSE'], message, args, **kws)
+        self._log(self.LEVELS['INFO+'], message, args, **kws)
+
+    def irc(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['IRC'], message, args, **kws)
+
+    def pubsub(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['PUBSUB'], message, args, **kws)
+
+    def irc_p(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['IRC+'], message, args, **kws)
+
+    def pubsub_p(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['PUBSUB+'], message, args, **kws)
+
+    def irc_pp(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['IRC++'], message, args, **kws)
+
+    def pubsub_pp(self, message, *args, **kws):
+        """Chat log level"""
+        self._log(self.LEVELS['PUBSUB++'], message, args, **kws)
 
     def chat(self, message, *args, **kws):
         """Chat log level"""
@@ -127,7 +159,7 @@ class CustomLogger(logging.getLoggerClass()):
         logger : modbot_logger
             Logger object
         level : str
-            New level. e.g. VERBOSE
+            New level. e.g. INFO+
         """
         for sh in self.handlers:
             if level in self.LEVELS:
