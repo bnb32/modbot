@@ -18,12 +18,12 @@ class ColoredFormatter(logging.Formatter):
         'INFO': [15, 15, 15, 196],
         'INFO+': [226, 226, 226],
         'INFO++': [202, 202, 202],
-        'PUBSUB': [91, 91, 91, 196],
-        'PUBSUB+': [92, 92, 92, 196],
-        'PUBSUB++': [93, 93, 93, 196],
-        'IRC': [67, 67, 67, 196],
-        'IRC+': [68, 68, 68, 196],
-        'IRC++': [69, 69, 69, 196]
+        'PUBSUB': [202, 202, 202, 196],
+        'PUBSUB+': [203, 203, 203, 196],
+        'PUBSUB++': [204, 204, 204, 196],
+        'IRC': [226, 226, 226, 196],
+        'IRC+': [227, 227, 227, 196],
+        'IRC++': [228, 228, 228, 196]
     }
 
     FORMATS = {}
@@ -72,17 +72,17 @@ class ColoredFormatter(logging.Formatter):
 
 class CustomLogger(logging.getLoggerClass()):
 
-    LEVELS = {'INFO+': logging.INFO - 3,
-              'INFO++': logging.INFO - 6,
+    LEVELS = {'INFO+': logging.INFO - 6,
+              'INFO++': logging.INFO - 9,
               'CHAT': logging.INFO + 2,
               'MOD': logging.INFO + 4,
               'PRIVATE': logging.INFO - 10,
-              'PUBSUB': logging.INFO - 2,
-              'PUBSUB+': logging.INFO - 5,
-              'PUBSUB++': logging.INFO - 8,
-              'IRC': logging.INFO - 1,
-              'IRC+': logging.INFO - 4,
-              'IRC++': logging.INFO - 7
+              'PUBSUB': logging.INFO - 1,
+              'PUBSUB+': logging.INFO - 4,
+              'PUBSUB++': logging.INFO - 7,
+              'IRC': logging.INFO - 2,
+              'IRC+': logging.INFO - 5,
+              'IRC++': logging.INFO - 8
               }
 
     def __init__(self, name='modbot_logger', level=18):

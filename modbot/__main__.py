@@ -3,7 +3,8 @@ import sys
 import pprint
 import asyncio
 
-from modbot.connection import WebSocketClientAsync, IrcSocketClientAsync
+from modbot.connection.irc_client import IrcSocketClientAsync
+from modbot.connection.pubsub_client import WebSocketClientAsync
 from modbot.utilities.logging import get_logger
 from modbot import modbot_argparse
 from modbot.environment import RunConfig
@@ -29,8 +30,8 @@ def main():
         loop.create_task(webClient.listen_forever())
         loop.create_task(ircClient.listen_forever())
         loop.run_forever()
-    except KeyboardInterrupt:
-        logger.warning("Exiting modbot!")
+    except KeyboardInterrupt as e:
+        logger.warning(f"Exiting modbot: {e}")
         webClient.quit()
         ircClient.quit()
         sys.exit()
