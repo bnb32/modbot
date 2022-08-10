@@ -912,11 +912,11 @@ class MsgMemory:
         for user in tqdm(self.memory):
             count = 0
             for m in self.memory[user]:
-                if m['msg']:
+                if m['msg'] is not None:
                     if count == 0:
                         info = copy.deepcopy(INFO_DEFAULT)
 
-                    if info['msg']:
+                    if not info['msg']:
                         info['msg'] = m['msg'] + '. '
                     else:
                         info['msg'] += m['msg'] + '. '
