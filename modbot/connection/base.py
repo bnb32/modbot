@@ -2,6 +2,7 @@
 from abc import abstractmethod
 import socket
 from datetime import datetime as dt
+import asyncio
 
 from modbot.utilities.logging import get_logger
 
@@ -63,6 +64,7 @@ class BaseSocketClientAsync:
     EXTRA_VERBOSE_LOGGER = logger.extra_verbose
     INFO_LOGGER = logger.info
     _PING_MSG = None
+    _WAIT_TIME = None
 
     @property
     def __name__(self):
@@ -80,16 +82,12 @@ class BaseSocketClientAsync:
     def connect(self):
         """Connection to socket"""
 
-    def heartbeat(self):
+    async def heartbeat(self):
         """Heartbeat routine for keeping connection alive"""
-        if dt.now() - self.last_ping > self._WAIT_TIME:
-            self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")
-            self.last_ping = dt.now()
-            self.send_ping()
-            self.VERBOSE_LOGGER(f"{self.__name__} Pong: {dt.now()}")
-            self.last_pong = dt.now()
-        else:
-            pass
+        self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")
+        self.last_ping = dt.now()
+        self.send_ping()
+        await asyncio.sleep(self._WAIT_TIME.seconds)
 
     def connect_fail(self, e):
         """Response to connection failure"""

@@ -260,7 +260,7 @@ class Logging:
         line : str
             Line to write to log after some sanitizing
         """
-        if self.write_log:
+        if self.write_log and line:
             self.logger.private(line.encode('ascii', 'ignore').decode())
 
     @staticmethod
@@ -277,17 +277,19 @@ class Logging:
         str
             Chat log entry to write to log
         """
-        log_entry = "<"
-        if info['isMod']:
-            log_entry += "@"
-        if info['isVip']:
-            log_entry += "!"
-        if info['isSub']:
-            log_entry += "%"
-        if info['isPartner']:
-            log_entry += "~"
-        log_entry += info['user'] + "> "
-        log_entry += info['msg']
+        log_entry = ""
+        if info['msg']:
+            log_entry = "<"
+            if info['isMod']:
+                log_entry += "@"
+            if info['isVip']:
+                log_entry += "!"
+            if info['isSub']:
+                log_entry += "%"
+            if info['isPartner']:
+                log_entry += "~"
+            log_entry += info['user'] + "> "
+            log_entry += info['msg']
 
         return log_entry
 

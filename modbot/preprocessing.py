@@ -870,7 +870,7 @@ class MsgMemory:
         user = info['user']
         if user not in self.memory or not self.memory[user]:
             self.add_msg(info)
-        if info['msg'] is not None:
+        if info['msg']:
             check = simple_chars_equal(info['raw_msg'],
                                        self.memory[user][-1]['raw_msg'])
             if not check:
@@ -912,11 +912,11 @@ class MsgMemory:
         for user in tqdm(self.memory):
             count = 0
             for m in self.memory[user]:
-                if m['msg'] is not None:
+                if m['msg']:
                     if count == 0:
                         info = copy.deepcopy(INFO_DEFAULT)
 
-                    if info['msg'] is None:
+                    if info['msg']:
                         info['msg'] = m['msg'] + '. '
                     else:
                         info['msg'] += m['msg'] + '. '

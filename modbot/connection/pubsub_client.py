@@ -6,6 +6,7 @@ import uuid
 import json
 from datetime import datetime as dt
 from datetime import timedelta
+import asyncio
 
 from modbot.utilities.logging import Logging, get_logger
 from modbot.connection.base import BaseSocketClientAsync
@@ -91,14 +92,10 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
 
     async def heartbeat(self):
         """Keep PubSub connection alive"""
-        if dt.now() - self.last_ping > self._WAIT_TIME:
-            self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")
-            self.last_ping = dt.now()
-            await self.send_ping()
-            self.VERBOSE_LOGGER(f"{self.__name__} Pong: {dt.now()}")
-            self.last_pong = dt.now()
-        else:
-            pass
+        self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")
+        self.last_ping = dt.now()
+        await self.send_ping()
+        await asyncio.sleep(self._WAIT_TIME.seconds)
 
     async def connect(self):
         """Report initial connection"""
@@ -137,6 +134,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         """
         tmp = json.loads(message)
         if 'PONG' in tmp['type']:
+            self.last_pong = dt.now()
+            self.VERBOSE_LOGGER(f"{self.__name__} Pong: {dt.now()}")
             self.last_pong = dt.now()
         elif 'MESSAGE' in tmp['type']:
             tmp = json.loads(tmp['data']['message'])

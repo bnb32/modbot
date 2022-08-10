@@ -99,33 +99,32 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
             info = self.get_info_from_irc(line)
             if line_type in ['msg']:
                 self.print_info(info)
-            self._handle_message(info)
+            if not (line_type not in ['msg'] and not info['msg']):
+                self._handle_message(info)
 
     def _update_user_log(self, info):
         """Update global chat history"""
         self.USER_LOG[info['user']] = self.USER_LOG.get(info['user'], [])
-        self.USER_LOG[info['user']].append(dict(msg=info['msg'],
-                                                prob=info['prob']))
+        entry = dict(msg=info['msg'], prob=info['prob'])
+        self.USER_LOG[info['user']].append(entry)
+        user_info = f'{info["user"]}: {self.USER_LOG[info["user"]]}'
+        if info['prob'] > 0.5:
+            self.VERBOSE_LOGGER(user_info)
 
     def _handle_message(self, info):
         """Handle chat IRC messages"""
         self.send_reply(self.shandler, info)
         self.send_action(self.shandler, info)
         log_entry = self.build_chat_log_entry(info)
+        self._update_user_log(info)
         if info['deleted']:
             log_entry = self.build_action_log_entry(
                 action='delete', user=info['user'],
                 moderator=self.run_config.NICKNAME, msg=info['msg'],
                 secs='', msg_id='')
             logger.mod(log_entry + f' ({info["prob"]})')
-
-        self._update_user_log(info)
         # write to log
-        try:
-            self.append_log(log_entry)
-        except Exception as e:
-            msg = (f"**logging problem: {e}**")
-            logger.warning(msg)
+        self.append_log(log_entry)
 
     def send_ping(self):
         """Send ping to keep connection alive"""
@@ -158,7 +157,6 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
             raise e
         self.last_msg_time = dt.now()
         self.handle_message(line)
-        self.heartbeat()
 
     def quit(self):
         """Close stream handler connection"""
