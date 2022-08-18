@@ -427,9 +427,6 @@ def is_user_type_irc(user_type, line):
     bool
     """
 
-    if not is_line_type("msg", line):
-        return False
-
     badges = get_badges(line)
     user_type_map = {"sub": ["subscriber"],
                      "mod": ["moderator", "broadcaster"],

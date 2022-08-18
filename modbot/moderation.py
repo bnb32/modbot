@@ -228,12 +228,10 @@ class Moderation(Permitting, Nuking):
         self.model = self.initialize_model(run_config)
         self.run_config = run_config
         self.proc_config = ProcessingConfig(run_config.FILE_NAME)
-        self.msgs = pp.MsgMemory()
+        self.msgs = pp.MsgMemory(config=run_config)
         self.permits = {}
-        self.pleb_prob = run_config.PLEB_PMIN
-        self.sub_prob = run_config.SUB_PMIN
+        self.act_prob = run_config.ACT_PMIN
         self.send_prob_msg = run_config.PMSG_ON
-        self.to_subs = run_config.TO_SUBS
         self.nolinks = run_config.NOLINKS
         self.timeout_duration = 5
         self.moderation_action = 'DELETE'
@@ -253,7 +251,7 @@ class Moderation(Permitting, Nuking):
         model : LSTM | SVM | CNN
         """
         MODEL_CLASS = get_model_class(run_config.MODEL_TYPE)
-        model = MODEL_CLASS.load(run_config.MODEL_PATH, device='cpu')
+        model = MODEL_CLASS.load(run_config.MODEL_PATH, device='gpu')
         return model
 
     def filter_words(self, texts):
@@ -339,8 +337,7 @@ class Moderation(Permitting, Nuking):
         bool
         """
         return bool(self.has_permit(info['user']) or info['isMod']
-                    or info['isVip'] or info['isPartner']
-                    or (info['isSub'] and not self.to_subs))
+                    or info['isVip'] or info['isPartner'])
 
     def send_reply(self, stream_writer, info):
         """Make decision based on info and send moderation response
@@ -424,12 +421,7 @@ class Moderation(Permitting, Nuking):
         -------
         bool
         """
-        if info['isPleb']:
-            return info['prob'] > self.pleb_prob
-        if info['isSub']:
-            return info['prob'] > self.sub_prob
-        else:
-            return False
+        return info['prob'] > self.act_prob
 
     def send_nuke(self, stream_writer):
         """Send nuke to stream
@@ -482,11 +474,11 @@ class Moderation(Permitting, Nuking):
                 rep = replies['prob_msg'] % info['prob']
 
             if 'timeout' in self.moderation_action.lower():
-                info['deleted'] = True
+                info['banned'] = True
                 act = self.get_timeout(info['user'],
                                        self.timeout_duration, rep)
             elif 'delete' in self.moderation_action.lower():
-                info['banned'] = True
+                info['deleted'] = True
                 act = self.get_delete(info)
 
         elif (pp.contains_link(info['msg']) and self.nolinks

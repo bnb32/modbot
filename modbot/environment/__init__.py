@@ -60,17 +60,11 @@ class BaseConfig:
     #: Channel to moderate
     CHANNEL = None
 
-    #: Threshold probability for pleb moderation
-    PLEB_PMIN = 0.6
-
-    #: Threshold probability for sub moderation
-    SUB_PMIN = 0.6
+    #: Threshold probability for moderation
+    ACT_PMIN = 0.6
 
     #: Whether to send message in chat when probability is exceeded
     PMSG_ON = False
-
-    #: Whether to moderate subscribers
-    TO_SUBS = True
 
     #: Log level.
     LOGGER_LEVEL = 'VERBOSE'
@@ -180,7 +174,7 @@ class BaseConfig:
             for k, v in self.config_dict.items():
                 if hasattr(self, k):
                     setattr(self, k, v)
-        elif config is not None:
+        if config is not None:
             for k in vars(config):
                 if hasattr(self, k) and hasattr(config, k):
                     setattr(self, k, getattr(config, k))
@@ -251,64 +245,67 @@ class ProcessingConfig(BaseConfig):
     """Configuration for preprocessing routines"""
 
     #: Strings to indicate if message contains a link
-    LINK_STRINGS = ['https://', 'http://', 'www.', '.com', '.net',
-                    '.org', '.edu', '/tv', '.tv']
+    LINKLIST = ['https://', 'http://', 'www.', '.com', '.net',
+                '.org', '.edu', '/tv', '.tv', 'http:', 'https:']
 
     #: Phrase lists for filtering and manual checking signals
-    BLACKLIST = ['finger her', 'N I G G E R', '#removethemole',
-                 'super hottie', 'thicc', 't h i c c', 'u are hot',
-                 'you are hot', 'your hot', 'ur hot', 'u are sexy',
-                 'you are sexy', 'your sexy', 'ur sexy',
-                 'why is this in just chatting', 'change category',
-                 'u a virgin', 'wrong category', 'si1mp', 's1mp',
-                 'simp', 'si(.*)mp', 'T H I C C', 'only fans',
-                 'onlyfans', 'thicc(.*)Botez', 'hot(.*) Botez',
-                 'hot(.*) Andrea', 'hot(.*)Alex', 'thicc(.*)Alex',
-                 'thicc(.*) andrea', 'Botez(.*) thicc',
-                 'Botez(.*) hot', 'Andrea(.*) hot', 'Alex(.*) hot',
-                 'Alex(.*)thicc', 'andrea(.*) thicc', 'she(.*)thicc',
-                 'sexy(.*) Alex', 'sexy(.*) andrea', 'Botez(.*) sexy',
-                 'sexy(.*) Botez', 'Andrea(.*)sexy', 'Alex(.*) sexy',
-                 'andrea(.*) sexy', 'ur so hawt', 'u so hawt', 'rape',
-                 'your butthole', 'mybutthole', 'give me a kiss',
-                 'gimme a kiss', 'blow me a kiss', 'whore', 'pussy',
-                 'cunt', 'suck dick', 'lick(.*) feet', 'finger you',
-                 'suck my', 'whore', 'simp', 'lick(.*) toes',
-                 'suck(.*) toes', 'your vagina', 'your vag',
-                 'show vag', 'vagene', 'show bobs', 'vagoo',
-                 'your booty', 'ur so hot', 'u so hot', 'slut']
+    BLACKLIST_OPTIONS = [
+        '#removethemole',
+        'super hottie', 'thicc', 't h i c c', 'u are hot',
+        'you are hot', 'your hot', 'ur hot', 'u are sexy',
+        'you are sexy', 'your sexy', 'ur sexy',
+        'why is this in just chatting',
+        'u a virgin', 'wrong category', 'si1mp', 's1mp',
+        'simp', 'T H I C C',
+        'onlyfans', 'thicc(.*)Botez', 'thicc(.*)Alex',
+        'thicc(.*) andrea', 'Botez(.*) thicc', 'Botez is(.*) hot',
+        'Andrea is(.*) hot', 'Alex is(.*) hot',
+        'Alex(.*)thicc', 'andrea(.*) thicc', 'she(.*)thicc',
+        'sexy(.*) Alex', 'sexy(.*) andrea', 'Botez(.*) sexy',
+        'sexy(.*) Botez', 'Andrea(.*)sexy', 'Alex(.*) sexy',
+        'andrea(.*) sexy', 'ur so hawt', 'u so hawt', 'rape',
+        'your butthole', 'mybutthole', 'give me a kiss',
+        'gimme a kiss', 'blow me a kiss',
+        'cunt', 'suck dick', 'lick(.*) feet',
+        'suck my', 'whore', 'simp', 'lick(.*) toes',
+        'suck(.*) toes', 'your vagina', 'your vag',
+        'show vag', 'vagene', 'show bobs',
+        'you(.*)ugly', 'your booty', 'ur so hot', 'u so hot',
+        'slut', 'what happened to you(.*) face']
+
+    BLACKLIST = []
 
     #: Phrases to check
     GRAYLIST = []
 
     #: Allowed phrases
-    WHITELIST = ['LUL', 'KEKW', '!drama']
+    WHITELIST = ['LUL', 'KEKW', '!drama', 'http://', 'https://']
 
     #: List of emotes to use for filtering
-    EMOTES = ['NotLikeThis', '<3', 'LUL', 'WutFace',
-              'ResidentSleeper', 'pepeLa', 'pepeDS', 'pepeJAM',
-              'pepePls', 'FeelsBadMan', 'FeelsGoodMan', 'monkaS',
-              'monkaHmm', 'KEKW', 'Kapp', 'Hypers', 'HandsUp',
-              'FeelsWeirdMan', 'EZY', '5Head', '3Lass', 'Pog',
-              'Pepega', 'PagChomp', 'OMEGALUL', 'monkaW', 'PogU',
-              'PepeHands', 'PepoThink', 'alexandraSub', 'PepePls',
-              'PixelBob', 'Jebaited', 'TriHard', 'MrDestructoid',
-              'Keepo', 'HeyGuys', 'PepeLaugh', 'SquadP', 'PJSugar',
-              'ammoHeman', 'SourPls', 'peepoHappy', 'HotPokket',
-              'BibleThump', 'DansGame', 'orbThonk', 'malexaH',
-              'electraSad', 'TopHat', 'FutureMan', 'PokGengar',
-              'OMEGA', 'onetri2Hii', 'bayliunSad', 'bayliunVictory',
-              'cheer100', 'cheer10', 'cheer1', 'TBAngel',
-              'chesscoachHi', 'chesscoachWhat', 'TwitchUnity',
-              'justbu8', 'blinkxXmas', 'symfNerd', 'malexaHi',
-              'HahaTurtledove', 'HahaThisisfine', 'HahaThink',
-              'HahaSweat', 'HahaSleep', 'HahaShrugRight',
-              'HahaShrugMiddle', 'HahaLean', 'HahaNutcracker',
-              'HahaPoint', 'HahaSnowhal', 'HahaPresent',
-              'HahaReindeer', 'HahaShrugLeft', 'HahaHide',
-              'HahaGoose', 'HahaGingercat', 'HahaElf', 'HahaDoge',
-              'HahaCat', 'HahaBaby', 'HahaNyandeer', 'Haha2020',
-              'HahaBall', 'HahaDreidel', 'gutBaby']
+    EMOTELIST = ['NotLikeThis', '<3', 'LUL', 'WutFace',
+                 'ResidentSleeper', 'pepeLa', 'pepeDS', 'pepeJAM',
+                 'pepePls', 'FeelsBadMan', 'FeelsGoodMan', 'monkaS',
+                 'monkaHmm', 'KEKW', 'Kapp', 'Hypers', 'HandsUp',
+                 'FeelsWeirdMan', 'EZY', '5Head', '3Lass', 'Pog',
+                 'Pepega', 'PagChomp', 'OMEGALUL', 'monkaW', 'PogU',
+                 'PepeHands', 'PepoThink', 'alexandraSub', 'PepePls',
+                 'PixelBob', 'Jebaited', 'TriHard', 'MrDestructoid',
+                 'Keepo', 'HeyGuys', 'PepeLaugh', 'SquadP', 'PJSugar',
+                 'ammoHeman', 'SourPls', 'peepoHappy', 'HotPokket',
+                 'BibleThump', 'DansGame', 'orbThonk', 'malexaH',
+                 'electraSad', 'TopHat', 'FutureMan', 'PokGengar',
+                 'OMEGA', 'onetri2Hii', 'bayliunSad', 'bayliunVictory',
+                 'cheer100', 'cheer10', 'cheer1', 'TBAngel',
+                 'chesscoachHi', 'chesscoachWhat', 'TwitchUnity',
+                 'justbu8', 'blinkxXmas', 'symfNerd', 'malexaHi',
+                 'HahaTurtledove', 'HahaThisisfine', 'HahaThink',
+                 'HahaSweat', 'HahaSleep', 'HahaShrugRight',
+                 'HahaShrugMiddle', 'HahaLean', 'HahaNutcracker',
+                 'HahaPoint', 'HahaSnowhal', 'HahaPresent',
+                 'HahaReindeer', 'HahaShrugLeft', 'HahaHide',
+                 'HahaGoose', 'HahaGingercat', 'HahaElf', 'HahaDoge',
+                 'HahaCat', 'HahaBaby', 'HahaNyandeer', 'Haha2020',
+                 'HahaBall', 'HahaDreidel', 'gutBaby']
 
     # : moderators to ignore actions for
     IGNORE_ACTIONS = []
@@ -322,6 +319,9 @@ class ProcessingConfig(BaseConfig):
     # : users to ignore messages of
     IGNORE_USERS = []
 
+    # : moderation actions to train on
+    TRAIN_ACTIONS = ['delete', 'ban']
+
     def __init__(self, file_name=None, run_config=None):
         """
         Parameters
@@ -331,8 +331,9 @@ class ProcessingConfig(BaseConfig):
         run_config : RunConfig
             Optional config class with stored parameters
         """
+
         if run_config is not None:
-            self.get_config(config=run_config)
+            self.get_config(file_name=run_config.FILE_NAME, config=run_config)
             file_name = run_config.FILE_NAME
         else:
             self.get_config(file_name=file_name)
@@ -350,3 +351,17 @@ class ProcessingConfig(BaseConfig):
 
         #: ignore messages of these users during training
         self.IGNORE_USERS = []
+
+    @property
+    def public_attrs(self):
+        """Get public attributes
+
+        Returns
+        -------
+        dict
+            Dictionary of public global attributes
+        """
+        config_attrs = {k: getattr(self, k) for k in self.attrs
+                        if not k.startswith('_') and k.upper() == k
+                        and 'LIST' not in k}
+        return config_attrs

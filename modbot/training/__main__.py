@@ -23,6 +23,24 @@ def append_file(infile, outfile):
                     f1.write(line)
 
 
+def get_tmp_out(config, TMP):
+    """Get out dir based on args"""
+    if config.append:
+        TMP_OUT = os.path.join(config.DATA_DIR, f'{config.CHANNEL}_data.csv')
+
+    elif config.review_decisions:
+        TMP_OUT = os.path.join(config.DATA_DIR,
+                               f'{config.CHANNEL}_decisions.csv')
+
+    elif (not config.append and not config.clean):
+        TMP_OUT = TMP
+
+    else:
+        TMP_OUT = None
+
+    return TMP_OUT
+
+
 def main():
     """Main training program"""
     parser = training_argparse()
@@ -45,20 +63,17 @@ def main():
     TMP_DIR = os.path.join(config.DATA_DIR, 'tmp')
     os.makedirs(TMP_DIR, exist_ok=True)
     TMP = os.path.join(TMP_DIR, 'clean_tmp.txt')
-    logger.info(f'Copying {config.infile} to {TMP}')
-    shutil.copy(config.infile, TMP)
+    if not os.path.samefile(config.infile, TMP):
+        logger.info(f'Copying {config.infile} to {TMP}')
+        shutil.copy(config.infile, TMP)
 
-    if config.append:
-        TMP_OUT = os.path.join(config.DATA_DIR, f'{config.CHANNEL}_data.csv')
+    TMP_OUT = get_tmp_out(config, TMP)
 
-    if config.review_decisions:
-        TMP_OUT = os.path.join(config.DATA_DIR,
-                               f'{config.CHANNEL}_decisions.csv')
+    try:
+        clean_log(config, TMP, TMP)
+    except KeyboardInterrupt:
+        logger.info('Exiting log cleaning')
 
-    if (not config.append and not config.clean):
-        TMP_OUT = TMP
-
-    clean_log(config, TMP, TMP)
     if config.append:
         append_file(TMP, TMP_OUT)
         logger.info(f'Appended {TMP} to {TMP_OUT}')
@@ -67,11 +82,11 @@ def main():
         TMP_IN = TMP
 
     if config.train or config.continue_training or config.just_evaluate:
-        vectorize_and_train(config, data_file=TMP_IN)
+        try:
+            vectorize_and_train(config, data_file=TMP_IN)
+        except KeyboardInterrupt:
+            logger.info('Exiting training program')
 
 
 if __name__ == '__main__':
-    try:
-        main()
-    except KeyboardInterrupt:
-        logger.info('Exiting training program')
+    main()

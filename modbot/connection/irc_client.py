@@ -19,6 +19,7 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
     _HOST = 'irc.chat.twitch.tv'
     _PORT = 6667
     _WAIT_TIME = timedelta(seconds=300)
+    _N_USER_MSGS = 20
     VERBOSE_LOGGER = logger.irc_p
     EXTRA_VERBOSE_LOGGER = logger.irc_pp
     INFO_LOGGER = logger.irc
@@ -105,10 +106,12 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
     def _update_user_log(self, info):
         """Update global chat history"""
         self.USER_LOG[info['user']] = self.USER_LOG.get(info['user'], [])
-        entry = dict(msg=info['msg'], prob=info['prob'])
+        entry = {k: v for k, v in info.items() if k in ['prob', 'msg']}
         self.USER_LOG[info['user']].append(entry)
+        if len(self.USER_LOG[info['user']]) > self._N_USER_MSGS:
+            self.USER_LOG[info['user']].pop(0)
         user_info = f'{info["user"]}: {self.USER_LOG[info["user"]]}'
-        if info['prob'] > 0.5:
+        if info['prob'] > 0.5 and not info['isMod']:
             self.VERBOSE_LOGGER(user_info)
 
     def _handle_message(self, info):

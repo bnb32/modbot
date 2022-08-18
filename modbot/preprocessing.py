@@ -12,6 +12,7 @@ from googletrans import Translator
 import dask.dataframe as dd
 import copy
 import pprint
+import pandas as pd
 
 from modbot.environment import ProcessingConfig
 from modbot.utilities.utilities import (simple_chars_equal,
@@ -201,7 +202,7 @@ def filter_emotes(line, proc_config):
         String containing message without emotes
     """
     tmp = line
-    for emote in proc_config.EMOTES:
+    for emote in proc_config.EMOTELIST:
         tmp = re.sub(emote, '', tmp, flags=re.I)
     return tmp.rstrip().lstrip()
 
@@ -300,7 +301,7 @@ def contains_link(text):
     """
     check = text is not None
     check = check and any(link in text for link
-                          in ProcessingConfig.LINK_STRINGS)
+                          in ProcessingConfig.LINKLIST)
     return check
 
 
@@ -385,13 +386,13 @@ class LogCleaning:
             Whether to filter emotes from raw chat data
         """
         self.config = ProcessingConfig(run_config=config)
-        self.mem = MsgMemory()
+        self.mem = MsgMemory(config=config)
         self.model = model
         self.review_decisions = getattr(config, 'review_decisions', False)
         self.filter_emotes = filter_emotes
 
         logger.info('Using processing configuration:\n'
-                    f'{pprint.pformat(self.config.attrs, indent=1)}')
+                    f'{pprint.pformat(self.config.public_attrs, indent=1)}')
 
     @staticmethod
     def is_valid_line(line):
@@ -482,8 +483,6 @@ class LogCleaning:
             if self.model is not None and probs[n] > self.config.CHECK_PMIN:
                 logger.info(f'Appending tocheck: {text}')
                 tocheck.append(text)
-            elif check_msgs(text.lower(), self.config.BLACKLIST):
-                bmsgs.append(text)
             elif check_msgs(text.lower(), self.config.GRAYLIST):
                 logger.info(f'Appending tocheck: {text}')
                 tocheck.append(text)
@@ -491,7 +490,150 @@ class LogCleaning:
                 cmsgs.append(text)
         return tocheck, bmsgs, cmsgs
 
-    def divide_messages(self, user, tocheck, bmsgs, cmsgs, ctmp):
+    def valid_check(self, user, m):
+        """Check if sub or pleb and not in ignore list"""
+        return (user not in self.config.IGNORE_USERS
+                and not m['isVip'] and not m['isMod']
+                and not m['isPartner'])
+
+    def act_check(self, m):
+        """Check if banned or deleted message"""
+        return (m['banned'] or m['deleted'])
+
+    def clean_check(self, m):
+        """Check if clean message"""
+        return not (m['banned'] or m['deleted'])
+
+    def msg_check(self, m):
+        """Check if message is not None and not a link"""
+        tmp = self.remove_whitelist(m)
+        return (tmp is not None and tmp != '' and not contains_link(tmp))
+
+    def mod_check(self, m):
+        """Check if mod not in ignore list"""
+        return (m['mod'] not in self.config.IGNORE_ACTIONS)
+
+    def act_filt_check(self, user, m):
+        """Check if deleted or banned and a valid message"""
+        return (self.valid_check(user, m) and self.act_check(m)
+                and self.mod_check(m) and self.msg_check(m))
+
+    def ban_filt_check(self, user, m):
+        """Check if banned and a valid message"""
+        return (self.valid_check(user, m) and m['banned']
+                and self.mod_check(m) and self.msg_check(m))
+
+    def del_filt_check(self, user, m):
+        """Check if deleted and a valid message"""
+        return (self.valid_check(user, m) and m['deleted']
+                and self.mod_check(m) and self.msg_check(m))
+
+    def clean_filt_check(self, user, m):
+        """Check if clean and valid message"""
+        return (self.valid_check(user, m) and self.msg_check(m)
+                and not self.act_check(m))
+
+    def remove_whitelist(self, m):
+        """Remove whitelisted phrases from msg"""
+        tmp = m['msg']
+        if tmp is not None:
+            for w in self.config.WHITELIST:
+                tmp = tmp.replace(w, '')
+        return tmp
+
+    def divide_messages(self, tocheck, bmsgs, dmsgs, ctmp):
+        """Divide messages into clean, bad, and to_check. Includes checks on
+        each user according to configuration parameters.
+
+        Parameters
+        ----------
+        tocheck : list
+            List of messages to manually check
+        bmsgs : list
+            Messages from timeouts or bans
+        dmsgs : list
+            Deleted messages
+        ctmp : list
+            Messages for another layer of review
+
+        Returns
+        -------
+        tocheck : list
+            List of messages to manually check
+        bmsgs : list
+            Messages from timeouts or bans
+        dmsgs : list
+            Deleted messages
+        ctmp : list
+            Messages for another layer of review
+        """
+        msg_info = {
+            'filtered': {'deleted_msgs': 0, 'banned_msgs': 0, 'clean_msgs': 0,
+                         'deleted_users': 0, 'banned_users': 0,
+                         'clean_users': 0},
+            'non-filtered': {'deleted_msgs': 0, 'banned_msgs': 0,
+                             'clean_msgs': 0, 'deleted_users': 0,
+                             'banned_users': 0, 'clean_users': 0}}
+        mod_info = {}
+        for user in tqdm(self.mem.chunks):
+            banned_msgs = 0
+            deleted_msgs = 0
+            clean_msgs = 0
+            banned_msgs_filt = 0
+            del_msgs_filt = 0
+            clean_msgs_filt = 0
+            for m in self.mem.chunks[user]:
+                check = (self.clean_filt_check(user, m)
+                         and check_msgs(m['msg'].lower(),
+                                        self.config.BLACKLIST))
+                if check:
+                    m['deleted'] = True
+                    m['mod'] = 'preproc'
+                deleted_msgs += int(m['deleted'])
+                banned_msgs += int(m['banned'])
+                clean_msgs += int(self.clean_check(m))
+                banned_msgs_filt += int(self.ban_filt_check(user, m))
+                del_msgs_filt += int(self.del_filt_check(user, m))
+                clean_msgs_filt += int(self.clean_filt_check(user, m))
+                mod_info[m['mod']] = mod_info.get(m['mod'],
+                                                  {'deleted': 0, 'banned': 0})
+                mod_info[m['mod']]['deleted'] += int(m['deleted'])
+                mod_info[m['mod']]['banned'] += int(m['banned'])
+            clean_user = int(banned_msgs == 0 and deleted_msgs == 0)
+            msg_info['non-filtered']['clean_users'] += clean_user
+            clean_user_filt = (banned_msgs_filt == 0
+                               and del_msgs_filt == 0)
+            msg_info['filtered']['clean_users'] += int(clean_user_filt)
+            msg_info['non-filtered']['banned_users'] += int(banned_msgs != 0)
+            msg_info['filtered']['banned_users'] += int(banned_msgs_filt != 0)
+            msg_info['non-filtered']['deleted_users'] += int(deleted_msgs != 0)
+            msg_info['filtered']['deleted_users'] += int(del_msgs_filt != 0)
+
+            msg_info['non-filtered']['banned_msgs'] += banned_msgs
+            msg_info['filtered']['banned_msgs'] += banned_msgs_filt
+            msg_info['non-filtered']['clean_msgs'] += clean_msgs
+            msg_info['filtered']['clean_msgs'] += clean_msgs_filt
+            msg_info['non-filtered']['deleted_msgs'] += deleted_msgs
+            msg_info['filtered']['deleted_msgs'] += del_msgs_filt
+
+            out = self._divide_messages(user, tocheck, bmsgs, dmsgs, ctmp)
+            tocheck, bmsgs, dmsgs, ctmp = out
+        mods = list(mod_info.keys())
+        ban_vals = [mod_info[k]['banned'] for k in mods]
+        del_vals = [mod_info[k]['deleted'] for k in mods]
+        mod_info = pd.DataFrame({'banned': ban_vals, 'deleted': del_vals})
+        mod_info.index = mods
+        rows = list(msg_info.keys())
+        cols = {k: [v] for k, v, in msg_info[rows[0]].items()}
+        for k, v in msg_info[rows[1]].items():
+            cols[k].append(v)
+        msg_info = pd.DataFrame(cols)
+        msg_info.index = rows
+        logger.info(f"Message info:\n{pprint.pformat(msg_info, indent=1)}")
+        logger.info(f"Mod info:\n{pprint.pformat(mod_info, indent=1)}")
+        return tocheck, bmsgs, dmsgs, ctmp
+
+    def _divide_messages(self, user, tocheck, bmsgs, dmsgs, ctmp):
         """Divide messages into clean, bad, and to_check
 
         Parameters
@@ -501,53 +643,41 @@ class LogCleaning:
         tocheck : list
             List of messages to manually check
         bmsgs : list
-            Messages classified as non-wholesome
-        cmsgs : list
-            Messages classified as wholesome
+            Messages from timeouts or bans
+        dmsgs : list
+            Deleted messages
         ctmp : list
-            Messages another layer of review
+            Messages for another layer of review
 
         Returns
         -------
         tocheck : list
             List of messages to manually check
         bmsgs : list
-            Messages classified as non-wholesome
-        cmsgs : list
-            Messages classified as wholesome
+            Messages from timeouts or bans
+        dmsgs : list
+            Deleted messages
         ctmp : list
-            Messages another layer of review
+            Messages for another layer of review
         """
         for m in self.mem.chunks[user]:
-            if m['msg'] is not None:
-                to_check_append = (m['banned'] and m['mod']
-                                   in self.config.BAN_CHECKS)
-                to_check_append = to_check_append or (
-                    m['deleted'] and m['mod'] in self.config.DELETE_CHECKS)
-                to_check_append = to_check_append and (
-                    m['mod'] not in self.config.IGNORE_ACTIONS)
+            to_check_append = (self.act_filt_check(user, m)
+                               and (m['mod'] in self.config.BAN_CHECKS
+                               or m['mod'] in self.config.DELETE_CHECKS))
+            m['msg'] = self.remove_whitelist(m)
 
-                ban_append = (m['deleted'] or m['banned']
-                              and m['mod'] not in self.config.IGNORE_ACTIONS
-                              and m['mod'] is not None)
-                clean_append = (not m['deleted'] and not m['banned'])
+            if to_check_append:
+                logger.info('Appending tocheck (mod / msg): '
+                            f'{m["mod"]} / {m["msg"]}')
+                tocheck.append(m['msg'])
+            if self.ban_filt_check(user, m):
+                bmsgs.append(m['msg'])
+            if self.del_filt_check(user, m):
+                dmsgs.append(m['msg'])
+            if self.clean_filt_check(user, m):
+                ctmp.append(m['msg'])
 
-                if ((m['isSub'] is False or m['isSub'] is True)
-                        and not contains_link(m['msg'])):
-
-                    for w in self.config.WHITELIST:
-                        m['msg'] = re.sub(w, '', m['msg'], flags=re.I)
-
-                    if to_check_append:
-                        logger.info('Appending tocheck (mod / msg): '
-                                    f'{m["mod"]} / {m["msg"]}')
-                        tocheck.append(m['msg'])
-                    elif ban_append:
-                        bmsgs.append(m['msg'])
-                    elif clean_append:
-                        ctmp.append(m['msg'])
-
-        return tocheck, bmsgs, cmsgs, ctmp
+        return tocheck, bmsgs, dmsgs, ctmp
 
     def further_review(self, tocheck, bmsgs, cmsgs):
         """Review tocheck messages and append to either cmsgs or bmsgs
@@ -568,7 +698,6 @@ class LogCleaning:
         cmsgs : list
             Messages classified as wholesome
         """
-
         logger.info("Reviewing to-check messages: %s", (len(tocheck)))
         for text in tqdm(tocheck):
             check_one = (check_msgs(text.lower(), self.config.BLACKLIST)
@@ -653,15 +782,17 @@ class LogCleaning:
         # prep log
         lines = self.prep_log(rawfile)
         self.mem.build_full_memory(lines)
-        self.mem.chunk_memory()
+        if self.mem.msg_limit == 1:
+            self.mem.chunks = self.mem.memory
+        else:
+            self.mem.chunk_memory()
 
         cmsgs = []
+        dmsgs = []
         bmsgs = []
         tocheck = []
         ctmp = []
         probs = []
-        banned_user_count = 0
-        clean_user_count = 0
 
         if self.review_decisions:
             logger.info("Preparing previous bot decisions for review")
@@ -670,37 +801,30 @@ class LogCleaning:
                     if m['mod'] == self.config.NICKNAME:
                         tocheck.append(m['msg'])
         else:
-            logger.info(
-                "Dividing messages into 'bad' and 'other' for each user")
-            for user in tqdm(self.mem.chunks):
-                valid_check = (user not in self.config.IGNORE_USERS
-                               and not self.mem.chunks[user][0]['isVip']
-                               and not self.mem.chunks[user][0]['isMod']
-                               and not self.mem.chunks[user][0]['isPartner'])
-                if valid_check:
-                    ban_check = any(m['banned'] for m in self.mem.chunks[user])
-                    ban_check = ban_check or any(m['deleted'] for m
-                                                 in self.mem.chunks[user])
-                    if ban_check:
-                        banned_user_count += 1
-                    else:
-                        clean_user_count += 1
+            logger.info("Dividing messages into banned/deleted/other for"
+                        " each user")
+            out = self.divide_messages(tocheck, bmsgs, dmsgs, ctmp)
+            tocheck, bmsgs, dmsgs, ctmp = out
 
-                    out = self.divide_messages(user, tocheck, bmsgs, cmsgs,
-                                               ctmp)
-                    tocheck, bmsgs, cmsgs, ctmp = out
+            msg = f'Message count deleted={len(dmsgs)}, banned={len(bmsgs)}'
+            logger.info(msg)
 
-            logger.info("Banned/timed-out users: %s", banned_user_count)
-            logger.info("Clean users: %s", clean_user_count)
-
-            logger.info("Dividing 'other' into clean, to-check, and bad")
+            logger.info("Dividing 'other' into clean, tocheck, and banned")
             if self.model is not None:
                 logger.info("Calculating probabilities")
                 probs = self.model.predict_one(ctmp)
 
+            bmsgs = [] if 'ban' not in self.config.TRAIN_ACTIONS else bmsgs
+            dmsgs = [] if 'delete' not in self.config.TRAIN_ACTIONS else dmsgs
+            bmsgs += dmsgs
+
             tocheck, bmsgs, cmsgs = self.review_messages(tocheck, bmsgs,
                                                          cmsgs, ctmp, probs)
-            bmsgs, cmsgs = self.further_review(tocheck, bmsgs, cmsgs)
+            msg = (f'Message count tocheck={len(tocheck)}, '
+                   f'banned={len(bmsgs)}, clean={len(cmsgs)}.')
+            logger.info(msg)
+            if len(tocheck) > 0:
+                bmsgs, cmsgs = self.further_review(tocheck, bmsgs, cmsgs)
         texts, y = self.append_messages(bmsgs, cmsgs)
         if cleanfile is not None:
             write_data(cleanfile, texts, y)
@@ -760,9 +884,10 @@ def get_info_from_chatty(line):
 class MsgMemory:
     """Class to store messages and message info
     """
-    def __init__(self):
+    def __init__(self, config=None):
         self.memory = defaultdict(list)
         self.chunks = defaultdict(list)
+        self.config = config
         self.msg_limit = 1
 
     def add_msg(self, info):
@@ -879,7 +1004,9 @@ class MsgMemory:
                        f'{self.memory[user][-1]["raw_msg"]}')
                 logger.extra_verbose(msg)
                 self.add_msg(info)
-        self.memory[user][-1]['mod'] = info['mod']
+        old_mod = self.memory[user][-1]['mod']
+        if old_mod is None or old_mod == self.config.NICKNAME:
+            self.memory[user][-1]['mod'] = info['mod']
 
     def build_full_memory(self, lines):
         """Build full memory for all lines

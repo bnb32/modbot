@@ -1,5 +1,4 @@
 """Logging module for storing chat and connection info"""
-from emoji import demojize
 import logging
 from sys import stdout
 
@@ -14,7 +13,7 @@ class ColoredFormatter(logging.Formatter):
     COLORS = {
         'ERROR': [196, 196, 196],
         'MOD': [46, 46, 46, 196],
-        'CHAT': [33, 33, 33, 161, 135, 196],
+        'CHAT': [33, 33, 33, 161, 231, 196],
         'INFO': [15, 15, 15, 196],
         'INFO+': [226, 226, 226],
         'INFO++': [202, 202, 202],
@@ -26,6 +25,15 @@ class ColoredFormatter(logging.Formatter):
         'IRC++': [228, 228, 228, 196]
     }
 
+    USERNAME_COLORS = {
+        'mod': 46,
+        'broadcaster': 196,
+        'vip': 200,
+        'partner': 92,
+        'sub': 208,
+        'pleb': 7
+    }
+
     FORMATS = {}
     for level in COLORS:
         COL_SEQ = f"\u001b[38;5;{COLORS[level][0]}m"
@@ -34,6 +42,10 @@ class ColoredFormatter(logging.Formatter):
         val += COL_SEQ + other_format + "\u001b[0m"
         COL_SEQ = f"\u001b[38;5;{COLORS[level][2]}m"
         val += COL_SEQ + msg_format + "\u001b[0m"
+
+        if level == 'CHAT':
+            val = COL_SEQ + msg_format + "\u001b[0m"
+
         FORMATS[level] = val
 
     def format(self, record):
@@ -51,9 +63,9 @@ class ColoredFormatter(logging.Formatter):
             prob = COL_SEQ + prob + "\u001b[0m"
             COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-2]}m"
             msg = COL_SEQ + msg + "\u001b[0m"
-            COL_SEQ = f"\u001b[38;5;{self.COLORS['CHAT'][-3]}m"
+            COL_SEQ = f"\u001b[38;5;{self.get_username_color(badges)}m"
             username = COL_SEQ + username + "\u001b[0m"
-            msg = " ".join([badges, username, msg, prob])
+            msg = " ".join([username, msg, prob])
         if record.levelname == 'MOD':
             msg_split = msg.split()
             msg = " ".join(msg_split[0:-1])
@@ -68,6 +80,22 @@ class ColoredFormatter(logging.Formatter):
         record.msg = msg
 
         return formatter.format(record)
+
+    def get_username_color(self, badges):
+        """Get username color based on badges"""
+        if 'moderator' in badges.lower():
+            color = self.USERNAME_COLORS['mod']
+        elif 'broadcaster' in badges.lower():
+            color = self.USERNAME_COLORS['broadcaster']
+        elif 'partner' in badges.lower():
+            color = self.USERNAME_COLORS['partner']
+        elif 'vip' in badges.lower():
+            color = self.USERNAME_COLORS['vip']
+        elif 'subscriber' in badges.lower():
+            color = self.USERNAME_COLORS['sub']
+        else:
+            color = self.USERNAME_COLORS['pleb']
+        return color
 
 
 class CustomLogger(logging.getLoggerClass()):
@@ -369,11 +397,20 @@ class Logging:
 
         if action in ['ban', 'timeout', 'delete']:
             if user in self.USER_LOG:
-                msg = self.USER_LOG[user][-1].get('msg', '')
-                prob = self.USER_LOG[user][-1].get('prob', '')
+                if 'delete' in action:
+                    msg = msg_dict['args'][1]
+                    msgs = [m.get('msg', '') for m in self.USER_LOG[user]]
+                    if msg in msgs:
+                        idx = msgs.index(msg)
+                        prob = self.USER_LOG[user][idx].get('prob', '')
+                    else:
+                        prob = None
+                else:
+                    msg = self.USER_LOG[user][-1].get('msg', '')
+                    prob = self.USER_LOG[user][-1].get('prob', '')
+                print(f'User info for {user}: {self.USER_LOG[user]}')
         if "timeout" in action:
             secs = msg_dict['args'][1]
         if "delete" in action:
-            msg = demojize(msg_dict['args'][1])
             msg_id = msg_dict['args'][2]
         return action, user, moderator, msg, secs, msg_id, prob

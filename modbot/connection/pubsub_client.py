@@ -21,7 +21,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
     _USER_URL = "https://api.twitch.tv/helix/users?login={user}"
     _URI = 'wss://pubsub-edge.twitch.tv'
     _PING_TIMEOUT = timedelta(seconds=60)
-    _WAIT_TIME = timedelta(seconds=300)
+    _WAIT_TIME = timedelta(seconds=60)
     _PING_MSG = json.dumps({'TYPE': 'PING'})
     VERBOSE_LOGGER = logger.pubsub_p
     EXTRA_VERBOSE_LOGGER = logger.pubsub_pp
@@ -114,13 +114,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
 
     async def receive_message(self):
         """Recieve PubSub message"""
-        elapsed = dt.now() - self.last_msg_time
-        msg = f'{elapsed} since last message. Waiting on {self.__name__}.'
-        self.EXTRA_VERBOSE_LOGGER(msg)
         message = await self.connection.recv()
         self.last_msg_time = dt.now()
-        msg = f'{self.__name__} message received: {self.last_msg_time}'
-        self.VERBOSE_LOGGER(msg)
         await self.handle_message(message)
         await self.heartbeat()
 
@@ -133,6 +128,8 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
             String containing PubSub message
         """
         tmp = json.loads(message)
+        msg = f'Received {self.__name__} message: {tmp}'
+        self.EXTRA_VERBOSE_LOGGER(msg)
         if 'PONG' in tmp['type']:
             self.last_pong = dt.now()
             self.VERBOSE_LOGGER(f"{self.__name__} Pong: {dt.now()}")
@@ -143,14 +140,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
             out = self.get_info_from_pubsub(tmp)
             log_entry = self.build_action_log_entry(*out[:-1])
             logger.mod(log_entry.replace('\n', ' ') + f' ({out[-1]})')
-            try:
-                self.append_log(log_entry)
-            except Exception as e:
-                logger.warning(f"**logging problem: {e}**")
-                logger.warning(log_entry)
-        else:
-            msg = f'Received {self.__name__} message: {tmp}'
-            self.EXTRA_VERBOSE_LOGGER(msg)
+            self.append_log(log_entry)
 
     @staticmethod
     def generate_nonce():

@@ -89,7 +89,11 @@ class ModerationModel(ABC):
         str
             Cleaned text string
         """
-        return text.encode('ascii', 'replace').decode()
+        try:
+            out = str(text).encode('ascii', 'replace').decode()
+        except Exception as e:
+            logger.error("Failed to clean text: {}, {}".format(text, e))
+        return out
 
     @classmethod
     def clean_texts(cls, X):
@@ -1561,6 +1565,44 @@ class BertCnnTorchModel(nn.Module):
         return self.sigmoid(logit)
 
 
+class BertCnnTorchModelSmall(BertCnnTorchModel):
+    """Bert Cnn model pytorch implementation"""
+
+    def __init__(self, embed_size):
+        super().__init__(embed_size)
+        filter_sizes = [1, 2, 3]
+        num_filters = 16
+        self.convs1 = nn.ModuleList([nn.Conv2d(4, num_filters, (K, embed_size))
+                                     for K in filter_sizes])
+        self.dropout = nn.Dropout(0.1)
+        self.fc1 = nn.Linear(len(filter_sizes) * num_filters, 1)
+        self.sigmoid = nn.Sigmoid()
+        self.bert_model = BertModel.from_pretrained('bert-base-uncased',
+                                                    output_hidden_states=True)
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+
+class BertTorchModel(nn.Module):
+    """Bert model pytorch implementation"""
+
+    def __init__(self, embed_size):
+        super().__init__()
+        self.fc1 = nn.Linear(768, 1)
+        self.bert_drop = nn.Dropout(0.4)
+        self.bert_model = BertModel.from_pretrained('bert-base-uncased')
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x, input_masks, token_type_ids):
+        """Forward pass for model"""
+        _, x = self.bert_model(x, attention_mask=input_masks,
+                               token_type_ids=token_type_ids,
+                               return_dict=False)
+        x = self.bert_drop(x)
+        logit = self.fc1(x)
+        return self.sigmoid(logit)
+
+
 class TorchModel(NNmodel):
     """Base torch model"""
 
@@ -1598,7 +1640,7 @@ class TorchModel(NNmodel):
         self.clf.load_state_dict(checkpoint['model_state'])
         self.clf.to(self.device)
         self.best_score = checkpoint['best_score']
-        self.epoch = checkpoint['epoch'] + 1
+        self.epoch = checkpoint['epoch']
         self.optimizer.load_state_dict(checkpoint['optimizer_state'])
         logger.info(f'Loaded checkpoint with epoch ({self.epoch}) '
                     f'best_score ({round(self.best_score, 3)})')
@@ -1685,6 +1727,13 @@ class TorchModel(NNmodel):
         if score > self.best_score:
             self.best_score = score
             self.save(model_path)
+        else:
+            tmp = model_path.split('_')
+            if tmp[-1].isnumeric():
+                tmp = "_".join(tmp[:-1])
+            else:
+                tmp = model_path
+            self.save(f'{tmp}_{self.epoch}')
         self.clf.train(True)
 
     def _train_loop(self, train_gen, test_gen, **kwargs):
@@ -1707,9 +1756,8 @@ class TorchModel(NNmodel):
         start_epoch = self.epoch
         end_epoch = start_epoch + epochs
         self.clf.train(True)
-        step_count = 1
+        step_count = 0
         with tqdm(total=total_steps) as pbar:
-            pbar.update(1)
             for epoch in range(start_epoch, end_epoch):
                 self.epoch = epoch
                 train_loss = 0
@@ -1718,15 +1766,17 @@ class TorchModel(NNmodel):
                                                       Y=train_gen.Y[chunk],
                                                       batch_size=batch_size)
                     for j, batch in enumerate(train_dataloader):
-                        msg = (f'Training on chunk {i + 1} / '
-                               f'{train_gen.n_chunks}, '
-                               f'batch {j + 1} / {len(train_dataloader)} '
-                               f'for epoch {self.epoch + 1} / {end_epoch}')
+                        msg = (f'chunk {i} / {train_gen.n_chunks}, '
+                               f'batch {j} / {len(train_dataloader)}, '
+                               f'epoch {self.epoch} / {end_epoch}')
                         pbar.set_description(msg)
                         train_loss = self.batch_update(batch, train_loss,
                                                        scheduler)
+                        check = (step_count > 0
+                                 or (step_count == 0 and train_batches == 1))
                         eval_check = (step_count % eval_steps == 0
-                                      or step_count % train_batches == 0)
+                                      or step_count % train_batches == 0
+                                      and check)
                         if eval_check:
                             self.save_check(test_gen, model_path)
                         train_losses.append(train_loss)
@@ -1832,3 +1882,26 @@ class BertCnnTorch(TorchModel):
 
     def build_layers(self, embed_size):
         return BertCnnTorchModel(embed_size)
+
+
+class BertCnnTorchSmall(BertCnnTorch):
+    """Bert Cnn model pytorch implementation"""
+    MAX_SEQUENCE_LENGTH = 32
+
+    @property
+    def __name__(self):
+        return "BERT_CNN_TORCH_SMALL"
+
+    def build_layers(self, embed_size):
+        return BertCnnTorchModelSmall(embed_size)
+
+
+class BertTorch(BertCnnTorch):
+    """Bert model pytorch implementation"""
+
+    @property
+    def __name__(self):
+        return "BERT_TORCH"
+
+    def build_layers(self, embed_size):
+        return BertTorchModel(embed_size)
