@@ -246,7 +246,7 @@ class ProcessingConfig(BaseConfig):
 
     #: Strings to indicate if message contains a link
     LINKLIST = ['https://', 'http://', 'www.', '.com', '.net',
-                '.org', '.edu', '/tv', '.tv', 'http:', 'https:']
+                '.org', '.edu', '/tv', 'tv/', '.tv', 'http:', 'https:']
 
     #: Phrase lists for filtering and manual checking signals
     BLACKLIST_OPTIONS = [
@@ -279,7 +279,7 @@ class ProcessingConfig(BaseConfig):
     GRAYLIST = []
 
     #: Allowed phrases
-    WHITELIST = ['LUL', 'KEKW', '!drama', 'http://', 'https://']
+    WHITELIST = ['LUL', 'KEKW', '!drama', 'http://', 'https://', '/tv', 'tv/']
 
     #: List of emotes to use for filtering
     EMOTELIST = ['NotLikeThis', '<3', 'LUL', 'WutFace',

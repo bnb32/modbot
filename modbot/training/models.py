@@ -1724,15 +1724,16 @@ class TorchModel(NNmodel):
         msg = (f'Epoch: {self.epoch}. New score: {score}. '
                f'Old score: {self.best_score}.')
         logger.info(msg)
-        if score > self.best_score:
-            self.best_score = score
-            self.save(model_path)
+        tmp = model_path.split('_')
+        if tmp[-1].isnumeric():
+            tmp = "_".join(tmp[:-1])
         else:
-            tmp = model_path.split('_')
-            if tmp[-1].isnumeric():
-                tmp = "_".join(tmp[:-1])
-            else:
-                tmp = model_path
+            tmp = model_path
+        if score > self.best_score:
+            logger.info(f'New best_score: {score}. Saving new best model.')
+            self.best_score = score
+            self.save(tmp)
+        else:
             self.save(f'{tmp}_{self.epoch}')
         self.clf.train(True)
 
@@ -1775,8 +1776,8 @@ class TorchModel(NNmodel):
                         check = (step_count > 0
                                  or (step_count == 0 and train_batches == 1))
                         eval_check = (step_count % eval_steps == 0
-                                      or step_count % train_batches == 0
-                                      and check)
+                                      or step_count % train_batches == 0)
+                        eval_check = eval_check and check
                         if eval_check:
                             self.save_check(test_gen, model_path)
                         train_losses.append(train_loss)

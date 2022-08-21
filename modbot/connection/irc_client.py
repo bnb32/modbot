@@ -100,7 +100,8 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
             info = self.get_info_from_irc(line)
             if line_type in ['msg']:
                 self.print_info(info)
-            if not (line_type not in ['msg'] and not info['msg']):
+            check = (line_type not in ['msg'] and not info['msg'])
+            if not check:
                 self._handle_message(info)
 
     def _update_user_log(self, info):
@@ -149,17 +150,9 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
 
     async def receive_message(self):
         """Receive and handle IRC message"""
-        now = dt.now()
-        elapsed = now - self.last_msg_time
-        if elapsed > self._WAIT_TIME:
-            msg = f'{elapsed} since last message. Waiting on {self.__name__}.'
-            self.EXTRA_VERBOSE_LOGGER(msg)
-        try:
-            line = await self.shandler.read(1024)
-        except Exception as e:
-            raise e
+        message = await self.shandler.read(1024)
         self.last_msg_time = dt.now()
-        self.handle_message(line)
+        self.handle_message(message)
 
     def quit(self):
         """Close stream handler connection"""

@@ -20,8 +20,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
     _AUTH_URL = "https://id.twitch.tv/oauth2/token"
     _USER_URL = "https://api.twitch.tv/helix/users?login={user}"
     _URI = 'wss://pubsub-edge.twitch.tv'
-    _PING_TIMEOUT = timedelta(seconds=60)
-    _WAIT_TIME = timedelta(seconds=60)
+    _PING_TIMEOUT = timedelta(seconds=300)
     _PING_MSG = json.dumps({'TYPE': 'PING'})
     VERBOSE_LOGGER = logger.pubsub_p
     EXTRA_VERBOSE_LOGGER = logger.pubsub_pp
@@ -95,7 +94,7 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")
         self.last_ping = dt.now()
         await self.send_ping()
-        await asyncio.sleep(self._WAIT_TIME.seconds)
+        await asyncio.sleep(self._PING_TIMEOUT.seconds)
 
     async def connect(self):
         """Report initial connection"""
