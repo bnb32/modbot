@@ -96,14 +96,6 @@ class DataGenerator(utils.Sequence):
     def __getitem__(self, i):
         return self.get_deterministic_batch(i)
 
-    def __next__(self):
-        if self._i < self.n_batches:
-            df = self.__getitem__(self._i)
-            self._i += 1
-            return df
-        else:
-            raise StopIteration
-
     def get_random_batch(self, _):
         """Get batches of randomly selected texts and targets with specified
         weights
@@ -130,11 +122,14 @@ class DataGenerator(utils.Sequence):
         arrs : list
             List of data batches
         """
-        return self.df.loc[self.batch_chunks[i]]
+        df = self.df.loc[self.batch_chunks[i]]
+        arrs = [np.array(df[col].values) for col in df.columns[::-1]]
+        return arrs
 
 
 class WeightedGenerator(DataGenerator):
     """Generator class for training over batches"""
+
     def __init__(self, df, **kwargs):
         """Initialize data generator which provides generators for text and
         targets for training and evaluation
@@ -231,14 +226,6 @@ class WeightedGenerator(DataGenerator):
     def transform(self, function):
         """Transform texts"""
         self.df['text'] = function(self.df['text'])
-
-    def __next__(self):
-        if self._i < self.n_batches:
-            df = self.__getitem__(self._i)
-            self._i += 1
-            return np.array(df['text']), np.array(df['is_offensive'])
-        else:
-            raise StopIteration
 
 
 @tf.function

@@ -2,12 +2,12 @@
 import tempfile
 import os
 
-from modbot.training.models import SVM
+from modbot.training.models import SVM, BERT
 from modbot import TEST_DATA_DIR
 from modbot.environment import RunConfig, get_model_path
 
 
-MODELS = [(SVM)]
+MODELS = [(SVM), (BERT)]
 
 
 def test_model():
