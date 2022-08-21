@@ -96,6 +96,14 @@ class DataGenerator(utils.Sequence):
     def __getitem__(self, i):
         return self.get_deterministic_batch(i)
 
+    def __next__(self):
+        if self._i < self.n_batches:
+            batch = self.__getitem__(self._i)
+            self._i += 1
+            return batch
+        else:
+            raise StopIteration
+
     def get_random_batch(self, _):
         """Get batches of randomly selected texts and targets with specified
         weights
