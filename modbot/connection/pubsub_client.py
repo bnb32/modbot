@@ -148,6 +148,6 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         oauth_nonce = nonce.hex
         return oauth_nonce
 
-    def quit(self):
+    async def quit(self):
         """Close pubsub connection"""
-        self.connection.close()
+        await self.connection.close()

@@ -399,15 +399,14 @@ class Logging:
             if user in self.USER_LOG:
                 if 'delete' in action:
                     msg = msg_dict['args'][1]
-                    msgs = [m.get('msg', '') for m in self.USER_LOG[user]]
-                    if msg in msgs:
-                        idx = msgs.index(msg)
-                        prob = self.USER_LOG[user][idx].get('prob', '')
+                    if msg in self.USER_LOG[user]['msgs']:
+                        idx = self.USER_LOG[user]['msgs'].index(msg)
+                        prob = self.USER_LOG[user]['probs'][idx]
                     else:
                         prob = None
                 else:
-                    msg = self.USER_LOG[user][-1].get('msg', '')
-                    prob = self.USER_LOG[user][-1].get('prob', '')
+                    msg = self.USER_LOG[user]['msgs'][-1]
+                    prob = self.USER_LOG[user]['probs'][-1]
                 print(f'User info for {user}: {self.USER_LOG[user]}')
         if "timeout" in action:
             secs = msg_dict['args'][1]

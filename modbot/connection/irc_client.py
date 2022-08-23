@@ -2,6 +2,8 @@
 import asyncio
 from datetime import datetime as dt
 from datetime import timedelta
+import pprint
+import pandas as pd
 
 from modbot.utilities.logging import Logging, get_logger
 from modbot.moderation import Moderation
@@ -19,7 +21,7 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
     _HOST = 'irc.chat.twitch.tv'
     _PORT = 6667
     _WAIT_TIME = timedelta(seconds=300)
-    _N_USER_MSGS = 20
+    _N_USER_MSGS = 5
     VERBOSE_LOGGER = logger.irc_p
     EXTRA_VERBOSE_LOGGER = logger.irc_pp
     INFO_LOGGER = logger.irc
@@ -106,12 +108,18 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
 
     def _update_user_log(self, info):
         """Update global chat history"""
-        self.USER_LOG[info['user']] = self.USER_LOG.get(info['user'], [])
-        entry = {k: v for k, v in info.items() if k in ['prob', 'msg']}
-        self.USER_LOG[info['user']].append(entry)
-        if len(self.USER_LOG[info['user']]) > self._N_USER_MSGS:
-            self.USER_LOG[info['user']].pop(0)
-        user_info = f'{info["user"]}: {self.USER_LOG[info["user"]]}'
+        user = info['user']
+        msg = info['msg']
+        prob = info['prob']
+        default_entry = {'msgs': [], 'probs': []}
+        self.USER_LOG[user] = self.USER_LOG.get(user, default_entry)
+        self.USER_LOG[user]['msgs'].append(msg)
+        self.USER_LOG[user]['probs'].append(prob)
+        if len(self.USER_LOG[user]['msgs']) > self._N_USER_MSGS:
+            self.USER_LOG[user]['msgs'].pop(0)
+            self.USER_LOG[user]['probs'].pop(0)
+        df = pd.DataFrame(self.USER_LOG[user])
+        user_info = f'\n{user}:\n{pprint.pformat(df.iloc[::-1], indent=1)}'
         if info['prob'] > 0.5 and not info['isMod']:
             self.VERBOSE_LOGGER(user_info)
 
