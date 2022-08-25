@@ -158,9 +158,12 @@ class IrcSocketClientAsync(Logging, Moderation, BaseSocketClientAsync):
 
     async def receive_message(self):
         """Receive and handle IRC message"""
-        message = await self.shandler.read(1024)
+        message = await self.shandler.read(512)
         self.last_msg_time = dt.now()
-        self.handle_message(message)
+        try:
+            self.handle_message(message)
+        except Exception as e:
+            self.INFO_LOGGER(f'Error handling message: {message}, {e}')
 
     def quit(self):
         """Close stream handler connection"""

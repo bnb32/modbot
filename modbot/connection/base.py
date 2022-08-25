@@ -82,6 +82,10 @@ class BaseSocketClientAsync:
     def connect(self):
         """Connection to socket"""
 
+    @abstractmethod
+    def handle_message(self, message):
+        """Handle message"""
+
     async def heartbeat(self):
         """Heartbeat routine for keeping connection alive"""
         self.VERBOSE_LOGGER(f"{self.__name__} Ping: {dt.now()}")

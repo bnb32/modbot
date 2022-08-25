@@ -115,7 +115,10 @@ class WebSocketClientAsync(Logging, BaseSocketClientAsync):
         """Recieve PubSub message"""
         message = await self.connection.recv()
         self.last_msg_time = dt.now()
-        await self.handle_message(message)
+        try:
+            await self.handle_message(message)
+        except Exception as e:
+            self.INFO_LOGGER(f'Error handling message {message}, {e}')
         await self.heartbeat()
 
     async def handle_message(self, message):

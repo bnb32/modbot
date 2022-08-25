@@ -407,7 +407,6 @@ class Logging:
                 else:
                     msg = self.USER_LOG[user]['msgs'][-1]
                     prob = self.USER_LOG[user]['probs'][-1]
-                print(f'User info for {user}: {self.USER_LOG[user]}')
         if "timeout" in action:
             secs = msg_dict['args'][1]
         if "delete" in action:

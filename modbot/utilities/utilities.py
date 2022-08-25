@@ -89,7 +89,11 @@ class UserInfo:
         info = copy.deepcopy(INFO_DEFAULT)
         info['line'] = line
         info['user'] = get_user(line)
-        info['msg'] = get_message(line)
+        try:
+            info['msg'] = get_message(line)
+        except Exception as e:
+            print(f'Error getting message: {e}')
+            print(f'line: {line}')
         info['isSub'] = is_user_type_irc("sub", line)
         info['isMod'] = is_user_type_irc("mod", line)
         info['isVip'] = is_user_type_irc("vip", line)
@@ -235,7 +239,10 @@ def get_line_type(line):
     str
         Type of line
     """
-
+    if not line:
+        return "blank"
+    if not remove_special_chars(line).strip():
+        return "blank"
     type_map = {"CLEARCHAT": "ban",
                 "CLEARMSG": "delete",
                 "JOIN": "join",
@@ -244,8 +251,6 @@ def get_line_type(line):
     for k, v in type_map.items():
         if k in line:
             return v
-    if not remove_special_chars(line).strip():
-        return "blank"
     return "misc"
 
 
@@ -281,13 +286,8 @@ def get_user(line):
     """
     user = ''
     if is_line_type("msg", line):
-        for line in line.split(';'):
-            if line.startswith('user-type='):
-                try:
-                    msg = re.search('user-type=(.*)', line).group(1)
-                    user = msg.split(":", 2)[1].split("!", 1)[0]
-                except Exception as e:
-                    raise e
+        line = line.split('user-type=')[1]
+        user = line.split(":", 2)[1].split("!", 1)[0]
     elif is_line_type("delete", line):
         line = line.split(';')
         user = line[0].strip('@login=')
@@ -360,7 +360,7 @@ def get_badges(line):
                 try:
                     badges = re.search('badges=(.*)', line).group(1)
                 except Exception as e:
-                    raise e
+                    print(f"Error getting badges: {e}")
     return badges
 
 
@@ -383,7 +383,7 @@ def get_msg_id(line):
             try:
                 msg_id = re.search('id=(.*)', line).group(1)
             except Exception as e:
-                raise e
+                print(f"Error getting msg_id: {e}")
     return msg_id
 
 
@@ -455,8 +455,9 @@ def get_message(line):
         user message
     """
     msg = ''
-    for line in line.split(';'):
-        if line.startswith('user-type='):
-            msg = re.search('user-type=(.*)', line).group(1)
-            return re.search(r'PRIVMSG #\w+ :(.*)', msg).group(1)
+    if 'user-type=' in line:
+        msg = line.split('user-type=')[1]
+        msg = re.search(r'PRIVMSG #\w+ :(.*)', msg)
+        if msg:
+            msg = msg.group(1)
     return msg
