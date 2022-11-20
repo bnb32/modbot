@@ -2,6 +2,9 @@
 Welcome to Modbot!
 *********************
 
+This moderation bot software uses scikit-learn binary classification algorithms or pytorch neural networks to learn what phrases to allow in twitch chat. Labeled training data is constructed from chat logs with human moderation information. After training the software can be connected to twitch chat to automate moderation.
+
+
 .. image:: https://github.com/bnb32/modbot/workflows/Documentation/badge.svg
     :target: https://bnb32.github.io/modbot/
 
