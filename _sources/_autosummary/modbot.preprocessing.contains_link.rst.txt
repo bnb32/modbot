@@ -1,0 +1,6 @@
+modbot.preprocessing.contains\_link
+===================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: contains_link

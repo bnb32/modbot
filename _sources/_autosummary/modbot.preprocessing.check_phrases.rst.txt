@@ -1,0 +1,6 @@
+modbot.preprocessing.check\_phrases
+===================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: check_phrases

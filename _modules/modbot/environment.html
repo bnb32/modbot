@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.environment &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/modbot.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../modbot.html">modbot</a></li>
+      <li class="breadcrumb-item active">modbot.environment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modbot.environment</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Initialize configuration parameters&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">modbot</span> <span class="kn">import</span> <span class="n">DATA_DIR</span> <span class="k">as</span> <span class="n">default_data_dir</span>
+<span class="kn">from</span> <span class="nn">modbot</span> <span class="kn">import</span> <span class="n">LOG_DIR</span> <span class="k">as</span> <span class="n">default_log_dir</span>
+<span class="kn">from</span> <span class="nn">modbot</span> <span class="kn">import</span> <span class="n">BERT_PREPROCESS</span> <span class="k">as</span> <span class="n">default_bert_preprocess</span>
+<span class="kn">from</span> <span class="nn">modbot</span> <span class="kn">import</span> <span class="n">BERT_ENCODER</span> <span class="k">as</span> <span class="n">default_bert_encoder</span>
+
+
+<span class="n">DEFAULT_VARS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;EPOCHS&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;BATCH_SIZE&quot;</span><span class="p">:</span> <span class="mi">64</span><span class="p">,</span>
+    <span class="s2">&quot;CHUNK_SIZE&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="s2">&quot;MODEL_TYPE&quot;</span><span class="p">:</span> <span class="s2">&quot;SVM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TEST_SPLIT&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s2">&quot;EVAL_STEPS&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+    <span class="s2">&quot;OFFENSIVE_WEIGHT&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s2">&quot;SAMPLE_SIZE&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="s2">&quot;LOGGER_LEVEL&quot;</span><span class="p">:</span> <span class="s1">&#39;VERBOSE&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_model_path"><a class="viewcode-back" href="../../_autosummary/modbot.environment.get_model_path.html#modbot.environment.get_model_path">[docs]</a><span class="k">def</span> <span class="nf">get_model_path</span><span class="p">(</span><span class="n">model_type</span><span class="p">,</span> <span class="n">basedir</span><span class="o">=</span><span class="n">default_data_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get default model path</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model_type : str</span>
+<span class="sd">        Valid model type</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    model_path : str</span>
+<span class="sd">        Path to save/load model</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">basedir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s1">_model&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;SVM&#39;</span><span class="p">):</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_path</span><span class="p">,</span> <span class="s1">&#39;model.joblib&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model_path</span></div>
+
+
+<div class="viewcode-block" id="BaseConfig"><a class="viewcode-back" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig">[docs]</a><span class="k">class</span> <span class="nc">BaseConfig</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Base config class&quot;&quot;&quot;</span>
+
+    <span class="c1">#: Oauth token for IRC connection</span>
+    <span class="n">_TOKEN</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Client ID for PubSub connection</span>
+    <span class="n">_CLIENT_ID</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Client secret for PubSub connection</span>
+    <span class="n">_CLIENT_SECRET</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Bot username</span>
+    <span class="n">NICKNAME</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Channel to moderate</span>
+    <span class="n">CHANNEL</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Threshold probability for moderation</span>
+    <span class="n">ACT_PMIN</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+    <span class="c1">#: Whether to send message in chat when probability is exceeded</span>
+    <span class="n">PMSG_ON</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1">#: Log level.</span>
+    <span class="n">LOGGER_LEVEL</span> <span class="o">=</span> <span class="s1">&#39;VERBOSE&#39;</span>
+
+    <span class="c1">#: Whether to write chat messages to log file</span>
+    <span class="n">WRITE_LOG</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1">#: Whether to allow links in chat or not</span>
+    <span class="n">NOLINKS</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1">#: Path to ML model</span>
+    <span class="n">MODEL_PATH</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Type of model to use for moderation</span>
+    <span class="n">MODEL_TYPE</span> <span class="o">=</span> <span class="s1">&#39;SVM&#39;</span>
+
+    <span class="c1">#: Threshold probability to check for new classification</span>
+    <span class="n">CHECK_PMIN</span> <span class="o">=</span> <span class="mf">0.4</span>
+
+    <span class="c1">#: Ratio of ones to total number of samples for training data</span>
+    <span class="n">OFFENSIVE_WEIGHT</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+    <span class="c1">#: Path to Chatty data for training</span>
+    <span class="n">CHATTY_DIR</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: Directory where training data and model is stored</span>
+    <span class="n">DATA_DIR</span> <span class="o">=</span> <span class="n">default_data_dir</span>
+
+    <span class="c1">#: Directory to write logs</span>
+    <span class="n">LOG_DIR</span> <span class="o">=</span> <span class="n">default_log_dir</span>
+
+    <span class="c1">#: Path to bert preprocess model</span>
+    <span class="n">BERT_PREPROCESS</span> <span class="o">=</span> <span class="n">default_bert_preprocess</span>
+
+    <span class="c1">#: Path to bert encoder</span>
+    <span class="n">BERT_ENCODER</span> <span class="o">=</span> <span class="n">default_bert_encoder</span>
+
+    <span class="c1">#: config file path</span>
+    <span class="n">FILE_NAME</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1">#: file for training</span>
+    <span class="n">INFILE</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            JSON configuration file</span>
+<span class="sd">        args : parser.parse_args</span>
+<span class="sd">            Args from argparse method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">DEFAULT_VARS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_name</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="p">(</span><span class="n">file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Received neither config file path or args object. Using &#39;</span>
+               <span class="s1">&#39;default configuration parameters.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">check</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FILE_NAME</span> <span class="o">=</span> <span class="n">file_name</span>
+        <span class="k">elif</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">FILE_NAME</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FILE_NAME</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_config</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Config attributes info&quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">k</span><span class="p">]</span>
+        <span class="n">keys</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">config_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">}</span>
+        <span class="n">config_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;config_dict&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">config_attrs</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">LOG_PATH</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get default log file name&quot;&quot;&quot;</span>
+        <span class="n">date_string</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CHANNEL</span> <span class="ow">or</span> <span class="s1">&#39;tmp&#39;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LOG_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">date_string</span><span class="si">}</span><span class="s1">_#</span><span class="si">{</span><span class="n">channel</span><span class="si">}</span><span class="s1">.log&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BaseConfig.get_config"><a class="viewcode-back" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig.get_config">[docs]</a>    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get configuration from file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            Path to configuration file</span>
+<span class="sd">        config : RunConfig</span>
+<span class="sd">            Optional config class with stored parameters</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        RunConfig</span>
+<span class="sd">            Config class with run time configuration stored in attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config_dict</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fh</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">public_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get public attributes</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Dictionary of public global attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">k</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">config_attrs</span>
+
+<div class="viewcode-block" id="BaseConfig.update_config"><a class="viewcode-back" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig.update_config">[docs]</a>    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update config with args</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args : parser.parse_args</span>
+<span class="sd">            Args from argparser with which to update config</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">model_type</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model_type</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">model_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                           <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_TYPE</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model_path</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">model_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                           <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">MODEL_PATH</span><span class="p">)</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">model_path</span> <span class="o">=</span> <span class="p">(</span><span class="n">get_model_path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">model_type</span><span class="p">)</span>
+                           <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">model_path</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">args</span><span class="o">.</span><span class="n">model_path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">default_val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">default_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">default_val</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">val</span><span class="p">)</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BaseConfig.save"><a class="viewcode-back" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outpath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save config to json file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        outpath : str</span>
+<span class="sd">            Path to save public attrs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outpath</span><span class="p">):</span>
+            <span class="n">model_dir</span> <span class="o">=</span> <span class="n">outpath</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">model_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">outpath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_dir</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">model_dir</span><span class="p">)</span>
+        <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_dir</span><span class="p">,</span> <span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">public_attrs</span><span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">fh</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="RunConfig"><a class="viewcode-back" href="../../_autosummary/modbot.environment.RunConfig.html#modbot.environment.RunConfig">[docs]</a><span class="k">class</span> <span class="nc">RunConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Config class to hold run time config parameters&quot;&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="ProcessingConfig"><a class="viewcode-back" href="../../_autosummary/modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig">[docs]</a><span class="k">class</span> <span class="nc">ProcessingConfig</span><span class="p">(</span><span class="n">BaseConfig</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Configuration for preprocessing routines&quot;&quot;&quot;</span>
+
+    <span class="c1">#: Strings to indicate if message contains a link</span>
+    <span class="n">LINKLIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://&#39;</span><span class="p">,</span> <span class="s1">&#39;http://&#39;</span><span class="p">,</span> <span class="s1">&#39;www.&#39;</span><span class="p">,</span> <span class="s1">&#39;.com&#39;</span><span class="p">,</span> <span class="s1">&#39;.net&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;.org&#39;</span><span class="p">,</span> <span class="s1">&#39;.edu&#39;</span><span class="p">,</span> <span class="s1">&#39;/tv&#39;</span><span class="p">,</span> <span class="s1">&#39;tv/&#39;</span><span class="p">,</span> <span class="s1">&#39;.tv&#39;</span><span class="p">,</span> <span class="s1">&#39;http:&#39;</span><span class="p">,</span> <span class="s1">&#39;https:&#39;</span><span class="p">]</span>
+
+    <span class="c1">#: Phrase lists for filtering and manual checking signals</span>
+    <span class="n">BLACKLIST_OPTIONS</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;#removethemole&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;super hottie&#39;</span><span class="p">,</span> <span class="s1">&#39;thicc&#39;</span><span class="p">,</span> <span class="s1">&#39;t h i c c&#39;</span><span class="p">,</span> <span class="s1">&#39;u are hot&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;you are hot&#39;</span><span class="p">,</span> <span class="s1">&#39;your hot&#39;</span><span class="p">,</span> <span class="s1">&#39;ur hot&#39;</span><span class="p">,</span> <span class="s1">&#39;u are sexy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;you are sexy&#39;</span><span class="p">,</span> <span class="s1">&#39;your sexy&#39;</span><span class="p">,</span> <span class="s1">&#39;ur sexy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;why is this in just chatting&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;u a virgin&#39;</span><span class="p">,</span> <span class="s1">&#39;wrong category&#39;</span><span class="p">,</span> <span class="s1">&#39;si1mp&#39;</span><span class="p">,</span> <span class="s1">&#39;s1mp&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;simp&#39;</span><span class="p">,</span> <span class="s1">&#39;T H I C C&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;onlyfans&#39;</span><span class="p">,</span> <span class="s1">&#39;thicc(.*)Botez&#39;</span><span class="p">,</span> <span class="s1">&#39;thicc(.*)Alex&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;thicc(.*) andrea&#39;</span><span class="p">,</span> <span class="s1">&#39;Botez(.*) thicc&#39;</span><span class="p">,</span> <span class="s1">&#39;Botez is(.*) hot&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Andrea is(.*) hot&#39;</span><span class="p">,</span> <span class="s1">&#39;Alex is(.*) hot&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Alex(.*)thicc&#39;</span><span class="p">,</span> <span class="s1">&#39;andrea(.*) thicc&#39;</span><span class="p">,</span> <span class="s1">&#39;she(.*)thicc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sexy(.*) Alex&#39;</span><span class="p">,</span> <span class="s1">&#39;sexy(.*) andrea&#39;</span><span class="p">,</span> <span class="s1">&#39;Botez(.*) sexy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sexy(.*) Botez&#39;</span><span class="p">,</span> <span class="s1">&#39;Andrea(.*)sexy&#39;</span><span class="p">,</span> <span class="s1">&#39;Alex(.*) sexy&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;andrea(.*) sexy&#39;</span><span class="p">,</span> <span class="s1">&#39;ur so hawt&#39;</span><span class="p">,</span> <span class="s1">&#39;u so hawt&#39;</span><span class="p">,</span> <span class="s1">&#39;rape&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;your butthole&#39;</span><span class="p">,</span> <span class="s1">&#39;mybutthole&#39;</span><span class="p">,</span> <span class="s1">&#39;give me a kiss&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;gimme a kiss&#39;</span><span class="p">,</span> <span class="s1">&#39;blow me a kiss&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cunt&#39;</span><span class="p">,</span> <span class="s1">&#39;suck dick&#39;</span><span class="p">,</span> <span class="s1">&#39;lick(.*) feet&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;suck my&#39;</span><span class="p">,</span> <span class="s1">&#39;whore&#39;</span><span class="p">,</span> <span class="s1">&#39;simp&#39;</span><span class="p">,</span> <span class="s1">&#39;lick(.*) toes&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;suck(.*) toes&#39;</span><span class="p">,</span> <span class="s1">&#39;your vagina&#39;</span><span class="p">,</span> <span class="s1">&#39;your vag&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;show vag&#39;</span><span class="p">,</span> <span class="s1">&#39;vagene&#39;</span><span class="p">,</span> <span class="s1">&#39;show bobs&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;you(.*)ugly&#39;</span><span class="p">,</span> <span class="s1">&#39;your booty&#39;</span><span class="p">,</span> <span class="s1">&#39;ur so hot&#39;</span><span class="p">,</span> <span class="s1">&#39;u so hot&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;slut&#39;</span><span class="p">,</span> <span class="s1">&#39;what happened to you(.*) face&#39;</span><span class="p">]</span>
+
+    <span class="n">BLACKLIST</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#: Phrases to check</span>
+    <span class="n">GRAYLIST</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1">#: Allowed phrases</span>
+    <span class="n">WHITELIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LUL&#39;</span><span class="p">,</span> <span class="s1">&#39;KEKW&#39;</span><span class="p">,</span> <span class="s1">&#39;!drama&#39;</span><span class="p">,</span> <span class="s1">&#39;http://&#39;</span><span class="p">,</span> <span class="s1">&#39;https://&#39;</span><span class="p">,</span> <span class="s1">&#39;/tv&#39;</span><span class="p">,</span> <span class="s1">&#39;tv/&#39;</span><span class="p">]</span>
+
+    <span class="c1">#: List of emotes to use for filtering</span>
+    <span class="n">EMOTELIST</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NotLikeThis&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;3&#39;</span><span class="p">,</span> <span class="s1">&#39;LUL&#39;</span><span class="p">,</span> <span class="s1">&#39;WutFace&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;ResidentSleeper&#39;</span><span class="p">,</span> <span class="s1">&#39;pepeLa&#39;</span><span class="p">,</span> <span class="s1">&#39;pepeDS&#39;</span><span class="p">,</span> <span class="s1">&#39;pepeJAM&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;pepePls&#39;</span><span class="p">,</span> <span class="s1">&#39;FeelsBadMan&#39;</span><span class="p">,</span> <span class="s1">&#39;FeelsGoodMan&#39;</span><span class="p">,</span> <span class="s1">&#39;monkaS&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;monkaHmm&#39;</span><span class="p">,</span> <span class="s1">&#39;KEKW&#39;</span><span class="p">,</span> <span class="s1">&#39;Kapp&#39;</span><span class="p">,</span> <span class="s1">&#39;Hypers&#39;</span><span class="p">,</span> <span class="s1">&#39;HandsUp&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;FeelsWeirdMan&#39;</span><span class="p">,</span> <span class="s1">&#39;EZY&#39;</span><span class="p">,</span> <span class="s1">&#39;5Head&#39;</span><span class="p">,</span> <span class="s1">&#39;3Lass&#39;</span><span class="p">,</span> <span class="s1">&#39;Pog&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;Pepega&#39;</span><span class="p">,</span> <span class="s1">&#39;PagChomp&#39;</span><span class="p">,</span> <span class="s1">&#39;OMEGALUL&#39;</span><span class="p">,</span> <span class="s1">&#39;monkaW&#39;</span><span class="p">,</span> <span class="s1">&#39;PogU&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;PepeHands&#39;</span><span class="p">,</span> <span class="s1">&#39;PepoThink&#39;</span><span class="p">,</span> <span class="s1">&#39;alexandraSub&#39;</span><span class="p">,</span> <span class="s1">&#39;PepePls&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;PixelBob&#39;</span><span class="p">,</span> <span class="s1">&#39;Jebaited&#39;</span><span class="p">,</span> <span class="s1">&#39;TriHard&#39;</span><span class="p">,</span> <span class="s1">&#39;MrDestructoid&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;Keepo&#39;</span><span class="p">,</span> <span class="s1">&#39;HeyGuys&#39;</span><span class="p">,</span> <span class="s1">&#39;PepeLaugh&#39;</span><span class="p">,</span> <span class="s1">&#39;SquadP&#39;</span><span class="p">,</span> <span class="s1">&#39;PJSugar&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;ammoHeman&#39;</span><span class="p">,</span> <span class="s1">&#39;SourPls&#39;</span><span class="p">,</span> <span class="s1">&#39;peepoHappy&#39;</span><span class="p">,</span> <span class="s1">&#39;HotPokket&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;BibleThump&#39;</span><span class="p">,</span> <span class="s1">&#39;DansGame&#39;</span><span class="p">,</span> <span class="s1">&#39;orbThonk&#39;</span><span class="p">,</span> <span class="s1">&#39;malexaH&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;electraSad&#39;</span><span class="p">,</span> <span class="s1">&#39;TopHat&#39;</span><span class="p">,</span> <span class="s1">&#39;FutureMan&#39;</span><span class="p">,</span> <span class="s1">&#39;PokGengar&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;OMEGA&#39;</span><span class="p">,</span> <span class="s1">&#39;onetri2Hii&#39;</span><span class="p">,</span> <span class="s1">&#39;bayliunSad&#39;</span><span class="p">,</span> <span class="s1">&#39;bayliunVictory&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;cheer100&#39;</span><span class="p">,</span> <span class="s1">&#39;cheer10&#39;</span><span class="p">,</span> <span class="s1">&#39;cheer1&#39;</span><span class="p">,</span> <span class="s1">&#39;TBAngel&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;chesscoachHi&#39;</span><span class="p">,</span> <span class="s1">&#39;chesscoachWhat&#39;</span><span class="p">,</span> <span class="s1">&#39;TwitchUnity&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;justbu8&#39;</span><span class="p">,</span> <span class="s1">&#39;blinkxXmas&#39;</span><span class="p">,</span> <span class="s1">&#39;symfNerd&#39;</span><span class="p">,</span> <span class="s1">&#39;malexaHi&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaTurtledove&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaThisisfine&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaThink&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaSweat&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaSleep&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaShrugRight&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaShrugMiddle&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaLean&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaNutcracker&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaPoint&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaSnowhal&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaPresent&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaReindeer&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaShrugLeft&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaHide&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaGoose&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaGingercat&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaElf&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaDoge&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaCat&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaBaby&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaNyandeer&#39;</span><span class="p">,</span> <span class="s1">&#39;Haha2020&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;HahaBall&#39;</span><span class="p">,</span> <span class="s1">&#39;HahaDreidel&#39;</span><span class="p">,</span> <span class="s1">&#39;gutBaby&#39;</span><span class="p">]</span>
+
+    <span class="c1"># : moderators to ignore actions for</span>
+    <span class="n">IGNORE_ACTIONS</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># : moderators to check bans for</span>
+    <span class="n">BAN_CHECKS</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># : moderators to check deletes for</span>
+    <span class="n">DELETE_CHECKS</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># : users to ignore messages of</span>
+    <span class="n">IGNORE_USERS</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># : moderation actions to train on</span>
+    <span class="n">TRAIN_ACTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="s1">&#39;ban&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">run_config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        file_name : str</span>
+<span class="sd">            JSON configuration file</span>
+<span class="sd">        run_config : RunConfig</span>
+<span class="sd">            Optional config class with stored parameters</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">run_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">run_config</span><span class="o">.</span><span class="n">FILE_NAME</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">run_config</span><span class="p">)</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">run_config</span><span class="o">.</span><span class="n">FILE_NAME</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_config</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+            <span class="n">run_config</span> <span class="o">=</span> <span class="n">RunConfig</span><span class="p">(</span><span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FILE_NAME</span> <span class="o">=</span> <span class="n">file_name</span>
+
+        <span class="c1">#: ignore actions of these moderators during training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_ACTIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;moobot&#39;</span><span class="p">,</span> <span class="n">run_config</span><span class="o">.</span><span class="n">NICKNAME</span><span class="p">]</span>
+
+        <span class="c1">#: review bans of these moderators during training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">BAN_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="n">run_config</span><span class="o">.</span><span class="n">NICKNAME</span><span class="p">]</span>
+
+        <span class="c1">#: review deletions by these moderators during training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DELETE_CHECKS</span> <span class="o">=</span> <span class="p">[</span><span class="n">run_config</span><span class="o">.</span><span class="n">NICKNAME</span><span class="p">]</span>
+
+        <span class="c1">#: ignore messages of these users during training</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IGNORE_USERS</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">public_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get public attributes</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Dictionary of public global attributes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_attrs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrs</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">k</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">k</span>
+                        <span class="ow">and</span> <span class="s1">&#39;LIST&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">k</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">config_attrs</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

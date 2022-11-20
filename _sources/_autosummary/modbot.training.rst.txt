@@ -1,0 +1,41 @@
+modbot.training
+===============
+
+.. automodule:: modbot.training
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_model_class
+      training_argparse
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   modbot.training.data_handling
+   modbot.training.models
+   modbot.training.training
+   modbot.training.vectorizers
+

@@ -1,0 +1,6 @@
+modbot.utilities.loss\_metrics.max\_mean\_discrepancy
+=====================================================
+
+.. currentmodule:: modbot.utilities.loss_metrics
+
+.. autofunction:: max_mean_discrepancy

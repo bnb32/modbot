@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.training.models.SVM &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modbot.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">modbot.training.models.SVM</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/bnb32/modbot/blob/main/docs/source/_autosummary/modbot.training.models.SVM.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modbot-training-models-svm">
+<h1>modbot.training.models.SVM<a class="headerlink" href="#modbot-training-models-svm" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modbot.training.models.SVM">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modbot.training.models.</span></span><span class="sig-name descname"><span class="pre">SVM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">texts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/training/models.html#SVM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.training.models.SVM" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="modbot.training.models.ModerationModel.html#modbot.training.models.ModerationModel" title="modbot.training.models.ModerationModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModerationModel</span></code></a></p>
+<p>Linear SVM model</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.clean_text" title="modbot.training.models.SVM.clean_text"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_text</span></code></a>(text)</p></td>
+<td><p>Clean single text so it is utf-8 compliant</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.clean_texts" title="modbot.training.models.SVM.clean_texts"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_texts</span></code></a>(X)</p></td>
+<td><p>Clean texts so they are utf-8 compliant</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.continue_training" title="modbot.training.models.SVM.continue_training"><code class="xref py py-obj docutils literal notranslate"><span class="pre">continue_training</span></code></a>(data_file, config)</p></td>
+<td><p>Continue training.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.detailed_score" title="modbot.training.models.SVM.detailed_score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detailed_score</span></code></a>([test_gen, n_matches, out_dir])</p></td>
+<td><p>Score model and print confusion matrix and multiple other metrics</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.get_class_info" title="modbot.training.models.SVM.get_class_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_class_info</span></code></a>()</p></td>
+<td><p>Get info about class numbers</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.get_data_generators" title="modbot.training.models.SVM.get_data_generators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_data_generators</span></code></a>(data_file, **kwargs)</p></td>
+<td><p>Get data generators with correct sizes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.load" title="modbot.training.models.SVM.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(inpath, **kwargs)</p></td>
+<td><p>Load SVM model from path</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.load_data" title="modbot.training.models.SVM.load_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_data</span></code></a>(data_file)</p></td>
+<td><p>Load data from csv file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.model_test" title="modbot.training.models.SVM.model_test"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_test</span></code></a>()</p></td>
+<td><p>Test model on some key phrases</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.predict" title="modbot.training.models.SVM.predict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict</span></code></a>(X[, verbose])</p></td>
+<td><p>Predict classification</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.predict_one" title="modbot.training.models.SVM.predict_one"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_one</span></code></a>(X[, verbose])</p></td>
+<td><p>Predict probability of label=1</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.predict_proba" title="modbot.training.models.SVM.predict_proba"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_proba</span></code></a>(X[, verbose])</p></td>
+<td><p>Predict classification</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.predict_zero" title="modbot.training.models.SVM.predict_zero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_zero</span></code></a>(X[, verbose])</p></td>
+<td><p>Predict probability of label=0</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.run" title="modbot.training.models.SVM.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>(data_file, config)</p></td>
+<td><p>Run model pipeline.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.save" title="modbot.training.models.SVM.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(outpath)</p></td>
+<td><p>Save model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.save_params" title="modbot.training.models.SVM.save_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_params</span></code></a>(outpath, kwargs)</p></td>
+<td><p>Save params to model path</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.score" title="modbot.training.models.SVM.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(X, Y)</p></td>
+<td><p>Score model against targets</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.split_data" title="modbot.training.models.SVM.split_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_data</span></code></a>(df[, test_split])</p></td>
+<td><p>Split data into training and test sets</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.train" title="modbot.training.models.SVM.train"><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code></a>(train_gen[, test_gen])</p></td>
+<td><p>Train model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.training.models.SVM.transform" title="modbot.training.models.SVM.transform"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transform</span></code></a>(X)</p></td>
+<td><p>Transform texts</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.training.models.SVM.PARAMS" title="modbot.training.models.SVM.PARAMS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PARAMS</span></code></a></p></td>
+<td><p>Default parameters for tf-idf, svm, and calibrated classifier</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.PARAMS">
+<span class="sig-name descname"><span class="pre">PARAMS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'C':</span> <span class="pre">1,</span> <span class="pre">'analyzer':</span> <span class="pre">'char_wb',</span> <span class="pre">'cv':</span> <span class="pre">5,</span> <span class="pre">'max_df':</span> <span class="pre">1.0,</span> <span class="pre">'max_iter':</span> <span class="pre">10000,</span> <span class="pre">'method':</span> <span class="pre">'sigmoid',</span> <span class="pre">'min_df':</span> <span class="pre">1,</span> <span class="pre">'ngram_range':</span> <span class="pre">(1,</span> <span class="pre">8),</span> <span class="pre">'smooth_idf':</span> <span class="pre">1,</span> <span class="pre">'stop_words':</span> <span class="pre">None,</span> <span class="pre">'sublinear_tf':</span> <span class="pre">1,</span> <span class="pre">'tokenizer':</span> <span class="pre">None}</span></em><a class="headerlink" href="#modbot.training.models.SVM.PARAMS" title="Permalink to this definition"></a></dt>
+<dd><p>Default parameters for tf-idf, svm, and calibrated classifier</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.clean_text">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.clean_text" title="Permalink to this definition"></a></dt>
+<dd><p>Clean single text so it is utf-8 compliant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text string to clean</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cleaned text string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.clean_texts">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clean_texts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.clean_texts" title="Permalink to this definition"></a></dt>
+<dd><p>Clean texts so they are utf-8 compliant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of texts</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X</strong> – Pandas dataframe of cleaned texts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.continue_training">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">continue_training</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.continue_training" title="Permalink to this definition"></a></dt>
+<dd><p>Continue training. Load model, load data, tokenize texts, and train.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_file</strong> (<em>str</em>) – Path to csv file storing texts and labels</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig" title="modbot.environment.RunConfig"><em>RunConfig</em></a>) – Config class with kwargs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Trained sequential and evaluated model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>keras.Sequential</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.detailed_score">
+<span class="sig-name descname"><span class="pre">detailed_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test_gen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_matches</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.detailed_score" title="Permalink to this definition"></a></dt>
+<dd><p>Score model and print confusion matrix and multiple other metrics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>test_gen</strong> (<a class="reference internal" href="modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator" title="modbot.training.data_handling.WeightedGenerator"><em>WeightedGenerator</em></a>) – generator for test data</p></li>
+<li><p><strong>n_matches</strong> (<em>int</em>) – Number of positive matches to print</p></li>
+<li><p><strong>out_dir</strong> (<em>str</em><em> | </em><em>None</em>) – Path to save scores</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df_scores</strong> – A dataframe containing all model scores</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.get_class_info">
+<span class="sig-name descname"><span class="pre">get_class_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.get_class_info" title="Permalink to this definition"></a></dt>
+<dd><p>Get info about class numbers</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.get_data_generators">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_data_generators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.get_data_generators" title="Permalink to this definition"></a></dt>
+<dd><p>Get data generators with correct sizes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_file</strong> (<em>str</em>) – Path to csv file storing texts and labels</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Dictionary with optional keyword parameters. Can include
+sample_size, batch_size, epochs, n_batches.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>train_gen</strong> (<em>WeightedGenerator</em>) – WeightedGenerator instance used for training batches</p></li>
+<li><p><strong>test_gen</strong> (<em>WeightedGenerator</em>) – WeightedGenerator instance used for evaluation batches</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.load">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inpath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/training/models.html#SVM.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.training.models.SVM.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load SVM model from path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inpath</strong> (<em>str</em>) – Path to load model from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Previously trained and saved model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#modbot.training.models.SVM" title="modbot.training.models.SVM">SVM</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.load_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.load_data" title="Permalink to this definition"></a></dt>
+<dd><p>Load data from csv file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_file</strong> (<em>str</em>) – Path to csv file storing texts and labels</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>df</strong> – Pandas dataframe of texts and labels</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.model_test">
+<span class="sig-name descname"><span class="pre">model_test</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.model_test" title="Permalink to this definition"></a></dt>
+<dd><p>Test model on some key phrases</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>model</strong> (<a class="reference internal" href="modbot.training.models.ModerationModel.html#modbot.training.models.ModerationModel" title="modbot.training.models.ModerationModel"><em>ModerationModel</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Predict classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em><em> | </em><em>list</em><em> | </em><em>pd.DataFrame</em>) – Set of texts to classify</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Whether to show progress bar for predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of predicted classifications for input texts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.predict_one">
+<span class="sig-name descname"><span class="pre">predict_one</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.predict_one" title="Permalink to this definition"></a></dt>
+<dd><p>Predict probability of label=1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em><em> | </em><em>list</em><em> | </em><em>pd.DataFrame</em>) – Set of texts to classify</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Whether to show progress bar for predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of predicted probability for label=1 for input texts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.predict_proba">
+<span class="sig-name descname"><span class="pre">predict_proba</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/training/models.html#SVM.predict_proba"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.training.models.SVM.predict_proba" title="Permalink to this definition"></a></dt>
+<dd><p>Predict classification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em><em> | </em><em>list</em><em> | </em><em>pd.DataFrame</em>) – Set of texts to classify</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Has no effect. For compliance with LSTM method</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of predicted classifications for input texts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.predict_zero">
+<span class="sig-name descname"><span class="pre">predict_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.predict_zero" title="Permalink to this definition"></a></dt>
+<dd><p>Predict probability of label=0</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>ndarray</em><em> | </em><em>list</em><em> | </em><em>pd.DataFrame</em>) – Set of texts to classify</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Whether to show progress bar for predictions</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of predicted probability for label=0 for input texts</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.run">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.run" title="Permalink to this definition"></a></dt>
+<dd><p>Run model pipeline. Load data, tokenize texts, and train</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_file</strong> (<em>str</em>) – Path to csv file storing texts and labels</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig" title="modbot.environment.RunConfig"><em>RunConfig</em></a>) – Config class with kwargs</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Trained and evaluated keras model or svm</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="modbot.training.models.ModerationModel.html#modbot.training.models.ModerationModel" title="modbot.training.models.ModerationModel">ModerationModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outpath</strong> (<em>str</em>) – Path to save model</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.save_params">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.save_params" title="Permalink to this definition"></a></dt>
+<dd><p>Save params to model path</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outpath</strong> (<em>str</em>) – Path to model</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Dictionary of kwargs used to build model</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.score">
+<span class="sig-name descname"><span class="pre">score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.score" title="Permalink to this definition"></a></dt>
+<dd><p>Score model against targets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of texts</p></li>
+<li><p><strong>Y</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of labels for the corresponding texts</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Value of accuracy calulated from the correct predictions vs base
+truth</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.split_data">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">split_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_split</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#modbot.training.models.SVM.split_data" title="Permalink to this definition"></a></dt>
+<dd><p>Split data into training and test sets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of texts and labels</p></li>
+<li><p><strong>test_split</strong> (<em>float</em>) – Fraction of full dataset to use for test data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>df_train</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of texts and labels for training</p></li>
+<li><p><strong>df_test</strong> (<em>pd.DataFrame</em>) – Pandas dataframe of texts and labels for testing</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.train">
+<span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test_gen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/training/models.html#SVM.train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.training.models.SVM.train" title="Permalink to this definition"></a></dt>
+<dd><p>Train model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train_gen</strong> (<a class="reference internal" href="modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator" title="modbot.training.data_handling.WeightedGenerator"><em>WeightedGenerator</em></a>) – WeightedGenerator instance used for training batches</p></li>
+<li><p><strong>test_gen</strong> (<a class="reference internal" href="modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator" title="modbot.training.data_handling.WeightedGenerator"><em>WeightedGenerator</em></a>) – Has no effect. For compliance with LSTM train method</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Has no effect. For compliance with LSTM train method</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.training.models.SVM.transform">
+<span class="sig-name descname"><span class="pre">transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/training/models.html#SVM.transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.training.models.SVM.transform" title="Permalink to this definition"></a></dt>
+<dd><p>Transform texts</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>list</em><em> | </em><em>ndarray</em><em> | </em><em>pd.DataFrame</em>) – Set of texts to transform before sending to model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>X</strong> – Set of transformed texts ready to send to model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list | ndarray | pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

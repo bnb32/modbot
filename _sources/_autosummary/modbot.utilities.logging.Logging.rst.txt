@@ -1,0 +1,35 @@
+modbot.utilities.logging.Logging
+================================
+
+.. currentmodule:: modbot.utilities.logging
+
+.. autoclass:: Logging
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Logging.append_log
+      ~Logging.build_action_log_entry
+      ~Logging.build_chat_log_entry
+      ~Logging.get_info_from_pubsub
+      ~Logging.get_value
+      ~Logging.initialize_logger
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~Logging.USER_LOG
+   
+   

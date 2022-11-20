@@ -1,0 +1,58 @@
+modbot.utilities.utilities
+==========================
+
+.. automodule:: modbot.utilities.utilities
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      curvature
+      delete_usernames
+      get_badges
+      get_line_type
+      get_message
+      get_msg_id
+      get_role
+      get_user
+      get_user_type_chatty
+      is_line_type
+      is_user_type_chatty
+      is_user_type_irc
+      none_or_float
+      none_or_int
+      none_or_str
+      parse_radiation
+      parse_time
+      prune_chars
+      remove_reps
+      remove_special_chars
+      simple_chars_equal
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      UserInfo
+   
+   
+
+   
+   
+   
+
+
+

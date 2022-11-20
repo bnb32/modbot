@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.utilities.utilities.none_or_int &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="modbot.utilities.utilities.none_or_str" href="modbot.utilities.utilities.none_or_str.html" />
+    <link rel="prev" title="modbot.utilities.utilities.none_or_float" href="modbot.utilities.utilities.none_or_float.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modbot.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="modbot.utilities.html">modbot.utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="reference internal" href="modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modbot.html">modbot</a></li>
+          <li class="breadcrumb-item"><a href="modbot.utilities.html">modbot.utilities</a></li>
+          <li class="breadcrumb-item"><a href="modbot.utilities.utilities.html">modbot.utilities.utilities</a></li>
+      <li class="breadcrumb-item active">modbot.utilities.utilities.none_or_int</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/bnb32/modbot/blob/main/docs/source/_autosummary/modbot.utilities.utilities.none_or_int.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modbot-utilities-utilities-none-or-int">
+<h1>modbot.utilities.utilities.none_or_int<a class="headerlink" href="#modbot-utilities-utilities-none-or-int" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="modbot.utilities.utilities.none_or_int">
+<span class="sig-prename descclassname"><span class="pre">modbot.utilities.utilities.</span></span><span class="sig-name descname"><span class="pre">none_or_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/utilities/utilities.html#none_or_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.utilities.utilities.none_or_int" title="Permalink to this definition"></a></dt>
+<dd><p>Get none or int</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modbot.utilities.utilities.none_or_float.html" class="btn btn-neutral float-left" title="modbot.utilities.utilities.none_or_float" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modbot.utilities.utilities.none_or_str.html" class="btn btn-neutral float-right" title="modbot.utilities.utilities.none_or_str" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

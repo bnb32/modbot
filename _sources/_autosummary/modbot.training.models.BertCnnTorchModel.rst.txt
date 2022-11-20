@@ -1,0 +1,74 @@
+modbot.training.models.BertCnnTorchModel
+========================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCnnTorchModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCnnTorchModel.add_module
+      ~BertCnnTorchModel.apply
+      ~BertCnnTorchModel.bfloat16
+      ~BertCnnTorchModel.buffers
+      ~BertCnnTorchModel.children
+      ~BertCnnTorchModel.cpu
+      ~BertCnnTorchModel.cuda
+      ~BertCnnTorchModel.double
+      ~BertCnnTorchModel.eval
+      ~BertCnnTorchModel.extra_repr
+      ~BertCnnTorchModel.float
+      ~BertCnnTorchModel.forward
+      ~BertCnnTorchModel.get_buffer
+      ~BertCnnTorchModel.get_extra_state
+      ~BertCnnTorchModel.get_parameter
+      ~BertCnnTorchModel.get_submodule
+      ~BertCnnTorchModel.half
+      ~BertCnnTorchModel.ipu
+      ~BertCnnTorchModel.load_state_dict
+      ~BertCnnTorchModel.modules
+      ~BertCnnTorchModel.named_buffers
+      ~BertCnnTorchModel.named_children
+      ~BertCnnTorchModel.named_modules
+      ~BertCnnTorchModel.named_parameters
+      ~BertCnnTorchModel.parameters
+      ~BertCnnTorchModel.register_backward_hook
+      ~BertCnnTorchModel.register_buffer
+      ~BertCnnTorchModel.register_forward_hook
+      ~BertCnnTorchModel.register_forward_pre_hook
+      ~BertCnnTorchModel.register_full_backward_hook
+      ~BertCnnTorchModel.register_load_state_dict_post_hook
+      ~BertCnnTorchModel.register_module
+      ~BertCnnTorchModel.register_parameter
+      ~BertCnnTorchModel.requires_grad_
+      ~BertCnnTorchModel.set_extra_state
+      ~BertCnnTorchModel.share_memory
+      ~BertCnnTorchModel.state_dict
+      ~BertCnnTorchModel.to
+      ~BertCnnTorchModel.to_empty
+      ~BertCnnTorchModel.train
+      ~BertCnnTorchModel.type
+      ~BertCnnTorchModel.xpu
+      ~BertCnnTorchModel.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCnnTorchModel.T_destination
+      ~BertCnnTorchModel.dump_patches
+      ~BertCnnTorchModel.training
+   
+   

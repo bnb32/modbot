@@ -1,0 +1,6 @@
+modbot.training.training\_argparse
+==================================
+
+.. currentmodule:: modbot.training
+
+.. autofunction:: training_argparse

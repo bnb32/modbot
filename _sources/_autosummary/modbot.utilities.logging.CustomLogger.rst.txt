@@ -1,0 +1,67 @@
+modbot.utilities.logging.CustomLogger
+=====================================
+
+.. currentmodule:: modbot.utilities.logging
+
+.. autoclass:: CustomLogger
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CustomLogger.addFilter
+      ~CustomLogger.addHandler
+      ~CustomLogger.callHandlers
+      ~CustomLogger.chat
+      ~CustomLogger.critical
+      ~CustomLogger.debug
+      ~CustomLogger.error
+      ~CustomLogger.exception
+      ~CustomLogger.extra_verbose
+      ~CustomLogger.fatal
+      ~CustomLogger.filter
+      ~CustomLogger.findCaller
+      ~CustomLogger.getChild
+      ~CustomLogger.getEffectiveLevel
+      ~CustomLogger.handle
+      ~CustomLogger.hasHandlers
+      ~CustomLogger.info
+      ~CustomLogger.irc
+      ~CustomLogger.irc_p
+      ~CustomLogger.irc_pp
+      ~CustomLogger.isEnabledFor
+      ~CustomLogger.log
+      ~CustomLogger.makeRecord
+      ~CustomLogger.mod
+      ~CustomLogger.private
+      ~CustomLogger.pubsub
+      ~CustomLogger.pubsub_p
+      ~CustomLogger.pubsub_pp
+      ~CustomLogger.removeFilter
+      ~CustomLogger.removeHandler
+      ~CustomLogger.setLevel
+      ~CustomLogger.update_level
+      ~CustomLogger.verbose
+      ~CustomLogger.warn
+      ~CustomLogger.warning
+      ~CustomLogger.warning_advice
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CustomLogger.LEVELS
+      ~CustomLogger.manager
+      ~CustomLogger.root
+   
+   

@@ -1,0 +1,6 @@
+modbot.utilities.utilities.curvature
+====================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: curvature

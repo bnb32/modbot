@@ -1,0 +1,66 @@
+modbot.training.models.BertCnnLstm
+==================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCnnLstm
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCnnLstm.append_history
+      ~BertCnnLstm.build_layers
+      ~BertCnnLstm.chunk_words
+      ~BertCnnLstm.clean_text
+      ~BertCnnLstm.clean_texts
+      ~BertCnnLstm.combo_layer
+      ~BertCnnLstm.construct_vocab
+      ~BertCnnLstm.continue_training
+      ~BertCnnLstm.detailed_score
+      ~BertCnnLstm.evaluate
+      ~BertCnnLstm.fit
+      ~BertCnnLstm.get_class_info
+      ~BertCnnLstm.get_data_generators
+      ~BertCnnLstm.get_most_common_ngrams
+      ~BertCnnLstm.get_ngrams
+      ~BertCnnLstm.get_vocab_difference
+      ~BertCnnLstm.get_vocab_direct
+      ~BertCnnLstm.init_bert
+      ~BertCnnLstm.load
+      ~BertCnnLstm.load_data
+      ~BertCnnLstm.model_test
+      ~BertCnnLstm.predict
+      ~BertCnnLstm.predict_one
+      ~BertCnnLstm.predict_proba
+      ~BertCnnLstm.predict_zero
+      ~BertCnnLstm.print_eval
+      ~BertCnnLstm.run
+      ~BertCnnLstm.save
+      ~BertCnnLstm.save_params
+      ~BertCnnLstm.score
+      ~BertCnnLstm.split_data
+      ~BertCnnLstm.split_words
+      ~BertCnnLstm.standardize_grams
+      ~BertCnnLstm.train
+      ~BertCnnLstm.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCnnLstm.EMBEDDING_DIM
+      ~BertCnnLstm.MAX_NB_WORDS
+      ~BertCnnLstm.MAX_SEQUENCE_LENGTH
+   
+   

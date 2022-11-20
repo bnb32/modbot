@@ -1,0 +1,32 @@
+modbot.training.training
+========================
+
+.. automodule:: modbot.training.training
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      clean_log
+      grid_search
+      vectorize_and_train
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

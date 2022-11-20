@@ -1,0 +1,72 @@
+modbot.connection.irc\_client.IrcSocketClientAsync
+==================================================
+
+.. currentmodule:: modbot.connection.irc_client
+
+.. autoclass:: IrcSocketClientAsync
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~IrcSocketClientAsync.EXTRA_VERBOSE_LOGGER
+      ~IrcSocketClientAsync.INFO_LOGGER
+      ~IrcSocketClientAsync.VERBOSE_LOGGER
+      ~IrcSocketClientAsync.add_permit
+      ~IrcSocketClientAsync.append_log
+      ~IrcSocketClientAsync.build_action_log_entry
+      ~IrcSocketClientAsync.build_chat_log_entry
+      ~IrcSocketClientAsync.check_joins_and_parts
+      ~IrcSocketClientAsync.connect
+      ~IrcSocketClientAsync.connect_fail
+      ~IrcSocketClientAsync.del_permit
+      ~IrcSocketClientAsync.filter_words
+      ~IrcSocketClientAsync.get_delete
+      ~IrcSocketClientAsync.get_info_from_irc
+      ~IrcSocketClientAsync.get_info_from_pubsub
+      ~IrcSocketClientAsync.get_info_prob
+      ~IrcSocketClientAsync.get_permit_time
+      ~IrcSocketClientAsync.get_permit_user
+      ~IrcSocketClientAsync.get_timeout
+      ~IrcSocketClientAsync.get_value
+      ~IrcSocketClientAsync.handle_message
+      ~IrcSocketClientAsync.has_permit
+      ~IrcSocketClientAsync.heartbeat
+      ~IrcSocketClientAsync.initialize_logger
+      ~IrcSocketClientAsync.initialize_model
+      ~IrcSocketClientAsync.is_exempt
+      ~IrcSocketClientAsync.is_prob_exceeded
+      ~IrcSocketClientAsync.listen_forever
+      ~IrcSocketClientAsync.print_info
+      ~IrcSocketClientAsync.quit
+      ~IrcSocketClientAsync.receive_fail
+      ~IrcSocketClientAsync.receive_message
+      ~IrcSocketClientAsync.remove_allowed_phrases
+      ~IrcSocketClientAsync.rep_nuke
+      ~IrcSocketClientAsync.rep_permit
+      ~IrcSocketClientAsync.send_action
+      ~IrcSocketClientAsync.send_message
+      ~IrcSocketClientAsync.send_nuke
+      ~IrcSocketClientAsync.send_ping
+      ~IrcSocketClientAsync.send_reply
+      ~IrcSocketClientAsync.should_nuke
+      ~IrcSocketClientAsync.time_nuke
+      ~IrcSocketClientAsync.time_permit
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~IrcSocketClientAsync.USER_LOG
+   
+   

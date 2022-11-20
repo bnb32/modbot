@@ -1,0 +1,48 @@
+modbot.utilities.logging.ColoredFormatter
+=========================================
+
+.. currentmodule:: modbot.utilities.logging
+
+.. autoclass:: ColoredFormatter
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ColoredFormatter.converter
+      ~ColoredFormatter.format
+      ~ColoredFormatter.formatException
+      ~ColoredFormatter.formatMessage
+      ~ColoredFormatter.formatStack
+      ~ColoredFormatter.formatTime
+      ~ColoredFormatter.get_username_color
+      ~ColoredFormatter.usesTime
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ColoredFormatter.COLORS
+      ~ColoredFormatter.COL_SEQ
+      ~ColoredFormatter.FORMATS
+      ~ColoredFormatter.USERNAME_COLORS
+      ~ColoredFormatter.default_msec_format
+      ~ColoredFormatter.default_time_format
+      ~ColoredFormatter.full_format
+      ~ColoredFormatter.level
+      ~ColoredFormatter.level_format
+      ~ColoredFormatter.msg_format
+      ~ColoredFormatter.other_format
+      ~ColoredFormatter.val
+   
+   

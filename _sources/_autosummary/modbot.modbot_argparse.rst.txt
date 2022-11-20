@@ -1,0 +1,6 @@
+modbot.modbot\_argparse
+=======================
+
+.. currentmodule:: modbot
+
+.. autofunction:: modbot_argparse

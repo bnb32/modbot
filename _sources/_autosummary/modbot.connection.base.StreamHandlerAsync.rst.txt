@@ -1,0 +1,27 @@
+modbot.connection.base.StreamHandlerAsync
+=========================================
+
+.. currentmodule:: modbot.connection.base
+
+.. autoclass:: StreamHandlerAsync
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~StreamHandlerAsync.INFO_LOGGER
+      ~StreamHandlerAsync.close_connection
+      ~StreamHandlerAsync.read
+      ~StreamHandlerAsync.write
+   
+   
+
+   
+   
+   

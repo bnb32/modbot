@@ -1,0 +1,32 @@
+modbot.connection.base
+======================
+
+.. automodule:: modbot.connection.base
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      BaseSocketClientAsync
+      StreamHandlerAsync
+   
+   
+
+   
+   
+   
+
+
+

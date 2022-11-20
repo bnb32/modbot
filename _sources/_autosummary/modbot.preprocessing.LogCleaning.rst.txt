@@ -1,0 +1,41 @@
+modbot.preprocessing.LogCleaning
+================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autoclass:: LogCleaning
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LogCleaning.act_check
+      ~LogCleaning.act_filt_check
+      ~LogCleaning.append_messages
+      ~LogCleaning.ban_filt_check
+      ~LogCleaning.clean_check
+      ~LogCleaning.clean_filt_check
+      ~LogCleaning.clean_log
+      ~LogCleaning.del_filt_check
+      ~LogCleaning.divide_messages
+      ~LogCleaning.further_review
+      ~LogCleaning.is_valid_line
+      ~LogCleaning.mod_check
+      ~LogCleaning.msg_check
+      ~LogCleaning.prep_log
+      ~LogCleaning.read_log
+      ~LogCleaning.remove_whitelist
+      ~LogCleaning.review_messages
+      ~LogCleaning.valid_check
+   
+   
+
+   
+   
+   

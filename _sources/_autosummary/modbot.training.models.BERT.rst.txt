@@ -1,0 +1,65 @@
+modbot.training.models.BERT
+===========================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BERT
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BERT.append_history
+      ~BERT.build_layers
+      ~BERT.chunk_words
+      ~BERT.clean_text
+      ~BERT.clean_texts
+      ~BERT.construct_vocab
+      ~BERT.continue_training
+      ~BERT.detailed_score
+      ~BERT.evaluate
+      ~BERT.fit
+      ~BERT.get_class_info
+      ~BERT.get_data_generators
+      ~BERT.get_most_common_ngrams
+      ~BERT.get_ngrams
+      ~BERT.get_vocab_difference
+      ~BERT.get_vocab_direct
+      ~BERT.init_bert
+      ~BERT.load
+      ~BERT.load_data
+      ~BERT.model_test
+      ~BERT.predict
+      ~BERT.predict_one
+      ~BERT.predict_proba
+      ~BERT.predict_zero
+      ~BERT.print_eval
+      ~BERT.run
+      ~BERT.save
+      ~BERT.save_params
+      ~BERT.score
+      ~BERT.split_data
+      ~BERT.split_words
+      ~BERT.standardize_grams
+      ~BERT.train
+      ~BERT.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BERT.EMBEDDING_DIM
+      ~BERT.MAX_NB_WORDS
+      ~BERT.MAX_SEQUENCE_LENGTH
+   
+   

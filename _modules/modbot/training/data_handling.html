@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.training.data_handling &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../misc/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../_autosummary/modbot.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../_autosummary/modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../../modbot.html">modbot</a></li>
+          <li class="breadcrumb-item"><a href="../training.html">modbot.training</a></li>
+      <li class="breadcrumb-item active">modbot.training.data_handling</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modbot.training.data_handling</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Data handling module&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">keras</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+
+<span class="kn">from</span> <span class="nn">modbot.utilities.logging</span> <span class="kn">import</span> <span class="n">get_logger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="DataGenerator"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.DataGenerator.html#modbot.training.data_handling.DataGenerator">[docs]</a><span class="k">class</span> <span class="nc">DataGenerator</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator class for batching&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the generator</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : list</span>
+<span class="sd">            Dataframe to use for batching</span>
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Optional keyword arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;batch_size&#39;</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">df</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;chunk_size&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_batches&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_samples</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chunks</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunks</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of data samples&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_samples</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_samples</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indices for data samples&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;index&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span>
+
+    <span class="nd">@indices</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update indices attribute&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indices</span> <span class="o">=</span> <span class="n">indices</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chunk_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get chunk size for splitting data loading&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunk_size</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get number of chunks to divide full dataset into for smaller</span>
+<span class="sd">        reads&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_batches</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get number of batches based on batch size&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_batches</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">batch_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get index chunks for batching. Each chunk corresponds to a batch&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batch_chunks</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get dataset chunks. Used to only keep part of full dataset sample in</span>
+<span class="sd">        memory.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_chunks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_chunks</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_chunks</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_deterministic_batch</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="p">:</span>
+            <span class="n">batch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">batch</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+
+<div class="viewcode-block" id="DataGenerator.get_random_batch"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.DataGenerator.html#modbot.training.data_handling.DataGenerator.get_random_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_random_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get batches of randomly selected texts and targets with specified</span>
+<span class="sd">        weights</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        arrs : list</span>
+<span class="sd">            List of randomly selected data batches</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+                                      <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="DataGenerator.get_deterministic_batch"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.DataGenerator.html#modbot.training.data_handling.DataGenerator.get_deterministic_batch">[docs]</a>    <span class="k">def</span> <span class="nf">get_deterministic_batch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get batches of randomly selected texts and targets</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            Index of chunk used to select slice of full dataframe</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        arrs : list</span>
+<span class="sd">            List of data batches</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_chunks</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">arrs</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">arrs</span></div></div>
+
+
+<div class="viewcode-block" id="WeightedGenerator"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator">[docs]</a><span class="k">class</span> <span class="nc">WeightedGenerator</span><span class="p">(</span><span class="n">DataGenerator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator class for training over batches&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize data generator which provides generators for text and</span>
+<span class="sd">        targets for training and evaluation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        df : pd.DataFrame</span>
+<span class="sd">            Pandas dataframe of texts and labels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_one_count</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zero_count</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">offensive_weight</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;offensive_weight&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">sample_size</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sample_size&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_indices</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;is_offensive&#39;</span><span class="p">],</span>
+                                      <span class="n">offensive_weight</span><span class="o">=</span><span class="n">offensive_weight</span><span class="p">,</span>
+                                      <span class="n">sample_size</span><span class="o">=</span><span class="n">sample_size</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;compute&#39;</span><span class="p">):</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">frac</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_count</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zero_count</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_count</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Using batch_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;n_batches=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="si">}</span><span class="s1">, sample_size=</span><span class="si">{</span><span class="n">sample_size</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;n_chunks=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">n_chunks</span><span class="si">}</span><span class="s1">, chunk_size=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="si">}</span><span class="s1">, &#39;</span>
+                    <span class="sa">f</span><span class="s1">&#39;offensive_weight=</span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">frac</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">one_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get number of samples with target=1&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_one_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">zero_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get number of samples with target=0&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zero_count</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_zero_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">Y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zero_count</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">X</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;alias for texts&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;compute&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">Y</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;alias for targets&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">,</span> <span class="s1">&#39;compute&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;is_offensive&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;is_offensive&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="WeightedGenerator.sample_indices"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator.sample_indices">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">sample_indices</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">offensive_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sample data with weights as per offensive weight</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Y : pd.DataFrame</span>
+<span class="sd">            Pandas dataframe of labels for the corresponding texts</span>
+<span class="sd">        offensive_weight : float</span>
+<span class="sd">            Desired ratio of one labels to the total number of labels</span>
+<span class="sd">        sample_size : int</span>
+<span class="sd">            Desired sample size. Corresponds to the size of the returned</span>
+<span class="sd">            texts and labels</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        indices : np.array</span>
+<span class="sd">            Indices of the samples such that X[indices] is the requested sample</span>
+<span class="sd">            size with the requested offensive_weight</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="s1">&#39;compute&#39;</span><span class="p">):</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+        <span class="n">one_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">Y</span> <span class="o">==</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">zero_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">[</span><span class="n">Y</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">offensive_weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">offensive_weight</span> <span class="o">=</span> <span class="n">one_count</span> <span class="o">/</span> <span class="p">(</span><span class="n">zero_count</span> <span class="o">+</span> <span class="n">one_count</span><span class="p">)</span>
+        <span class="n">sample_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="k">if</span> <span class="n">sample_size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">sample_size</span>
+        <span class="n">wgt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="n">offensive_weight</span><span class="p">,</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">sample_size</span><span class="p">])</span>
+        <span class="n">wgt_0</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">wgt</span><span class="p">)</span> <span class="o">/</span> <span class="n">zero_count</span>
+        <span class="n">wgt_1</span> <span class="o">=</span> <span class="n">wgt</span> <span class="o">/</span> <span class="n">one_count</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">wgt_0</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">wgt_1</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">sample_size</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                           <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WeightedGenerator.transform"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.WeightedGenerator.html#modbot.training.data_handling.WeightedGenerator.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transform texts&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="char_split"><a class="viewcode-back" href="../../../_autosummary/modbot.training.data_handling.char_split.html#modbot.training.data_handling.char_split">[docs]</a><span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">char_split</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split function for vectorization layer&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">strings</span><span class="o">.</span><span class="n">unicode_split</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">input_encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">,</span>
+                                    <span class="n">errors</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

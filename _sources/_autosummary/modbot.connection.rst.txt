@@ -1,0 +1,32 @@
+modbot.connection
+=================
+
+.. automodule:: modbot.connection
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   modbot.connection.base
+   modbot.connection.irc_client
+   modbot.connection.pubsub_client
+

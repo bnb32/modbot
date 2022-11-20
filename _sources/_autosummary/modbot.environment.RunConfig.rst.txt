@@ -1,0 +1,52 @@
+modbot.environment.RunConfig
+============================
+
+.. currentmodule:: modbot.environment
+
+.. autoclass:: RunConfig
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~RunConfig.get_config
+      ~RunConfig.save
+      ~RunConfig.update_config
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RunConfig.ACT_PMIN
+      ~RunConfig.BERT_ENCODER
+      ~RunConfig.BERT_PREPROCESS
+      ~RunConfig.CHANNEL
+      ~RunConfig.CHATTY_DIR
+      ~RunConfig.CHECK_PMIN
+      ~RunConfig.DATA_DIR
+      ~RunConfig.FILE_NAME
+      ~RunConfig.INFILE
+      ~RunConfig.LOGGER_LEVEL
+      ~RunConfig.LOG_DIR
+      ~RunConfig.LOG_PATH
+      ~RunConfig.MODEL_PATH
+      ~RunConfig.MODEL_TYPE
+      ~RunConfig.NICKNAME
+      ~RunConfig.NOLINKS
+      ~RunConfig.OFFENSIVE_WEIGHT
+      ~RunConfig.PMSG_ON
+      ~RunConfig.WRITE_LOG
+      ~RunConfig.attrs
+      ~RunConfig.public_attrs
+   
+   

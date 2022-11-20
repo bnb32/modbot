@@ -1,0 +1,39 @@
+modbot.training.data\_handling
+==============================
+
+.. automodule:: modbot.training.data_handling
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      char_split
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      DataGenerator
+      WeightedGenerator
+   
+   
+
+   
+   
+   
+
+
+

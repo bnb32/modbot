@@ -1,0 +1,63 @@
+modbot.environment.ProcessingConfig
+===================================
+
+.. currentmodule:: modbot.environment
+
+.. autoclass:: ProcessingConfig
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ProcessingConfig.get_config
+      ~ProcessingConfig.save
+      ~ProcessingConfig.update_config
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ProcessingConfig.ACT_PMIN
+      ~ProcessingConfig.BAN_CHECKS
+      ~ProcessingConfig.BERT_ENCODER
+      ~ProcessingConfig.BERT_PREPROCESS
+      ~ProcessingConfig.BLACKLIST
+      ~ProcessingConfig.BLACKLIST_OPTIONS
+      ~ProcessingConfig.CHANNEL
+      ~ProcessingConfig.CHATTY_DIR
+      ~ProcessingConfig.CHECK_PMIN
+      ~ProcessingConfig.DATA_DIR
+      ~ProcessingConfig.DELETE_CHECKS
+      ~ProcessingConfig.EMOTELIST
+      ~ProcessingConfig.FILE_NAME
+      ~ProcessingConfig.GRAYLIST
+      ~ProcessingConfig.IGNORE_ACTIONS
+      ~ProcessingConfig.IGNORE_USERS
+      ~ProcessingConfig.INFILE
+      ~ProcessingConfig.LINKLIST
+      ~ProcessingConfig.LOGGER_LEVEL
+      ~ProcessingConfig.LOG_DIR
+      ~ProcessingConfig.LOG_PATH
+      ~ProcessingConfig.MODEL_PATH
+      ~ProcessingConfig.MODEL_TYPE
+      ~ProcessingConfig.NICKNAME
+      ~ProcessingConfig.NOLINKS
+      ~ProcessingConfig.OFFENSIVE_WEIGHT
+      ~ProcessingConfig.PMSG_ON
+      ~ProcessingConfig.TRAIN_ACTIONS
+      ~ProcessingConfig.WHITELIST
+      ~ProcessingConfig.WRITE_LOG
+      ~ProcessingConfig.attrs
+      ~ProcessingConfig.public_attrs
+   
+   

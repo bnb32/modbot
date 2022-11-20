@@ -1,0 +1,74 @@
+modbot.training.models.BertCnnTorch
+===================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCnnTorch
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCnnTorch.append_history
+      ~BertCnnTorch.batch_update
+      ~BertCnnTorch.build_layers
+      ~BertCnnTorch.chunk_words
+      ~BertCnnTorch.clean_text
+      ~BertCnnTorch.clean_texts
+      ~BertCnnTorch.construct_vocab
+      ~BertCnnTorch.continue_training
+      ~BertCnnTorch.detailed_score
+      ~BertCnnTorch.eval_score
+      ~BertCnnTorch.evaluate
+      ~BertCnnTorch.fit
+      ~BertCnnTorch.get_class_info
+      ~BertCnnTorch.get_data_generators
+      ~BertCnnTorch.get_most_common_ngrams
+      ~BertCnnTorch.get_ngrams
+      ~BertCnnTorch.get_vocab_difference
+      ~BertCnnTorch.get_vocab_direct
+      ~BertCnnTorch.load
+      ~BertCnnTorch.load_checkpoint
+      ~BertCnnTorch.load_data
+      ~BertCnnTorch.loss_fn
+      ~BertCnnTorch.model_test
+      ~BertCnnTorch.predict
+      ~BertCnnTorch.predict_one
+      ~BertCnnTorch.predict_proba
+      ~BertCnnTorch.predict_zero
+      ~BertCnnTorch.print_eval
+      ~BertCnnTorch.run
+      ~BertCnnTorch.save
+      ~BertCnnTorch.save_check
+      ~BertCnnTorch.save_params
+      ~BertCnnTorch.score
+      ~BertCnnTorch.split_data
+      ~BertCnnTorch.split_words
+      ~BertCnnTorch.standardize_grams
+      ~BertCnnTorch.train
+      ~BertCnnTorch.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCnnTorch.DLOADER_ARGS
+      ~BertCnnTorch.EMBEDDING_DIM
+      ~BertCnnTorch.EMBED_SIZE
+      ~BertCnnTorch.LEARNING_RATE
+      ~BertCnnTorch.LOSS_FUNCTION
+      ~BertCnnTorch.MAX_NB_WORDS
+      ~BertCnnTorch.MAX_SEQUENCE_LENGTH
+      ~BertCnnTorch.SEED
+   
+   

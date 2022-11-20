@@ -1,0 +1,47 @@
+modbot.moderation.Moderation
+============================
+
+.. currentmodule:: modbot.moderation
+
+.. autoclass:: Moderation
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Moderation.add_permit
+      ~Moderation.del_permit
+      ~Moderation.filter_words
+      ~Moderation.get_delete
+      ~Moderation.get_info_from_irc
+      ~Moderation.get_info_prob
+      ~Moderation.get_permit_time
+      ~Moderation.get_permit_user
+      ~Moderation.get_timeout
+      ~Moderation.has_permit
+      ~Moderation.initialize_model
+      ~Moderation.is_exempt
+      ~Moderation.is_prob_exceeded
+      ~Moderation.print_info
+      ~Moderation.remove_allowed_phrases
+      ~Moderation.rep_nuke
+      ~Moderation.rep_permit
+      ~Moderation.send_action
+      ~Moderation.send_message
+      ~Moderation.send_nuke
+      ~Moderation.send_reply
+      ~Moderation.should_nuke
+      ~Moderation.time_nuke
+      ~Moderation.time_permit
+   
+   
+
+   
+   
+   

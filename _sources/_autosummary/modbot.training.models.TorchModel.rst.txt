@@ -1,0 +1,74 @@
+modbot.training.models.TorchModel
+=================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: TorchModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~TorchModel.append_history
+      ~TorchModel.batch_update
+      ~TorchModel.build_layers
+      ~TorchModel.chunk_words
+      ~TorchModel.clean_text
+      ~TorchModel.clean_texts
+      ~TorchModel.construct_vocab
+      ~TorchModel.continue_training
+      ~TorchModel.detailed_score
+      ~TorchModel.eval_score
+      ~TorchModel.evaluate
+      ~TorchModel.fit
+      ~TorchModel.get_class_info
+      ~TorchModel.get_data_generators
+      ~TorchModel.get_most_common_ngrams
+      ~TorchModel.get_ngrams
+      ~TorchModel.get_vocab_difference
+      ~TorchModel.get_vocab_direct
+      ~TorchModel.load
+      ~TorchModel.load_checkpoint
+      ~TorchModel.load_data
+      ~TorchModel.loss_fn
+      ~TorchModel.model_test
+      ~TorchModel.predict
+      ~TorchModel.predict_one
+      ~TorchModel.predict_proba
+      ~TorchModel.predict_zero
+      ~TorchModel.print_eval
+      ~TorchModel.run
+      ~TorchModel.save
+      ~TorchModel.save_check
+      ~TorchModel.save_params
+      ~TorchModel.score
+      ~TorchModel.split_data
+      ~TorchModel.split_words
+      ~TorchModel.standardize_grams
+      ~TorchModel.train
+      ~TorchModel.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~TorchModel.DLOADER_ARGS
+      ~TorchModel.EMBEDDING_DIM
+      ~TorchModel.EMBED_SIZE
+      ~TorchModel.LEARNING_RATE
+      ~TorchModel.LOSS_FUNCTION
+      ~TorchModel.MAX_NB_WORDS
+      ~TorchModel.MAX_SEQUENCE_LENGTH
+      ~TorchModel.SEED
+   
+   

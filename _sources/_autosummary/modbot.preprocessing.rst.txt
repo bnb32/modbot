@@ -1,0 +1,58 @@
+modbot.preprocessing
+====================
+
+.. automodule:: modbot.preprocessing
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      check_msgs
+      check_phrases
+      check_probs
+      contains_link
+      correct_messages
+      correct_msg
+      filter_all_emotes
+      filter_emotes
+      filter_log
+      get_info_from_chatty
+      join_words
+      my_lemmatizer
+      my_tokenizer
+      preproc_words
+      read_data
+      remove_stopwords
+      segment_words
+      separate_links
+      separate_tocheck
+      write_data
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      LogCleaning
+      MsgMemory
+   
+   
+
+   
+   
+   
+
+
+

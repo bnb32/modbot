@@ -1,0 +1,6 @@
+modbot.utilities.utilities.prune\_chars
+=======================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: prune_chars

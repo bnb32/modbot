@@ -1,0 +1,31 @@
+modbot.training.vectorizers
+===========================
+
+.. automodule:: modbot.training.vectorizers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      TokVectorizer
+   
+   
+
+   
+   
+   
+
+
+

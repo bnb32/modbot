@@ -1,0 +1,6 @@
+modbot.training.get\_model\_class
+=================================
+
+.. currentmodule:: modbot.training
+
+.. autofunction:: get_model_class

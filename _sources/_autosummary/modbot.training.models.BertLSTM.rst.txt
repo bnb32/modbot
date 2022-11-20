@@ -1,0 +1,65 @@
+modbot.training.models.BertLSTM
+===============================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertLSTM
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertLSTM.append_history
+      ~BertLSTM.build_layers
+      ~BertLSTM.chunk_words
+      ~BertLSTM.clean_text
+      ~BertLSTM.clean_texts
+      ~BertLSTM.construct_vocab
+      ~BertLSTM.continue_training
+      ~BertLSTM.detailed_score
+      ~BertLSTM.evaluate
+      ~BertLSTM.fit
+      ~BertLSTM.get_class_info
+      ~BertLSTM.get_data_generators
+      ~BertLSTM.get_most_common_ngrams
+      ~BertLSTM.get_ngrams
+      ~BertLSTM.get_vocab_difference
+      ~BertLSTM.get_vocab_direct
+      ~BertLSTM.init_bert
+      ~BertLSTM.load
+      ~BertLSTM.load_data
+      ~BertLSTM.model_test
+      ~BertLSTM.predict
+      ~BertLSTM.predict_one
+      ~BertLSTM.predict_proba
+      ~BertLSTM.predict_zero
+      ~BertLSTM.print_eval
+      ~BertLSTM.run
+      ~BertLSTM.save
+      ~BertLSTM.save_params
+      ~BertLSTM.score
+      ~BertLSTM.split_data
+      ~BertLSTM.split_words
+      ~BertLSTM.standardize_grams
+      ~BertLSTM.train
+      ~BertLSTM.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertLSTM.EMBEDDING_DIM
+      ~BertLSTM.MAX_NB_WORDS
+      ~BertLSTM.MAX_SEQUENCE_LENGTH
+   
+   

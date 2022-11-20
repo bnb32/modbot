@@ -1,0 +1,34 @@
+modbot.connection.base.BaseSocketClientAsync
+============================================
+
+.. currentmodule:: modbot.connection.base
+
+.. autoclass:: BaseSocketClientAsync
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BaseSocketClientAsync.EXTRA_VERBOSE_LOGGER
+      ~BaseSocketClientAsync.INFO_LOGGER
+      ~BaseSocketClientAsync.VERBOSE_LOGGER
+      ~BaseSocketClientAsync.connect
+      ~BaseSocketClientAsync.connect_fail
+      ~BaseSocketClientAsync.handle_message
+      ~BaseSocketClientAsync.heartbeat
+      ~BaseSocketClientAsync.listen_forever
+      ~BaseSocketClientAsync.receive_fail
+      ~BaseSocketClientAsync.receive_message
+      ~BaseSocketClientAsync.send_ping
+   
+   
+
+   
+   
+   

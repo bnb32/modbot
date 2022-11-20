@@ -1,0 +1,6 @@
+modbot.training.training.grid\_search
+=====================================
+
+.. currentmodule:: modbot.training.training
+
+.. autofunction:: grid_search

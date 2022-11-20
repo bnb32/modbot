@@ -1,0 +1,74 @@
+modbot.training.models.BertCnnTorchModelSmall
+=============================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCnnTorchModelSmall
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCnnTorchModelSmall.add_module
+      ~BertCnnTorchModelSmall.apply
+      ~BertCnnTorchModelSmall.bfloat16
+      ~BertCnnTorchModelSmall.buffers
+      ~BertCnnTorchModelSmall.children
+      ~BertCnnTorchModelSmall.cpu
+      ~BertCnnTorchModelSmall.cuda
+      ~BertCnnTorchModelSmall.double
+      ~BertCnnTorchModelSmall.eval
+      ~BertCnnTorchModelSmall.extra_repr
+      ~BertCnnTorchModelSmall.float
+      ~BertCnnTorchModelSmall.forward
+      ~BertCnnTorchModelSmall.get_buffer
+      ~BertCnnTorchModelSmall.get_extra_state
+      ~BertCnnTorchModelSmall.get_parameter
+      ~BertCnnTorchModelSmall.get_submodule
+      ~BertCnnTorchModelSmall.half
+      ~BertCnnTorchModelSmall.ipu
+      ~BertCnnTorchModelSmall.load_state_dict
+      ~BertCnnTorchModelSmall.modules
+      ~BertCnnTorchModelSmall.named_buffers
+      ~BertCnnTorchModelSmall.named_children
+      ~BertCnnTorchModelSmall.named_modules
+      ~BertCnnTorchModelSmall.named_parameters
+      ~BertCnnTorchModelSmall.parameters
+      ~BertCnnTorchModelSmall.register_backward_hook
+      ~BertCnnTorchModelSmall.register_buffer
+      ~BertCnnTorchModelSmall.register_forward_hook
+      ~BertCnnTorchModelSmall.register_forward_pre_hook
+      ~BertCnnTorchModelSmall.register_full_backward_hook
+      ~BertCnnTorchModelSmall.register_load_state_dict_post_hook
+      ~BertCnnTorchModelSmall.register_module
+      ~BertCnnTorchModelSmall.register_parameter
+      ~BertCnnTorchModelSmall.requires_grad_
+      ~BertCnnTorchModelSmall.set_extra_state
+      ~BertCnnTorchModelSmall.share_memory
+      ~BertCnnTorchModelSmall.state_dict
+      ~BertCnnTorchModelSmall.to
+      ~BertCnnTorchModelSmall.to_empty
+      ~BertCnnTorchModelSmall.train
+      ~BertCnnTorchModelSmall.type
+      ~BertCnnTorchModelSmall.xpu
+      ~BertCnnTorchModelSmall.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCnnTorchModelSmall.T_destination
+      ~BertCnnTorchModelSmall.dump_patches
+      ~BertCnnTorchModelSmall.training
+   
+   

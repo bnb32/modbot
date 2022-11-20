@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.moderation &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../_autosummary/modbot.html">API reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../_autosummary/modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../_autosummary/modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../modbot.html">modbot</a></li>
+      <li class="breadcrumb-item active">modbot.moderation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for modbot.moderation</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Moderation module&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dt</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="kn">import</span> <span class="nn">modbot.preprocessing</span> <span class="k">as</span> <span class="nn">pp</span>
+<span class="kn">from</span> <span class="nn">modbot.utilities</span> <span class="kn">import</span> <span class="n">utilities</span>
+<span class="kn">from</span> <span class="nn">modbot.environment</span> <span class="kn">import</span> <span class="n">ProcessingConfig</span>
+<span class="kn">from</span> <span class="nn">modbot.utilities.utilities</span> <span class="kn">import</span> <span class="n">replies</span><span class="p">,</span> <span class="n">UserInfo</span>
+<span class="kn">from</span> <span class="nn">modbot.utilities.logging</span> <span class="kn">import</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">modbot.training</span> <span class="kn">import</span> <span class="n">get_model_class</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Permitting"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting">[docs]</a><span class="k">class</span> <span class="nc">Permitting</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class to handle user permits - if they are exempt from moderation</span>
+<span class="sd">    actions or can post links.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_config</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">run_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_config</span> <span class="o">=</span> <span class="n">ProcessingConfig</span><span class="p">(</span><span class="n">run_config</span><span class="o">.</span><span class="n">FILE_NAME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permits</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permit_duration</span> <span class="o">=</span> <span class="mi">180</span>
+
+<div class="viewcode-block" id="Permitting.add_permit"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.add_permit">[docs]</a>    <span class="k">def</span> <span class="nf">add_permit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add user to permit queue for a given length of time</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : str</span>
+<span class="sd">            Username</span>
+<span class="sd">        length : int</span>
+<span class="sd">            Length of time in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;start&#39;</span><span class="p">:</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+                                  <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">length</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="Permitting.del_permit"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.del_permit">[docs]</a>    <span class="k">def</span> <span class="nf">del_permit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Delete user from permit queue</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : str</span>
+<span class="sd">            Username</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">user</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permitting.has_permit"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.has_permit">[docs]</a>    <span class="k">def</span> <span class="nf">has_permit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if user has a permit</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : str</span>
+<span class="sd">            Username</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Permitting.time_permit"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.time_permit">[docs]</a>    <span class="k">def</span> <span class="nf">time_permit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Keep track of time a user is permitted and remove them if max</span>
+<span class="sd">        time has elapsed</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : str</span>
+<span class="sd">            Username to check for whether they have a permit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_permit</span><span class="p">(</span><span class="n">user</span><span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">permits</span><span class="p">[</span><span class="n">user</span><span class="p">][</span><span class="s1">&#39;length&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">del_permit</span><span class="p">(</span><span class="n">user</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Permitting.get_permit_user"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.get_permit_user">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_permit_user</span><span class="p">(</span><span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get user name from chat message for user to permit</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        msg : str</span>
+<span class="sd">            Message to get username from</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Username</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">user</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Permitting.get_permit_time"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.get_permit_time">[docs]</a>    <span class="k">def</span> <span class="nf">get_permit_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get length of time to permit user from message. If message does not</span>
+<span class="sd">        include a time then use default time.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        msg : str</span>
+<span class="sd">            Message to get permit time from</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Permit time in seconds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">permit_duration</span></div>
+
+<div class="viewcode-block" id="Permitting.rep_permit"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Permitting.html#modbot.moderation.Permitting.rep_permit">[docs]</a>    <span class="k">def</span> <span class="nf">rep_permit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handle response to !permit command. Check if we should permit</span>
+<span class="sd">        the user in info</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;isMod&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s2">&quot;!permit&quot;</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_permit_user</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_permit_time</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_permit</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_permit</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="kc">False</span></div></div>
+
+
+<div class="viewcode-block" id="Nuking"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking">[docs]</a><span class="k">class</span> <span class="nc">Nuking</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Class to handle nuking words/phrases from chat. In development.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuke_start</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuke_end</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nuke_timeout</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_nuke_complete</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Nuking.rep_nuke"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking.rep_nuke">[docs]</a>    <span class="k">def</span> <span class="nf">rep_nuke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handle response to !nuke command. Check if we should send nuke.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;isMod&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="s2">&quot;!nuke&quot;</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initial_nuke_complete</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nuke_timeout</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">parse_time</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="n">scrollback_time</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">parse_time</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nuke_start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">scrollback_time</span>
+                <span class="k">if</span> <span class="s1">&#39;-r&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">radiation_time</span> <span class="o">=</span> <span class="n">utilities</span><span class="o">.</span><span class="n">parse_radiation</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nuke_end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">radiation_time</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">radiation_time</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nuke_end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">scrollback_time</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Nuke start: </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">radiation_time</span><span class="p">)</span>
+                <span class="n">tmp</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;Nuke end: </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">time_nuke</span><span class="p">()</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Nuking.time_nuke"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking.time_nuke">[docs]</a>    <span class="k">def</span> <span class="nf">time_nuke</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;End nuke if the nuke time has elapsed&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="ow">and</span> <span class="n">dt</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_end</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Nuking.should_nuke"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Nuking.html#modbot.moderation.Nuking.should_nuke">[docs]</a>    <span class="k">def</span> <span class="nf">should_nuke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if a nuke is ongoing and if there is a message in chat that</span>
+<span class="sd">        needs to be nuked</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        msg : str</span>
+<span class="sd">            Message to check for whether it should be nuked</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div></div>
+
+
+<div class="viewcode-block" id="Moderation"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation">[docs]</a><span class="k">class</span> <span class="nc">Moderation</span><span class="p">(</span><span class="n">Permitting</span><span class="p">,</span> <span class="n">Nuking</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class to handle moderation actions and decisions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_config</span><span class="p">):</span>
+        <span class="n">Permitting</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">run_config</span><span class="p">)</span>
+        <span class="n">Nuking</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize_model</span><span class="p">(</span><span class="n">run_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_config</span> <span class="o">=</span> <span class="n">run_config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proc_config</span> <span class="o">=</span> <span class="n">ProcessingConfig</span><span class="p">(</span><span class="n">run_config</span><span class="o">.</span><span class="n">FILE_NAME</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msgs</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">MsgMemory</span><span class="p">(</span><span class="n">config</span><span class="o">=</span><span class="n">run_config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permits</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">act_prob</span> <span class="o">=</span> <span class="n">run_config</span><span class="o">.</span><span class="n">ACT_PMIN</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_prob_msg</span> <span class="o">=</span> <span class="n">run_config</span><span class="o">.</span><span class="n">PMSG_ON</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nolinks</span> <span class="o">=</span> <span class="n">run_config</span><span class="o">.</span><span class="n">NOLINKS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_duration</span> <span class="o">=</span> <span class="mi">5</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moderation_action</span> <span class="o">=</span> <span class="s1">&#39;DELETE&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">words</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_config</span><span class="o">.</span><span class="n">BLACKLIST</span>
+
+<div class="viewcode-block" id="Moderation.initialize_model"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.initialize_model">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">initialize_model</span><span class="p">(</span><span class="n">run_config</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Load trained model used for probability calculations</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        run_config : RunConfig</span>
+<span class="sd">            Class storing run time configuration parameters</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        model : LSTM | SVM | CNN</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">MODEL_CLASS</span> <span class="o">=</span> <span class="n">get_model_class</span><span class="p">(</span><span class="n">run_config</span><span class="o">.</span><span class="n">MODEL_TYPE</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MODEL_CLASS</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">run_config</span><span class="o">.</span><span class="n">MODEL_PATH</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;gpu&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">model</span></div>
+
+<div class="viewcode-block" id="Moderation.filter_words"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.filter_words">[docs]</a>    <span class="k">def</span> <span class="nf">filter_words</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if words which need to be filtered are contained in texts</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        texts : list</span>
+<span class="sd">            List of texts to check for filter words</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">texts</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">words</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Moderation.get_info_prob"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.get_info_prob">[docs]</a>    <span class="k">def</span> <span class="nf">get_info_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get probability of non-wholesome message</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        msg : str</span>
+<span class="sd">            Message to evaluate</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">correct_msg</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_allowed_phrases</span><span class="p">(</span><span class="n">tmp</span><span class="p">)</span>
+        <span class="n">prob</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">predict_one</span><span class="p">([</span><span class="n">tmp</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">prob</span></div>
+
+<div class="viewcode-block" id="Moderation.print_info"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.print_info">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">print_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print info attributes to console</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;translated&#39;</span> <span class="ow">in</span> <span class="n">info</span> <span class="ow">and</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;badges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">-&gt;</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;translated&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;badges&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Moderation.remove_allowed_phrases"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.remove_allowed_phrases">[docs]</a>    <span class="k">def</span> <span class="nf">remove_allowed_phrases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove exempt phrases from line so probability of non-wholesome</span>
+<span class="sd">        message is caculated without exempt phrases</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : str</span>
+<span class="sd">            String containing most recent IRC message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">proc_config</span><span class="o">.</span><span class="n">WHITELIST</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">tmp</span><span class="p">:</span>
+                <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tmp</span></div>
+
+<div class="viewcode-block" id="Moderation.is_exempt"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.is_exempt">[docs]</a>    <span class="k">def</span> <span class="nf">is_exempt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine whether the user is exempt from moderation action</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">has_permit</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">])</span> <span class="ow">or</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;isMod&#39;</span><span class="p">]</span>
+                    <span class="ow">or</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;isVip&#39;</span><span class="p">]</span> <span class="ow">or</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;isPartner&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Moderation.send_reply"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.send_reply">[docs]</a>    <span class="k">def</span> <span class="nf">send_reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_writer</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make decision based on info and send moderation response</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stream_writer : StreamWriter</span>
+<span class="sd">            StreamWriter for IRC stream</span>
+
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># nuke response</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_nuke</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_nuke</span><span class="p">(</span><span class="n">stream_writer</span><span class="p">)</span>
+
+        <span class="c1"># permit response</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rep_permit</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_permit_user</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
+            <span class="n">permit_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_permit_time</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
+            <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;permit_msg&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">permit_time</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">stream_writer</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Permitting </span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s1"> for </span><span class="si">{</span><span class="n">permit_time</span><span class="si">}</span><span class="s1"> seconds&#39;</span><span class="p">)</span>
+
+        <span class="c1"># non-wholesome response</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_prob_msg</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_prob_exceeded</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+                <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;prob_msg&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">],</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">stream_writer</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Moderation.get_timeout"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.get_timeout">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_timeout</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get timeout string to use in moderation response</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        user : str</span>
+<span class="sd">            Username</span>
+<span class="sd">        length : int</span>
+<span class="sd">            Length of timeout in seconds</span>
+<span class="sd">        msg : str</span>
+<span class="sd">            Message to include with timeout</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            String containing timeout command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/timeout @</span><span class="si">{</span><span class="n">user</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">length</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">act</span></div>
+
+<div class="viewcode-block" id="Moderation.get_delete"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.get_delete">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_delete</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get delete string to use in moderation response</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            String containing delete command</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;/delete </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msgId&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">act</span></div>
+
+<div class="viewcode-block" id="Moderation.is_prob_exceeded"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.is_prob_exceeded">[docs]</a>    <span class="k">def</span> <span class="nf">is_prob_exceeded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check is non-wholesome probability is exceeded for message in info</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">act_prob</span></div>
+
+<div class="viewcode-block" id="Moderation.send_nuke"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.send_nuke">[docs]</a>    <span class="k">def</span> <span class="nf">send_nuke</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_writer</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send nuke to stream</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stream_writer : StreamWriter</span>
+<span class="sd">            StreamWriter for IRC stream</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">actions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_ongoing</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_nuke_complete</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Launching nuke: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">user</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">msgs</span><span class="o">.</span><span class="n">memory</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">msgs</span><span class="o">.</span><span class="n">memory</span><span class="p">[</span><span class="n">user</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span> <span class="ow">in</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span>
+                            <span class="ow">and</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_start</span><span class="p">):</span>
+                        <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;nuke_comment&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span>
+                        <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timeout</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_timeout</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+                        <span class="n">tmp_info</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">tmp_info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">user</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_exempt</span><span class="p">(</span><span class="n">tmp_info</span><span class="p">):</span>
+                            <span class="n">actions</span><span class="p">[</span><span class="n">user</span><span class="p">]</span> <span class="o">=</span> <span class="n">act</span>
+                            <span class="n">m</span><span class="p">[</span><span class="s1">&#39;banned&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_nuke_complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">stream_writer</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Moderation.send_action"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.send_action">[docs]</a>    <span class="k">def</span> <span class="nf">send_action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_writer</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send action to IRC stream</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stream_writer : StreamWriter</span>
+<span class="sd">            StreamWriter for IRC stream</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># timeout</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_prob_exceeded</span><span class="p">(</span><span class="n">info</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_exempt</span><span class="p">(</span><span class="n">info</span><span class="p">)):</span>
+
+            <span class="c1"># update memory with ban</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msgs</span><span class="o">.</span><span class="n">update_user_ban</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_prob_msg</span><span class="p">:</span>
+                <span class="n">rep</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;prob_msg&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="s1">&#39;timeout&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">moderation_action</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">info</span><span class="p">[</span><span class="s1">&#39;banned&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timeout</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">],</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">timeout_duration</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;delete&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">moderation_action</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">info</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_delete</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">contains_link</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">nolinks</span>
+              <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_exempt</span><span class="p">(</span><span class="n">info</span><span class="p">)):</span>
+
+            <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;link_msg&#39;</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="s1">&#39;timeout&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">moderation_action</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">info</span><span class="p">[</span><span class="s1">&#39;deleted&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timeout</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">],</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">timeout_duration</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s1">&#39;delete&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">moderation_action</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+                <span class="n">info</span><span class="p">[</span><span class="s1">&#39;banned&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_delete</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">should_nuke</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_exempt</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+            <span class="n">info</span><span class="p">[</span><span class="s1">&#39;banned&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">rep</span> <span class="o">=</span> <span class="n">replies</span><span class="p">[</span><span class="s1">&#39;nuke_comment&#39;</span><span class="p">]</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_phrase</span>
+            <span class="n">act</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_timeout</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuke_timeout</span><span class="p">,</span> <span class="n">rep</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="n">stream_writer</span><span class="p">,</span> <span class="n">act</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Moderation.get_info_from_irc"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.get_info_from_irc">[docs]</a>    <span class="k">def</span> <span class="nf">get_info_from_irc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Populate info dictionary using info from line</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : str</span>
+<span class="sd">            String containing most recent IRC message.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        info : dict</span>
+<span class="sd">            dictionary storing attributes of user. e.g. recent message, badges,</span>
+<span class="sd">            username, probability of non-wholesome message</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">UserInfo</span><span class="o">.</span><span class="n">get_info</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;mod&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_config</span><span class="o">.</span><span class="n">NICKNAME</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msgs</span><span class="o">.</span><span class="n">chunk_recent</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">[</span><span class="s1">&#39;prob&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_info_prob</span><span class="p">(</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">info</span></div>
+
+<div class="viewcode-block" id="Moderation.send_message"><a class="viewcode-back" href="../../_autosummary/modbot.moderation.Moderation.html#modbot.moderation.Moderation.send_message">[docs]</a>    <span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream_writer</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">info</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Send message to IRC stream</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stream_writer : StreamWriter</span>
+<span class="sd">            StreamWriter for IRC stream</span>
+<span class="sd">        message : str, optional</span>
+<span class="sd">            Message string, by default None</span>
+<span class="sd">        info : dict, optional</span>
+<span class="sd">            Info dictionary, by default None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">message</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">message_temp</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;PRIVMSG #</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">run_config</span><span class="o">.</span><span class="n">CHANNEL</span><span class="si">}</span><span class="s2"> :</span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">stream_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message_temp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sent: </span><span class="si">{</span><span class="n">message_temp</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Sent: </span><span class="si">{</span><span class="n">message_temp</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;user&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

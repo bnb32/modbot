@@ -1,0 +1,6 @@
+modbot.utilities.loss\_metrics.gaussian\_kernel
+===============================================
+
+.. currentmodule:: modbot.utilities.loss_metrics
+
+.. autofunction:: gaussian_kernel

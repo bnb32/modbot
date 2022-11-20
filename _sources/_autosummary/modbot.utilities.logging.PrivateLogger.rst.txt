@@ -1,0 +1,67 @@
+modbot.utilities.logging.PrivateLogger
+======================================
+
+.. currentmodule:: modbot.utilities.logging
+
+.. autoclass:: PrivateLogger
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PrivateLogger.addFilter
+      ~PrivateLogger.addHandler
+      ~PrivateLogger.callHandlers
+      ~PrivateLogger.chat
+      ~PrivateLogger.critical
+      ~PrivateLogger.debug
+      ~PrivateLogger.error
+      ~PrivateLogger.exception
+      ~PrivateLogger.extra_verbose
+      ~PrivateLogger.fatal
+      ~PrivateLogger.filter
+      ~PrivateLogger.findCaller
+      ~PrivateLogger.getChild
+      ~PrivateLogger.getEffectiveLevel
+      ~PrivateLogger.handle
+      ~PrivateLogger.hasHandlers
+      ~PrivateLogger.info
+      ~PrivateLogger.irc
+      ~PrivateLogger.irc_p
+      ~PrivateLogger.irc_pp
+      ~PrivateLogger.isEnabledFor
+      ~PrivateLogger.log
+      ~PrivateLogger.makeRecord
+      ~PrivateLogger.mod
+      ~PrivateLogger.private
+      ~PrivateLogger.pubsub
+      ~PrivateLogger.pubsub_p
+      ~PrivateLogger.pubsub_pp
+      ~PrivateLogger.removeFilter
+      ~PrivateLogger.removeHandler
+      ~PrivateLogger.setLevel
+      ~PrivateLogger.update_level
+      ~PrivateLogger.verbose
+      ~PrivateLogger.warn
+      ~PrivateLogger.warning
+      ~PrivateLogger.warning_advice
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PrivateLogger.LEVELS
+      ~PrivateLogger.manager
+      ~PrivateLogger.root
+   
+   

@@ -1,0 +1,74 @@
+modbot.training.models.BertCnnTorchSmall
+========================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCnnTorchSmall
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCnnTorchSmall.append_history
+      ~BertCnnTorchSmall.batch_update
+      ~BertCnnTorchSmall.build_layers
+      ~BertCnnTorchSmall.chunk_words
+      ~BertCnnTorchSmall.clean_text
+      ~BertCnnTorchSmall.clean_texts
+      ~BertCnnTorchSmall.construct_vocab
+      ~BertCnnTorchSmall.continue_training
+      ~BertCnnTorchSmall.detailed_score
+      ~BertCnnTorchSmall.eval_score
+      ~BertCnnTorchSmall.evaluate
+      ~BertCnnTorchSmall.fit
+      ~BertCnnTorchSmall.get_class_info
+      ~BertCnnTorchSmall.get_data_generators
+      ~BertCnnTorchSmall.get_most_common_ngrams
+      ~BertCnnTorchSmall.get_ngrams
+      ~BertCnnTorchSmall.get_vocab_difference
+      ~BertCnnTorchSmall.get_vocab_direct
+      ~BertCnnTorchSmall.load
+      ~BertCnnTorchSmall.load_checkpoint
+      ~BertCnnTorchSmall.load_data
+      ~BertCnnTorchSmall.loss_fn
+      ~BertCnnTorchSmall.model_test
+      ~BertCnnTorchSmall.predict
+      ~BertCnnTorchSmall.predict_one
+      ~BertCnnTorchSmall.predict_proba
+      ~BertCnnTorchSmall.predict_zero
+      ~BertCnnTorchSmall.print_eval
+      ~BertCnnTorchSmall.run
+      ~BertCnnTorchSmall.save
+      ~BertCnnTorchSmall.save_check
+      ~BertCnnTorchSmall.save_params
+      ~BertCnnTorchSmall.score
+      ~BertCnnTorchSmall.split_data
+      ~BertCnnTorchSmall.split_words
+      ~BertCnnTorchSmall.standardize_grams
+      ~BertCnnTorchSmall.train
+      ~BertCnnTorchSmall.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCnnTorchSmall.DLOADER_ARGS
+      ~BertCnnTorchSmall.EMBEDDING_DIM
+      ~BertCnnTorchSmall.EMBED_SIZE
+      ~BertCnnTorchSmall.LEARNING_RATE
+      ~BertCnnTorchSmall.LOSS_FUNCTION
+      ~BertCnnTorchSmall.MAX_NB_WORDS
+      ~BertCnnTorchSmall.MAX_SEQUENCE_LENGTH
+      ~BertCnnTorchSmall.SEED
+   
+   

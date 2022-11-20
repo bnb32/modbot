@@ -1,0 +1,6 @@
+modbot.environment.get\_model\_path
+===================================
+
+.. currentmodule:: modbot.environment
+
+.. autofunction:: get_model_path

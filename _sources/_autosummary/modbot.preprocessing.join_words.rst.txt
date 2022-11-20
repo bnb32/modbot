@@ -1,0 +1,6 @@
+modbot.preprocessing.join\_words
+================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: join_words

@@ -1,0 +1,38 @@
+modbot.training.data\_handling.DataGenerator
+============================================
+
+.. currentmodule:: modbot.training.data_handling
+
+.. autoclass:: DataGenerator
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DataGenerator.get_deterministic_batch
+      ~DataGenerator.get_random_batch
+      ~DataGenerator.on_epoch_end
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DataGenerator.batch_chunks
+      ~DataGenerator.chunk_size
+      ~DataGenerator.chunks
+      ~DataGenerator.indices
+      ~DataGenerator.n_batches
+      ~DataGenerator.n_chunks
+      ~DataGenerator.n_samples
+   
+   

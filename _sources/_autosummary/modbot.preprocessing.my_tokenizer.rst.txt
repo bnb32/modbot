@@ -1,0 +1,6 @@
+modbot.preprocessing.my\_tokenizer
+==================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: my_tokenizer

@@ -1,0 +1,31 @@
+modbot.connection.irc\_client
+=============================
+
+.. automodule:: modbot.connection.irc_client
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      IrcSocketClientAsync
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,6 @@
+modbot.preprocessing.segment\_words
+===================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: segment_words

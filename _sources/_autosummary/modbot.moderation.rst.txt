@@ -1,0 +1,33 @@
+modbot.moderation
+=================
+
+.. automodule:: modbot.moderation
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      Moderation
+      Nuking
+      Permitting
+   
+   
+
+   
+   
+   
+
+
+

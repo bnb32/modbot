@@ -1,0 +1,51 @@
+modbot.connection.pubsub\_client.WebSocketClientAsync
+=====================================================
+
+.. currentmodule:: modbot.connection.pubsub_client
+
+.. autoclass:: WebSocketClientAsync
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~WebSocketClientAsync.EXTRA_VERBOSE_LOGGER
+      ~WebSocketClientAsync.INFO_LOGGER
+      ~WebSocketClientAsync.VERBOSE_LOGGER
+      ~WebSocketClientAsync.append_log
+      ~WebSocketClientAsync.build_action_log_entry
+      ~WebSocketClientAsync.build_chat_log_entry
+      ~WebSocketClientAsync.connect
+      ~WebSocketClientAsync.connect_fail
+      ~WebSocketClientAsync.generate_nonce
+      ~WebSocketClientAsync.get_info_from_pubsub
+      ~WebSocketClientAsync.get_user_id
+      ~WebSocketClientAsync.get_value
+      ~WebSocketClientAsync.handle_message
+      ~WebSocketClientAsync.heartbeat
+      ~WebSocketClientAsync.initialize_logger
+      ~WebSocketClientAsync.listen_forever
+      ~WebSocketClientAsync.quit
+      ~WebSocketClientAsync.receive_fail
+      ~WebSocketClientAsync.receive_message
+      ~WebSocketClientAsync.send_ping
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WebSocketClientAsync.USER_LOG
+      ~WebSocketClientAsync.channel_id
+      ~WebSocketClientAsync.moderator_id
+   
+   

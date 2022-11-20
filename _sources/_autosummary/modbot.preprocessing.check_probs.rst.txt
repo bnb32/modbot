@@ -1,0 +1,6 @@
+modbot.preprocessing.check\_probs
+=================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: check_probs

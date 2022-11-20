@@ -1,0 +1,6 @@
+modbot.preprocessing.check\_msgs
+================================
+
+.. currentmodule:: modbot.preprocessing
+
+.. autofunction:: check_msgs

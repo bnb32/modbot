@@ -1,0 +1,6 @@
+modbot.utilities.utilities.is\_user\_type\_irc
+==============================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: is_user_type_irc

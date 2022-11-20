@@ -1,0 +1,65 @@
+modbot.training.models.BertCNN
+==============================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertCNN
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertCNN.append_history
+      ~BertCNN.build_layers
+      ~BertCNN.chunk_words
+      ~BertCNN.clean_text
+      ~BertCNN.clean_texts
+      ~BertCNN.construct_vocab
+      ~BertCNN.continue_training
+      ~BertCNN.detailed_score
+      ~BertCNN.evaluate
+      ~BertCNN.fit
+      ~BertCNN.get_class_info
+      ~BertCNN.get_data_generators
+      ~BertCNN.get_most_common_ngrams
+      ~BertCNN.get_ngrams
+      ~BertCNN.get_vocab_difference
+      ~BertCNN.get_vocab_direct
+      ~BertCNN.init_bert
+      ~BertCNN.load
+      ~BertCNN.load_data
+      ~BertCNN.model_test
+      ~BertCNN.predict
+      ~BertCNN.predict_one
+      ~BertCNN.predict_proba
+      ~BertCNN.predict_zero
+      ~BertCNN.print_eval
+      ~BertCNN.run
+      ~BertCNN.save
+      ~BertCNN.save_params
+      ~BertCNN.score
+      ~BertCNN.split_data
+      ~BertCNN.split_words
+      ~BertCNN.standardize_grams
+      ~BertCNN.train
+      ~BertCNN.transform
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertCNN.EMBEDDING_DIM
+      ~BertCNN.MAX_NB_WORDS
+      ~BertCNN.MAX_SEQUENCE_LENGTH
+   
+   

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.environment.BaseConfig &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="modbot.environment.ProcessingConfig" href="modbot.environment.ProcessingConfig.html" />
+    <link rel="prev" title="modbot.environment.get_model_path" href="modbot.environment.get_model_path.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modbot.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="modbot.environment.html">modbot.environment</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.preprocessing.html">modbot.preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.LogCleaning.html#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modbot.html">modbot</a></li>
+          <li class="breadcrumb-item"><a href="modbot.environment.html">modbot.environment</a></li>
+      <li class="breadcrumb-item active">modbot.environment.BaseConfig</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/bnb32/modbot/blob/main/docs/source/_autosummary/modbot.environment.BaseConfig.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modbot-environment-baseconfig">
+<h1>modbot.environment.BaseConfig<a class="headerlink" href="#modbot-environment-baseconfig" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modbot.environment.</span></span><span class="sig-name descname"><span class="pre">BaseConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/environment.html#BaseConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.environment.BaseConfig" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base config class</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.get_config" title="modbot.environment.BaseConfig.get_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_config</span></code></a>([file_name, config])</p></td>
+<td><p>Get configuration from file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.save" title="modbot.environment.BaseConfig.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(outpath)</p></td>
+<td><p>Save config to json file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.update_config" title="modbot.environment.BaseConfig.update_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_config</span></code></a>(args)</p></td>
+<td><p>Update config with args</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.ACT_PMIN" title="modbot.environment.BaseConfig.ACT_PMIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ACT_PMIN</span></code></a></p></td>
+<td><p>Threshold probability for moderation</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.BERT_ENCODER" title="modbot.environment.BaseConfig.BERT_ENCODER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BERT_ENCODER</span></code></a></p></td>
+<td><p>Path to bert encoder</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.BERT_PREPROCESS" title="modbot.environment.BaseConfig.BERT_PREPROCESS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BERT_PREPROCESS</span></code></a></p></td>
+<td><p>Path to bert preprocess model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.CHANNEL" title="modbot.environment.BaseConfig.CHANNEL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHANNEL</span></code></a></p></td>
+<td><p>Channel to moderate</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.CHATTY_DIR" title="modbot.environment.BaseConfig.CHATTY_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHATTY_DIR</span></code></a></p></td>
+<td><p>Path to Chatty data for training</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.CHECK_PMIN" title="modbot.environment.BaseConfig.CHECK_PMIN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CHECK_PMIN</span></code></a></p></td>
+<td><p>Threshold probability to check for new classification</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.DATA_DIR" title="modbot.environment.BaseConfig.DATA_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATA_DIR</span></code></a></p></td>
+<td><p>Directory where training data and model is stored</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.FILE_NAME" title="modbot.environment.BaseConfig.FILE_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FILE_NAME</span></code></a></p></td>
+<td><p>config file path</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.INFILE" title="modbot.environment.BaseConfig.INFILE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INFILE</span></code></a></p></td>
+<td><p>file for training</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.LOGGER_LEVEL" title="modbot.environment.BaseConfig.LOGGER_LEVEL"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOGGER_LEVEL</span></code></a></p></td>
+<td><p>Log level.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.LOG_DIR" title="modbot.environment.BaseConfig.LOG_DIR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOG_DIR</span></code></a></p></td>
+<td><p>Directory to write logs</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.LOG_PATH" title="modbot.environment.BaseConfig.LOG_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LOG_PATH</span></code></a></p></td>
+<td><p>Get default log file name</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.MODEL_PATH" title="modbot.environment.BaseConfig.MODEL_PATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MODEL_PATH</span></code></a></p></td>
+<td><p>Path to ML model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.MODEL_TYPE" title="modbot.environment.BaseConfig.MODEL_TYPE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MODEL_TYPE</span></code></a></p></td>
+<td><p>Type of model to use for moderation</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.NICKNAME" title="modbot.environment.BaseConfig.NICKNAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NICKNAME</span></code></a></p></td>
+<td><p>Bot username</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.NOLINKS" title="modbot.environment.BaseConfig.NOLINKS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NOLINKS</span></code></a></p></td>
+<td><p>Whether to allow links in chat or not</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.OFFENSIVE_WEIGHT" title="modbot.environment.BaseConfig.OFFENSIVE_WEIGHT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OFFENSIVE_WEIGHT</span></code></a></p></td>
+<td><p>Ratio of ones to total number of samples for training data</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.PMSG_ON" title="modbot.environment.BaseConfig.PMSG_ON"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PMSG_ON</span></code></a></p></td>
+<td><p>Whether to send message in chat when probability is exceeded</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.WRITE_LOG" title="modbot.environment.BaseConfig.WRITE_LOG"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WRITE_LOG</span></code></a></p></td>
+<td><p>Whether to write chat messages to log file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.attrs" title="modbot.environment.BaseConfig.attrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">attrs</span></code></a></p></td>
+<td><p>Config attributes info</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.environment.BaseConfig.public_attrs" title="modbot.environment.BaseConfig.public_attrs"><code class="xref py py-obj docutils literal notranslate"><span class="pre">public_attrs</span></code></a></p></td>
+<td><p>Get public attributes</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.ACT_PMIN">
+<span class="sig-name descname"><span class="pre">ACT_PMIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.6</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.ACT_PMIN" title="Permalink to this definition"></a></dt>
+<dd><p>Threshold probability for moderation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.BERT_ENCODER">
+<span class="sig-name descname"><span class="pre">BERT_ENCODER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://tfhub.dev/tensorflow/small_bert/bert_en_uncased_L-2_H-128_A-2/2'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.BERT_ENCODER" title="Permalink to this definition"></a></dt>
+<dd><p>Path to bert encoder</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.BERT_PREPROCESS">
+<span class="sig-name descname"><span class="pre">BERT_PREPROCESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'https://tfhub.dev/tensorflow/bert_en_uncased_preprocess/3'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.BERT_PREPROCESS" title="Permalink to this definition"></a></dt>
+<dd><p>Path to bert preprocess model</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.CHANNEL">
+<span class="sig-name descname"><span class="pre">CHANNEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.CHANNEL" title="Permalink to this definition"></a></dt>
+<dd><p>Channel to moderate</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.CHATTY_DIR">
+<span class="sig-name descname"><span class="pre">CHATTY_DIR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.CHATTY_DIR" title="Permalink to this definition"></a></dt>
+<dd><p>Path to Chatty data for training</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.CHECK_PMIN">
+<span class="sig-name descname"><span class="pre">CHECK_PMIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.4</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.CHECK_PMIN" title="Permalink to this definition"></a></dt>
+<dd><p>Threshold probability to check for new classification</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.DATA_DIR">
+<span class="sig-name descname"><span class="pre">DATA_DIR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/modbot/modbot/data'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.DATA_DIR" title="Permalink to this definition"></a></dt>
+<dd><p>Directory where training data and model is stored</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.FILE_NAME">
+<span class="sig-name descname"><span class="pre">FILE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.FILE_NAME" title="Permalink to this definition"></a></dt>
+<dd><p>config file path</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.INFILE">
+<span class="sig-name descname"><span class="pre">INFILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.INFILE" title="Permalink to this definition"></a></dt>
+<dd><p>file for training</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.LOGGER_LEVEL">
+<span class="sig-name descname"><span class="pre">LOGGER_LEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'VERBOSE'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.LOGGER_LEVEL" title="Permalink to this definition"></a></dt>
+<dd><p>Log level.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.LOG_DIR">
+<span class="sig-name descname"><span class="pre">LOG_DIR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/home/runner/work/modbot/modbot/data/logs'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.LOG_DIR" title="Permalink to this definition"></a></dt>
+<dd><p>Directory to write logs</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.LOG_PATH">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_PATH</span></span><a class="headerlink" href="#modbot.environment.BaseConfig.LOG_PATH" title="Permalink to this definition"></a></dt>
+<dd><p>Get default log file name</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.MODEL_PATH">
+<span class="sig-name descname"><span class="pre">MODEL_PATH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.MODEL_PATH" title="Permalink to this definition"></a></dt>
+<dd><p>Path to ML model</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.MODEL_TYPE">
+<span class="sig-name descname"><span class="pre">MODEL_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SVM'</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.MODEL_TYPE" title="Permalink to this definition"></a></dt>
+<dd><p>Type of model to use for moderation</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.NICKNAME">
+<span class="sig-name descname"><span class="pre">NICKNAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.NICKNAME" title="Permalink to this definition"></a></dt>
+<dd><p>Bot username</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.NOLINKS">
+<span class="sig-name descname"><span class="pre">NOLINKS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.NOLINKS" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to allow links in chat or not</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.OFFENSIVE_WEIGHT">
+<span class="sig-name descname"><span class="pre">OFFENSIVE_WEIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.01</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.OFFENSIVE_WEIGHT" title="Permalink to this definition"></a></dt>
+<dd><p>Ratio of ones to total number of samples for training data</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.PMSG_ON">
+<span class="sig-name descname"><span class="pre">PMSG_ON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.PMSG_ON" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to send message in chat when probability is exceeded</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.WRITE_LOG">
+<span class="sig-name descname"><span class="pre">WRITE_LOG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#modbot.environment.BaseConfig.WRITE_LOG" title="Permalink to this definition"></a></dt>
+<dd><p>Whether to write chat messages to log file</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.attrs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attrs</span></span><a class="headerlink" href="#modbot.environment.BaseConfig.attrs" title="Permalink to this definition"></a></dt>
+<dd><p>Config attributes info</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.get_config">
+<span class="sig-name descname"><span class="pre">get_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/environment.html#BaseConfig.get_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.environment.BaseConfig.get_config" title="Permalink to this definition"></a></dt>
+<dd><p>Get configuration from file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<em>str</em>) – Path to configuration file</p></li>
+<li><p><strong>config</strong> (<a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig" title="modbot.environment.RunConfig"><em>RunConfig</em></a>) – Optional config class with stored parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Config class with run time configuration stored in attributes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig" title="modbot.environment.RunConfig">RunConfig</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.public_attrs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">public_attrs</span></span><a class="headerlink" href="#modbot.environment.BaseConfig.public_attrs" title="Permalink to this definition"></a></dt>
+<dd><p>Get public attributes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary of public global attributes</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outpath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/environment.html#BaseConfig.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.environment.BaseConfig.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save config to json file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outpath</strong> (<em>str</em>) – Path to save public attrs</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.environment.BaseConfig.update_config">
+<span class="sig-name descname"><span class="pre">update_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/environment.html#BaseConfig.update_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.environment.BaseConfig.update_config" title="Permalink to this definition"></a></dt>
+<dd><p>Update config with args</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>parser.parse_args</em>) – Args from argparser with which to update config</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modbot.environment.get_model_path.html" class="btn btn-neutral float-left" title="modbot.environment.get_model_path" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modbot.environment.ProcessingConfig.html" class="btn btn-neutral float-right" title="modbot.environment.ProcessingConfig" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

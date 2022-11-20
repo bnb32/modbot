@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>modbot.preprocessing.LogCleaning &mdash; modbot v1.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="modbot.preprocessing.MsgMemory" href="modbot.preprocessing.MsgMemory.html" />
+    <link rel="prev" title="modbot.preprocessing.write_data" href="modbot.preprocessing.write_data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> modbot
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">Home Page</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#training-model">Training Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../includeme.html#running">Running</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modbot.html">API reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="modbot.modbot_argparse.html">modbot.modbot_argparse</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.modbot_argparse.html#modbot.modbot_argparse"><code class="docutils literal notranslate"><span class="pre">modbot_argparse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.connection.html">modbot.connection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.base.html">modbot.connection.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.BaseSocketClientAsync.html">modbot.connection.base.BaseSocketClientAsync</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.base.StreamHandlerAsync.html">modbot.connection.base.StreamHandlerAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.irc_client.html">modbot.connection.irc_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.irc_client.IrcSocketClientAsync.html">modbot.connection.irc_client.IrcSocketClientAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.connection.pubsub_client.html">modbot.connection.pubsub_client</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.connection.pubsub_client.WebSocketClientAsync.html">modbot.connection.pubsub_client.WebSocketClientAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.environment.html">modbot.environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.get_model_path.html">modbot.environment.get_model_path</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.get_model_path.html#modbot.environment.get_model_path"><code class="docutils literal notranslate"><span class="pre">get_model_path()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.BaseConfig.html">modbot.environment.BaseConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.BaseConfig.html#modbot.environment.BaseConfig"><code class="docutils literal notranslate"><span class="pre">BaseConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.ProcessingConfig.html">modbot.environment.ProcessingConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.ProcessingConfig.html#modbot.environment.ProcessingConfig"><code class="docutils literal notranslate"><span class="pre">ProcessingConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.environment.RunConfig.html">modbot.environment.RunConfig</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.environment.RunConfig.html#modbot.environment.RunConfig"><code class="docutils literal notranslate"><span class="pre">RunConfig</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.moderation.html">modbot.moderation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Moderation.html">modbot.moderation.Moderation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Moderation.html#modbot.moderation.Moderation"><code class="docutils literal notranslate"><span class="pre">Moderation</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Nuking.html">modbot.moderation.Nuking</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Nuking.html#modbot.moderation.Nuking"><code class="docutils literal notranslate"><span class="pre">Nuking</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.moderation.Permitting.html">modbot.moderation.Permitting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.moderation.Permitting.html#modbot.moderation.Permitting"><code class="docutils literal notranslate"><span class="pre">Permitting</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="reference internal" href="modbot.preprocessing.html">modbot.preprocessing</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_msgs.html">modbot.preprocessing.check_msgs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_msgs.html#modbot.preprocessing.check_msgs"><code class="docutils literal notranslate"><span class="pre">check_msgs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_phrases.html">modbot.preprocessing.check_phrases</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_phrases.html#modbot.preprocessing.check_phrases"><code class="docutils literal notranslate"><span class="pre">check_phrases()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.check_probs.html">modbot.preprocessing.check_probs</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.check_probs.html#modbot.preprocessing.check_probs"><code class="docutils literal notranslate"><span class="pre">check_probs()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.contains_link.html">modbot.preprocessing.contains_link</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.contains_link.html#modbot.preprocessing.contains_link"><code class="docutils literal notranslate"><span class="pre">contains_link()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_messages.html">modbot.preprocessing.correct_messages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_messages.html#modbot.preprocessing.correct_messages"><code class="docutils literal notranslate"><span class="pre">correct_messages()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.correct_msg.html">modbot.preprocessing.correct_msg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.correct_msg.html#modbot.preprocessing.correct_msg"><code class="docutils literal notranslate"><span class="pre">correct_msg()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html">modbot.preprocessing.filter_all_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_all_emotes.html#modbot.preprocessing.filter_all_emotes"><code class="docutils literal notranslate"><span class="pre">filter_all_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html">modbot.preprocessing.filter_emotes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_emotes.html#modbot.preprocessing.filter_emotes"><code class="docutils literal notranslate"><span class="pre">filter_emotes()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.filter_log.html">modbot.preprocessing.filter_log</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.filter_log.html#modbot.preprocessing.filter_log"><code class="docutils literal notranslate"><span class="pre">filter_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html">modbot.preprocessing.get_info_from_chatty</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.get_info_from_chatty.html#modbot.preprocessing.get_info_from_chatty"><code class="docutils literal notranslate"><span class="pre">get_info_from_chatty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.join_words.html">modbot.preprocessing.join_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.join_words.html#modbot.preprocessing.join_words"><code class="docutils literal notranslate"><span class="pre">join_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html">modbot.preprocessing.my_lemmatizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_lemmatizer.html#modbot.preprocessing.my_lemmatizer"><code class="docutils literal notranslate"><span class="pre">my_lemmatizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html">modbot.preprocessing.my_tokenizer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.my_tokenizer.html#modbot.preprocessing.my_tokenizer"><code class="docutils literal notranslate"><span class="pre">my_tokenizer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.preproc_words.html">modbot.preprocessing.preproc_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.preproc_words.html#modbot.preprocessing.preproc_words"><code class="docutils literal notranslate"><span class="pre">preproc_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.read_data.html">modbot.preprocessing.read_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.read_data.html#modbot.preprocessing.read_data"><code class="docutils literal notranslate"><span class="pre">read_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html">modbot.preprocessing.remove_stopwords</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.remove_stopwords.html#modbot.preprocessing.remove_stopwords"><code class="docutils literal notranslate"><span class="pre">remove_stopwords()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.segment_words.html">modbot.preprocessing.segment_words</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.segment_words.html#modbot.preprocessing.segment_words"><code class="docutils literal notranslate"><span class="pre">segment_words()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_links.html">modbot.preprocessing.separate_links</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_links.html#modbot.preprocessing.separate_links"><code class="docutils literal notranslate"><span class="pre">separate_links()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html">modbot.preprocessing.separate_tocheck</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.separate_tocheck.html#modbot.preprocessing.separate_tocheck"><code class="docutils literal notranslate"><span class="pre">separate_tocheck()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.write_data.html">modbot.preprocessing.write_data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.write_data.html#modbot.preprocessing.write_data"><code class="docutils literal notranslate"><span class="pre">write_data()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">modbot.preprocessing.LogCleaning</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#modbot.preprocessing.LogCleaning"><code class="docutils literal notranslate"><span class="pre">LogCleaning</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html">modbot.preprocessing.MsgMemory</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.preprocessing.MsgMemory.html#modbot.preprocessing.MsgMemory"><code class="docutils literal notranslate"><span class="pre">MsgMemory</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.training.html">modbot.training</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.get_model_class.html">modbot.training.get_model_class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.get_model_class.html#modbot.training.get_model_class"><code class="docutils literal notranslate"><span class="pre">get_model_class()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.training.training_argparse.html">modbot.training.training_argparse</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.training.training_argparse.html#modbot.training.training_argparse"><code class="docutils literal notranslate"><span class="pre">training_argparse()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.utilities.html">modbot.utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.logging.html">modbot.utilities.logging</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.get_logger.html">modbot.utilities.logging.get_logger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.ColoredFormatter.html">modbot.utilities.logging.ColoredFormatter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.CustomLogger.html">modbot.utilities.logging.CustomLogger</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.Logging.html">modbot.utilities.logging.Logging</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.logging.PrivateLogger.html">modbot.utilities.logging.PrivateLogger</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.loss_metrics.html">modbot.utilities.loss_metrics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.gaussian_kernel.html">modbot.utilities.loss_metrics.gaussian_kernel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.loss_metrics.max_mean_discrepancy.html">modbot.utilities.loss_metrics.max_mean_discrepancy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="modbot.utilities.utilities.html">modbot.utilities.utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.curvature.html">modbot.utilities.utilities.curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.delete_usernames.html">modbot.utilities.utilities.delete_usernames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_badges.html">modbot.utilities.utilities.get_badges</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_line_type.html">modbot.utilities.utilities.get_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_message.html">modbot.utilities.utilities.get_message</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_msg_id.html">modbot.utilities.utilities.get_msg_id</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_role.html">modbot.utilities.utilities.get_role</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user.html">modbot.utilities.utilities.get_user</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.get_user_type_chatty.html">modbot.utilities.utilities.get_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_line_type.html">modbot.utilities.utilities.is_line_type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_chatty.html">modbot.utilities.utilities.is_user_type_chatty</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.is_user_type_irc.html">modbot.utilities.utilities.is_user_type_irc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_float.html">modbot.utilities.utilities.none_or_float</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_int.html">modbot.utilities.utilities.none_or_int</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.none_or_str.html">modbot.utilities.utilities.none_or_str</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_radiation.html">modbot.utilities.utilities.parse_radiation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.parse_time.html">modbot.utilities.utilities.parse_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.prune_chars.html">modbot.utilities.utilities.prune_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_reps.html">modbot.utilities.utilities.remove_reps</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.remove_special_chars.html">modbot.utilities.utilities.remove_special_chars</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.simple_chars_equal.html">modbot.utilities.utilities.simple_chars_equal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="modbot.utilities.utilities.UserInfo.html">modbot.utilities.utilities.UserInfo</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modbot.version.html">modbot.version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../misc/cmd.html">Command Line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../misc/cmd_training.html">Training Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../misc/cmd_training.html#named-arguments">Named Arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">modbot</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modbot.html">modbot</a></li>
+          <li class="breadcrumb-item"><a href="modbot.preprocessing.html">modbot.preprocessing</a></li>
+      <li class="breadcrumb-item active">modbot.preprocessing.LogCleaning</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/bnb32/modbot/blob/main/docs/source/_autosummary/modbot.preprocessing.LogCleaning.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="modbot-preprocessing-logcleaning">
+<h1>modbot.preprocessing.LogCleaning<a class="headerlink" href="#modbot-preprocessing-logcleaning" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">modbot.preprocessing.</span></span><span class="sig-name descname"><span class="pre">LogCleaning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_emotes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class to handle different types of log cleaning</p>
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.act_check" title="modbot.preprocessing.LogCleaning.act_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">act_check</span></code></a>(m)</p></td>
+<td><p>Check if banned or deleted message</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.act_filt_check" title="modbot.preprocessing.LogCleaning.act_filt_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">act_filt_check</span></code></a>(user, m)</p></td>
+<td><p>Check if deleted or banned and a valid message</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.append_messages" title="modbot.preprocessing.LogCleaning.append_messages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append_messages</span></code></a>(bmsgs, cmsgs)</p></td>
+<td><p>Append messages to final texts array</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.ban_filt_check" title="modbot.preprocessing.LogCleaning.ban_filt_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ban_filt_check</span></code></a>(user, m)</p></td>
+<td><p>Check if banned and a valid message</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.clean_check" title="modbot.preprocessing.LogCleaning.clean_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_check</span></code></a>(m)</p></td>
+<td><p>Check if clean message</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.clean_filt_check" title="modbot.preprocessing.LogCleaning.clean_filt_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_filt_check</span></code></a>(user, m)</p></td>
+<td><p>Check if clean and valid message</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.clean_log" title="modbot.preprocessing.LogCleaning.clean_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean_log</span></code></a>(rawfile[, cleanfile])</p></td>
+<td><p>Clean log.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.del_filt_check" title="modbot.preprocessing.LogCleaning.del_filt_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">del_filt_check</span></code></a>(user, m)</p></td>
+<td><p>Check if deleted and a valid message</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.divide_messages" title="modbot.preprocessing.LogCleaning.divide_messages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">divide_messages</span></code></a>(tocheck, bmsgs, dmsgs, ctmp)</p></td>
+<td><p>Divide messages into clean, bad, and to_check.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.further_review" title="modbot.preprocessing.LogCleaning.further_review"><code class="xref py py-obj docutils literal notranslate"><span class="pre">further_review</span></code></a>(tocheck, bmsgs, cmsgs)</p></td>
+<td><p>Review tocheck messages and append to either cmsgs or bmsgs</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.is_valid_line" title="modbot.preprocessing.LogCleaning.is_valid_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_valid_line</span></code></a>(line)</p></td>
+<td><p>Check if line contains relevant information</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.mod_check" title="modbot.preprocessing.LogCleaning.mod_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mod_check</span></code></a>(m)</p></td>
+<td><p>Check if mod not in ignore list</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.msg_check" title="modbot.preprocessing.LogCleaning.msg_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">msg_check</span></code></a>(m)</p></td>
+<td><p>Check if message is not None and not a link</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.prep_log" title="modbot.preprocessing.LogCleaning.prep_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prep_log</span></code></a>(rawfile)</p></td>
+<td><p>Read log and do some preprocessing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.read_log" title="modbot.preprocessing.LogCleaning.read_log"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_log</span></code></a>(rawfile)</p></td>
+<td><p>Read log and return lines</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.remove_whitelist" title="modbot.preprocessing.LogCleaning.remove_whitelist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_whitelist</span></code></a>(m)</p></td>
+<td><p>Remove whitelisted phrases from msg</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.review_messages" title="modbot.preprocessing.LogCleaning.review_messages"><code class="xref py py-obj docutils literal notranslate"><span class="pre">review_messages</span></code></a>(tocheck, bmsgs, cmsgs, ctmp, ...)</p></td>
+<td><p>Perform initial review on temporarily clean messages</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#modbot.preprocessing.LogCleaning.valid_check" title="modbot.preprocessing.LogCleaning.valid_check"><code class="xref py py-obj docutils literal notranslate"><span class="pre">valid_check</span></code></a>(user, m)</p></td>
+<td><p>Check if sub or pleb and not in ignore list</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.act_check">
+<span class="sig-name descname"><span class="pre">act_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.act_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.act_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if banned or deleted message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.act_filt_check">
+<span class="sig-name descname"><span class="pre">act_filt_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.act_filt_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.act_filt_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if deleted or banned and a valid message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.append_messages">
+<span class="sig-name descname"><span class="pre">append_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmsgs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.append_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.append_messages" title="Permalink to this definition"></a></dt>
+<dd><p>Append messages to final texts array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages classified as non-wholesome</p></li>
+<li><p><strong>cmsgs</strong> (<em>list</em>) – Messages classified as wholesome</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>texts</strong> (<em>list</em>) – Final list of texts to write to file</p></li>
+<li><p><strong>y</strong> (<em>list</em>) – Corresponding list of classifications/targets</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.ban_filt_check">
+<span class="sig-name descname"><span class="pre">ban_filt_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.ban_filt_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.ban_filt_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if banned and a valid message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.clean_check">
+<span class="sig-name descname"><span class="pre">clean_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.clean_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.clean_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if clean message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.clean_filt_check">
+<span class="sig-name descname"><span class="pre">clean_filt_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.clean_filt_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.clean_filt_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if clean and valid message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.clean_log">
+<span class="sig-name descname"><span class="pre">clean_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cleanfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.clean_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.clean_log" title="Permalink to this definition"></a></dt>
+<dd><p>Clean log. Do preprocessing and classify messages according to
+whether they were timed out or banned by a moderator. Manually check
+some lines if they contain certain phrases or if they were moderated
+by this bot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rawfile</strong> (<em>str</em>) – Path to raw chat data</p></li>
+<li><p><strong>cleanfile</strong> (<em>str</em>) – Path to clean output file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.del_filt_check">
+<span class="sig-name descname"><span class="pre">del_filt_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.del_filt_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.del_filt_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if deleted and a valid message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.divide_messages">
+<span class="sig-name descname"><span class="pre">divide_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tocheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctmp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.divide_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.divide_messages" title="Permalink to this definition"></a></dt>
+<dd><p>Divide messages into clean, bad, and to_check. Includes checks on
+each user according to configuration parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tocheck</strong> (<em>list</em>) – List of messages to manually check</p></li>
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages from timeouts or bans</p></li>
+<li><p><strong>dmsgs</strong> (<em>list</em>) – Deleted messages</p></li>
+<li><p><strong>ctmp</strong> (<em>list</em>) – Messages for another layer of review</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>tocheck</strong> (<em>list</em>) – List of messages to manually check</p></li>
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages from timeouts or bans</p></li>
+<li><p><strong>dmsgs</strong> (<em>list</em>) – Deleted messages</p></li>
+<li><p><strong>ctmp</strong> (<em>list</em>) – Messages for another layer of review</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.further_review">
+<span class="sig-name descname"><span class="pre">further_review</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tocheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmsgs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.further_review"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.further_review" title="Permalink to this definition"></a></dt>
+<dd><p>Review tocheck messages and append to either cmsgs or bmsgs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tocheck</strong> (<em>list</em>) – List of messages to manually check</p></li>
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages classified as non-wholesome</p></li>
+<li><p><strong>cmsgs</strong> (<em>list</em>) – Messages classified as wholesome</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages classified as non-wholesome</p></li>
+<li><p><strong>cmsgs</strong> (<em>list</em>) – Messages classified as wholesome</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.is_valid_line">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_valid_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.is_valid_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.is_valid_line" title="Permalink to this definition"></a></dt>
+<dd><p>Check if line contains relevant information</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>line</strong> (<em>str</em>) – String containing line to check</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.mod_check">
+<span class="sig-name descname"><span class="pre">mod_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.mod_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.mod_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if mod not in ignore list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.msg_check">
+<span class="sig-name descname"><span class="pre">msg_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.msg_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.msg_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if message is not None and not a link</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.prep_log">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prep_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.prep_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.prep_log" title="Permalink to this definition"></a></dt>
+<dd><p>Read log and do some preprocessing. Remove usernames and only
+return valid lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawfile</strong> (<em>str</em>) – Path to raw chat data</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of valid lines from log with usernames removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.read_log">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rawfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.read_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.read_log" title="Permalink to this definition"></a></dt>
+<dd><p>Read log and return lines</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rawfile</strong> (<em>str</em>) – Path to raw chat file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of lines from log</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.remove_whitelist">
+<span class="sig-name descname"><span class="pre">remove_whitelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.remove_whitelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.remove_whitelist" title="Permalink to this definition"></a></dt>
+<dd><p>Remove whitelisted phrases from msg</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.review_messages">
+<span class="sig-name descname"><span class="pre">review_messages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tocheck</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmsgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ctmp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">probs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.review_messages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.review_messages" title="Permalink to this definition"></a></dt>
+<dd><p>Perform initial review on temporarily clean messages</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tocheck</strong> (<em>list</em>) – List of messages to manually check</p></li>
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages classified as non-wholesome</p></li>
+<li><p><strong>cmsgs</strong> (<em>list</em>) – Messages classified as wholesome</p></li>
+<li><p><strong>ctmp</strong> (<em>list</em>) – Messages another layer of review</p></li>
+<li><p><strong>probs</strong> (<em>list</em>) – List of probabilities for the messages in ctmp</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>tocheck</strong> (<em>list</em>) – List of messages to manually check</p></li>
+<li><p><strong>bmsgs</strong> (<em>list</em>) – Messages classified as non-wholesome</p></li>
+<li><p><strong>cmsgs</strong> (<em>list</em>) – Messages classified as wholesome</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="modbot.preprocessing.LogCleaning.valid_check">
+<span class="sig-name descname"><span class="pre">valid_check</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/modbot/preprocessing.html#LogCleaning.valid_check"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#modbot.preprocessing.LogCleaning.valid_check" title="Permalink to this definition"></a></dt>
+<dd><p>Check if sub or pleb and not in ignore list</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modbot.preprocessing.write_data.html" class="btn btn-neutral float-left" title="modbot.preprocessing.write_data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modbot.preprocessing.MsgMemory.html" class="btn btn-neutral float-right" title="modbot.preprocessing.MsgMemory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Brandon Benton.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

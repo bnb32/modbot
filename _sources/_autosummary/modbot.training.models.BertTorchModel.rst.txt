@@ -1,0 +1,74 @@
+modbot.training.models.BertTorchModel
+=====================================
+
+.. currentmodule:: modbot.training.models
+
+.. autoclass:: BertTorchModel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+   :special-members: __call__, __add__, __mul__
+
+   
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~BertTorchModel.add_module
+      ~BertTorchModel.apply
+      ~BertTorchModel.bfloat16
+      ~BertTorchModel.buffers
+      ~BertTorchModel.children
+      ~BertTorchModel.cpu
+      ~BertTorchModel.cuda
+      ~BertTorchModel.double
+      ~BertTorchModel.eval
+      ~BertTorchModel.extra_repr
+      ~BertTorchModel.float
+      ~BertTorchModel.forward
+      ~BertTorchModel.get_buffer
+      ~BertTorchModel.get_extra_state
+      ~BertTorchModel.get_parameter
+      ~BertTorchModel.get_submodule
+      ~BertTorchModel.half
+      ~BertTorchModel.ipu
+      ~BertTorchModel.load_state_dict
+      ~BertTorchModel.modules
+      ~BertTorchModel.named_buffers
+      ~BertTorchModel.named_children
+      ~BertTorchModel.named_modules
+      ~BertTorchModel.named_parameters
+      ~BertTorchModel.parameters
+      ~BertTorchModel.register_backward_hook
+      ~BertTorchModel.register_buffer
+      ~BertTorchModel.register_forward_hook
+      ~BertTorchModel.register_forward_pre_hook
+      ~BertTorchModel.register_full_backward_hook
+      ~BertTorchModel.register_load_state_dict_post_hook
+      ~BertTorchModel.register_module
+      ~BertTorchModel.register_parameter
+      ~BertTorchModel.requires_grad_
+      ~BertTorchModel.set_extra_state
+      ~BertTorchModel.share_memory
+      ~BertTorchModel.state_dict
+      ~BertTorchModel.to
+      ~BertTorchModel.to_empty
+      ~BertTorchModel.train
+      ~BertTorchModel.type
+      ~BertTorchModel.xpu
+      ~BertTorchModel.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BertTorchModel.T_destination
+      ~BertTorchModel.dump_patches
+      ~BertTorchModel.training
+   
+   

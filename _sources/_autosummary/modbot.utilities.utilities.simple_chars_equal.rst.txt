@@ -1,0 +1,6 @@
+modbot.utilities.utilities.simple\_chars\_equal
+===============================================
+
+.. currentmodule:: modbot.utilities.utilities
+
+.. autofunction:: simple_chars_equal
